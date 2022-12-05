@@ -2,7 +2,7 @@ from git.repo.base import Repo
 import os
 
 def main():
-    clone_repo(['https://github.com/saurabh-sudo/BankingSystem-Backend'])
+    clone_repo('https://github.com/saurabh-sudo/BankingSystem-Backend')
     install_privado()
 
 def install_privado():
@@ -14,14 +14,13 @@ def install_privado():
     else:
         os.system("curl -o- https://raw.githubusercontent.com/Privado-Inc/privado-cli/main/install.sh | bash")
 
-def clone_repo(urls):
+def clone_repo(url):
 
-    for url in urls:
-        repo_name = url.split("/")[-1]
-        location = "./repos/" + repo_name
-        print("Cloning the Repo: " + repo_name)
-        Repo.clone_from(url, location)
-        print("Cloning Successful: " + repo_name)
+    repo_name = url.split("/")[-1]
+    location = "./repos/" + repo_name
+    print("Cloning the Repo: " + repo_name)
+    Repo.clone_from(url, location)
+    print("Cloning Successful: " + repo_name)
     
     print("All repos cloned.")
 
