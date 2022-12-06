@@ -7,5 +7,4 @@ def delete_temp():
     if os.path.isdir(path):
         shutil.rmtree(path, ignore_errors=False)
 
-
 delete_temp()

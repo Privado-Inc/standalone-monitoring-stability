@@ -21,8 +21,6 @@ def main(stable_file, dev_file, cpu_usage, stable_time, dev_time):
     time_final_stable =  (time_data_stable.read().split('\n')[1]).split('\t')[1]
     time_final_dev =  (time_data_dev.read().split('\n')[1]).split('\t')[1]
 
-
-
     split_minutes_seconds_dev = re.split('[a-zA-Z]+', time_final_dev[:-1]) 
     split_minutes_seconds_stable = re.split('[a-zA-Z]+', time_final_stable[:-1]) 
 
@@ -30,8 +28,6 @@ def main(stable_file, dev_file, cpu_usage, stable_time, dev_time):
     time_dev_minutes = 0
     minutes_multiplier = 1/60
     
-
-
     for i in range(len(split_minutes_seconds_dev) - 1, -1, -1):
         time_dev_minutes += (minutes_multiplier * float(split_minutes_seconds_dev[i]))
         minutes_multiplier *= 60
@@ -40,21 +36,14 @@ def main(stable_file, dev_file, cpu_usage, stable_time, dev_time):
     for i in range(len(split_minutes_seconds_stable) - 1, -1, -1):
         time_stable_minutes += (minutes_multiplier * float(split_minutes_seconds_stable[i]))
 
-
     # Percent change on the latest branch wrt base branch
     percent_change_time = f'{round(((time_dev_minutes - time_stable_minutes) / time_stable_minutes), 2) * 100}%'
-
 
     previous_data = json.load(previous_file)
     current_data = json.load(current_file)
 
     report = []
     repo_name = previous_data['repoName']
-
-
-
-
-
 
     report.append(['Base Version', '', '', '', 'Latest Version'])
     report.append(['privadoCoreVersion', previous_data['privadoCoreVersion'], '', '', 'privadoCoreVersion', current_data['privadoCoreVersion']])
@@ -66,7 +55,6 @@ def main(stable_file, dev_file, cpu_usage, stable_time, dev_time):
     report.append(["RepoName", repo_name])
     report.append(['Base version time', '','','', 'Latest version time', '', '% change wrt base'])
     report.append([time_final_stable, '','','', time_final_dev, '', percent_change_time])
-
 
     report.append([])
     report.append([])
@@ -126,15 +114,8 @@ def main(stable_file, dev_file, cpu_usage, stable_time, dev_time):
     report.append([])
     report.append([])
     
-
-
-
-    
-
-    
     report.append([])
     report.append([])
-
 
     report.append(["CPU Utilization Report"])
     report.append([""])
@@ -149,10 +130,8 @@ def main(stable_file, dev_file, cpu_usage, stable_time, dev_time):
 
     create_csv(report)
 
-
     previous_file.close()
     current_file.close()
-
 
 def top_level_collection_processor(collections_stable, collections_dev, repo_name):
     report = []
@@ -163,7 +142,6 @@ def top_level_collection_processor(collections_stable, collections_dev, repo_nam
 
     return report
 
-
 def process_collection(collections_stable, collections_dev, repo_name, collection_name):
     collection_headings = ['repo_name', f'Number of Collections - {collection_name} ( Base ) ', f'Number of Collections - {collection_name} ( Latest )', 'List of  sourceId ( Base )', 'List of  sourceId ( Latest )', '% of change w.r.t base', 'New sourceIds added in Latest', 'Existing sourceIds removed from Latest']
     print(collections_stable['collections'])
@@ -173,21 +151,16 @@ def process_collection(collections_stable, collections_dev, repo_name, collectio
     collections_sources_stable = []
     collections_sources_dev = []
 
-
-
     for ci in collections_stable['collections']:
         collections_sources_stable.append(ci['sourceId'])
 
-    
     for ci in collections_dev['collections']:
         collections_sources_dev.append(ci['sourceId'])
-
 
     try:
         percent_change = f'{((dev_collections - stable_collections) / stable_collections) * 100}%'  
     except:
         percent_change = '0.00%'
-
 
     new_latest = '\n'.join(list(set(collections_sources_dev) - set(collections_sources_stable)))
     removed_dev = '\n'.join(list(set(collections_sources_stable) - set(collections_sources_dev)))
@@ -201,7 +174,6 @@ def process_collection(collections_stable, collections_dev, repo_name, collectio
         collection_headings,
         list(map(lambda x: x if len(str(x)) else "--", result))
     ]
-
 
 def process_violations(report, previous_data, current_data):
     
@@ -240,8 +212,6 @@ def create_csv(data):
 
     print("Report written")
 
-
-
 def process_new_sources(source_stable, source_dev, repo_name):
 
     source_headings = ['repo_name', 'Number of Sources ( Base )', 'Number of Sources ( Latest )', 'List of Sources ( Base )', 'List of Sources ( Latest )', '% of change w.r.t base', 'New Sources added in Latest', 'Existing Sources remvoed from Latest']
@@ -264,8 +234,6 @@ def process_new_sources(source_stable, source_dev, repo_name):
         list(map(lambda x: x if len(str(x)) else "--", result))
     ]
 
-
-
 def process_sinks(stable_dataflows, dev_dataflows, repo_name,key='storages'):
 
     headings = [ 
@@ -284,7 +252,6 @@ def process_sinks(stable_dataflows, dev_dataflows, repo_name,key='storages'):
     stable_sinks = len(storages_stable) if (len(storages_stable)) else 0
     dev_sinks = len(storages_dev) if (len(storages_dev)) else 0
 
-
     sink_names_stable = set()
     sink_names_dev = set()
     for storage in storages_stable:
@@ -298,8 +265,6 @@ def process_sinks(stable_dataflows, dev_dataflows, repo_name,key='storages'):
     sink_names_stable = '\n'.join(sink_names_stable)    
     sink_names_dev = '\n'.join(sink_names_dev)    
 
-
-
     # percent change in latest sources wrt stable release
     try:
         percent_change = f'{round((((dev_sinks - stable_sinks) / stable_sinks) * 100),2)}%'   
@@ -311,7 +276,6 @@ def process_sinks(stable_dataflows, dev_dataflows, repo_name,key='storages'):
     result = [repo_name, stable_sinks, dev_sinks, sink_names_stable, sink_names_dev, percent_change, new_latest, removed_dev]
 
     return [headings, list(map(lambda x: x if len(str(x)) else "--", result))]
-
 
 
 def process_leakages(stable_dataflows, dev_dataflows, repo_name,key='leakages'):
@@ -332,7 +296,6 @@ def process_leakages(stable_dataflows, dev_dataflows, repo_name,key='leakages'):
     num_stable_leakages = len(stable_leakages)
     num_dev_leakages = len(dev_leakages)
 
-
     leakage_names_stable = '\n'.join(list(map(lambda x: x['sourceId'], stable_leakages)))
     leakage_names_dev = '\n'.join(list(map(lambda x: x['sourceId'], dev_leakages)))
 
@@ -350,8 +313,6 @@ def process_leakages(stable_dataflows, dev_dataflows, repo_name,key='leakages'):
         list(map(lambda x: x if len(str(x)) else "--", result))
     ]
 
-
-
 def process_path_analysis(source_stable, source_dev, repo_name):
     path_value = []
     path_value.append(['RepoName', repo_name])
@@ -362,7 +323,6 @@ def process_path_analysis(source_stable, source_dev, repo_name):
             path_value.append(i)
 
     return path_value
-
 
 def sub_process_path(source_stable, source_dev, value):
 

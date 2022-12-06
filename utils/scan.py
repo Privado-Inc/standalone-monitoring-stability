@@ -14,7 +14,6 @@ def scan_repo_report():
     if not os.path.isdir(cwd + '/temp/result/stable'):
         os.system('mkdir -p temp/result/stable && mkdir -p temp/result/dev && mkdir -p temp/cpu_mem')
 
-
     for repo in repos:         
         scan_dir = cwd + '/temp/repos/' + repo
 
@@ -37,12 +36,8 @@ def scan_repo_report():
         # Move the privado.json file to the result folder   
         shutil.copy(src_path, dest_path)
 
-        os.system(f"kill -9 {process.pid}")
-
-
-
-
-
+        process.kill()
+        #os.system(f"kill -9 {process.pid}")
 
 # Return list of cloned repo name
 def get_list_repos():
@@ -52,8 +47,6 @@ def get_list_repos():
         if not repo.startswith('.'):
             result.append(repo)
     return result
-
-
 
 if __name__ == "__main__":
     main()
