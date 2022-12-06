@@ -12,11 +12,14 @@ def scan_repo_report():
     privado_dir = os.path.join(os.path.expanduser('~'), ".privado/bin")
 
     if not os.path.isdir(cwd + '/temp/result/stable'):
-        os.system('mkdir -p temp/result/stable && mkdir -p temp/result/dev')
+        os.system('mkdir -p temp/result/stable && mkdir -p temp/result/dev && mkdir -p temp/cpu_mem')
 
 
     for repo in repos:         
         scan_dir = cwd + '/temp/repos/' + repo
+
+        # monitor cpu and memory usage
+        process = subprocess.Popen(["sh", f"{cwd}/utils/cpu_and_memory_usage.sh", repo, "stable"])
 
         # Scan the cloned repo with stable
         os.system('bash -c "{ time ' + privado_dir + '/privado scan --overwrite --skip-upload ' + scan_dir + ' ; } 2> ' + cwd + '/temp/result/stable/' + repo + '_time.txt" ' )
@@ -26,12 +29,17 @@ def scan_repo_report():
         dest_path = f'{cwd}/temp/result/stable/{repo}.json'
         shutil.copy(src_path,dest_path)
 
+
         # Scan the cloned repo with dev
         os.system('bash -c "{ time PRIVADO_DEV=1 ' + privado_dir + '/privado scan --overwrite --skip-upload ' + scan_dir + ' ; } 2> ' + cwd + '/temp/result/dev/' + repo + '_time.txt" ' )
 
         dest_path = f'{cwd}/temp/result/dev/{repo}.json'
         # Move the privado.json file to the result folder   
         shutil.copy(src_path, dest_path)
+
+        os.system(f"kill -9 {process.pid}")
+
+
 
 
 
