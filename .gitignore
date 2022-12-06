@@ -1,6 +1,7 @@
-temp
-utils/__pycache__
+/temp
+/utils/__pycache__
 # Local environment
-env
+/env
 # Environment variables 
 .env
+*.csv
