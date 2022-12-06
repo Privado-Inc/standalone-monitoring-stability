@@ -308,15 +308,24 @@ MiB Mem ,   7621.3 total,   3707.7 free,   2200.7 used,"   1712.9 buff/cache
 --,--,--,--,--
 --,--,--,--,--
 Base Version,,,,Latest Version
+<<<<<<< Updated upstream
 privadoCoreVersion,1.1.3,,,privadoCoreVersion,1.1.3-263
 privadoCLIVersion,v2.1.2,,,privadoCLIVersion,v2.1.2
+=======
+privadoCoreVersion,1.1.3,,,privadoCoreVersion,1.1.3-264
+privadoCLIVersion,v2.1.1,,,privadoCLIVersion,v2.1.1
+>>>>>>> Stashed changes
 privadoMainVersion,"1.2.0
 ",,,privadoMainVersion,"1.2.0-139
 "
 Scan time analytics
 RepoName,BankingSystem-Backend
 Base version time,,,,Latest version time,,% change wrt base
+<<<<<<< Updated upstream
 0m27.890s,,,,0m20.671s,,-26.0%
+=======
+0m31.020s,,,,1m38.697s,,218.00000000000003%
+>>>>>>> Stashed changes
 
 
 Analysis for sources
@@ -346,14 +355,24 @@ Account Name",0.0%,--,--
 
 Analysis for Storages Sinks
 repo_name,Number of storages sinks (base),Number of storages sinks (latest),List of storages Sinks (base),List of storages Sinks ( Latest ),% of change w.r.t base,New storages Sinks added in Latest,Existing storages Sinks remvoed from Latest
+<<<<<<< Updated upstream
 BankingSystem-Backend,10,10,"JPA Repository(Read)
 JPA Repository(Write)","JPA Repository(Read)
 JPA Repository(Write)",0.0%,--,--
+=======
+BankingSystem-Backend,10,10,"JPA Repository(Write)
+JPA Repository(Read)","JPA Repository(Write)
+JPA Repository(Read)",0.0%,--,--
+>>>>>>> Stashed changes
 
 
 Analysis for third_parties Sinks
 repo_name,Number of third_parties sinks (base),Number of third_parties sinks (latest),List of third_parties Sinks (base),List of third_parties Sinks ( Latest ),% of change w.r.t base,New third_parties Sinks added in Latest,Existing third_parties Sinks remvoed from Latest
+<<<<<<< Updated upstream
 BankingSystem-Backend,11,4,Third Party API,Third Party API,-63.64%,--,--
+=======
+BankingSystem-Backend,11,11,Third Party API,Third Party API,0.0%,--,--
+>>>>>>> Stashed changes
 
 
 Analysis for collections
@@ -381,6 +400,7 @@ Data.Sensitive.NationalIdentificationNumbers.Passport",0.0%,--,--
 
 Analysis for Leakages DataFlows
 repo_name,Number of leakages sinks (base),Number of leakages sinks (latest),List of leakages Sinks (base),List of leakages Sinks ( Latest ),% of change w.r.t base,New leakages Sinks added in Latest,Existing leakages Sinks remvoed from Latest
+<<<<<<< Updated upstream
 BankingSystem-Backend,11,11,"Data.Sensitive.PersonalIdentification.DateofBirth
 Data.Sensitive.PersonalIdentification.LastName
 Data.Sensitive.AccountData.AccountPassword
@@ -402,21 +422,48 @@ Data.Sensitive.NationalIdentificationNumbers.Passport
 Data.Sensitive.PersonalIdentification.LastName
 Data.Sensitive.AccountData.AccountID
 Data.Sensitive.PersonalIdentification.FirstName",0.0%,--,--
+=======
+BankingSystem-Backend,11,11,"Data.Sensitive.ContactData.EmailAddress
+Data.Sensitive.AccountData.AccountName
+Data.Sensitive.PersonalIdentification.DateofBirth
+Data.Sensitive.AccountData.AccountPassword
+Data.Sensitive.PersonalIdentification.FirstName
+Data.Sensitive.NationalIdentificationNumbers.Passport
+Data.Sensitive.ContactData.PhoneNumber
+Data.Sensitive.PersonalIdentification.Age
+Data.Sensitive.AccountData.LanguagePreferences
+Data.Sensitive.AccountData.AccountID
+Data.Sensitive.PersonalIdentification.LastName","Data.Sensitive.AccountData.AccountPassword
+Data.Sensitive.AccountData.LanguagePreferences
+Data.Sensitive.NationalIdentificationNumbers.Passport
+Data.Sensitive.PersonalIdentification.FirstName
+Data.Sensitive.PersonalIdentification.Age
+Data.Sensitive.ContactData.EmailAddress
+Data.Sensitive.PersonalIdentification.LastName
+Data.Sensitive.PersonalIdentification.DateofBirth
+Data.Sensitive.AccountData.AccountName
+Data.Sensitive.ContactData.PhoneNumber
+Data.Sensitive.AccountData.AccountID",0.0%,--,--
+>>>>>>> Stashed changes
 
 
 NUMBER OF PATHS ANANLYSIS: Analysis for Leakage DataFlows
 RepoName,BankingSystem-Backend
 
+<<<<<<< Updated upstream
 "1 : Data.Sensitive.ContactData.EmailAddress -> Sinks.Database.JPA.Read
 DataFlow -> storages -> Data.Sensitive.ContactData.EmailAddress -> Sinks.Database.JPA.Read",,,"2 : Data.Sensitive.ContactData.EmailAddress -> Sinks.Database.JPA.Write
 DataFlow -> storages -> Data.Sensitive.ContactData.EmailAddress -> Sinks.Database.JPA.Write",,
 Base,Latest,% Change,Base,Latest,% Change
 3,1,-66.66666666666666%,6,6,0.0%
 
+=======
+>>>>>>> Stashed changes
 "1 : Data.Sensitive.PersonalIdentification.FirstName -> Sinks.Database.JPA.Read
 DataFlow -> storages -> Data.Sensitive.PersonalIdentification.FirstName -> Sinks.Database.JPA.Read",,,"2 : Data.Sensitive.PersonalIdentification.FirstName -> Sinks.Database.JPA.Write
 DataFlow -> storages -> Data.Sensitive.PersonalIdentification.FirstName -> Sinks.Database.JPA.Write",,
 Base,Latest,% Change,Base,Latest,% Change
+<<<<<<< Updated upstream
 3,1,-66.66666666666666%,7,7,0.0%
 
 "1 : Data.Sensitive.PersonalIdentification.DateofBirth -> Sinks.Database.JPA.Read
@@ -430,11 +477,21 @@ DataFlow -> storages -> Data.Sensitive.AccountData.AccountID -> Sinks.Database.J
 DataFlow -> storages -> Data.Sensitive.AccountData.AccountID -> Sinks.Database.JPA.Write",,
 Base,Latest,% Change,Base,Latest,% Change
 10,8,-20.0%,12,12,0.0%
+=======
+3,2,-33.33333333333333%,7,7,0.0%
+
+"1 : Data.Sensitive.ContactData.PhoneNumber -> Sinks.Database.JPA.Read
+DataFlow -> storages -> Data.Sensitive.ContactData.PhoneNumber -> Sinks.Database.JPA.Read",,,"2 : Data.Sensitive.ContactData.PhoneNumber -> Sinks.Database.JPA.Write
+DataFlow -> storages -> Data.Sensitive.ContactData.PhoneNumber -> Sinks.Database.JPA.Write",,
+Base,Latest,% Change,Base,Latest,% Change
+5,4,-20.0%,8,8,0.0%
+>>>>>>> Stashed changes
 
 "1 : Data.Sensitive.AccountData.AccountPassword -> Sinks.Database.JPA.Read
 DataFlow -> storages -> Data.Sensitive.AccountData.AccountPassword -> Sinks.Database.JPA.Read",,,"2 : Data.Sensitive.AccountData.AccountPassword -> Sinks.Database.JPA.Write
 DataFlow -> storages -> Data.Sensitive.AccountData.AccountPassword -> Sinks.Database.JPA.Write",,
 Base,Latest,% Change,Base,Latest,% Change
+<<<<<<< Updated upstream
 3,1,-66.66666666666666%,8,8,0.0%
 
 "1 : Data.Sensitive.PersonalIdentification.Age -> Sinks.Database.JPA.Read
@@ -448,33 +505,73 @@ DataFlow -> storages -> Data.Sensitive.ContactData.PhoneNumber -> Sinks.Database
 DataFlow -> storages -> Data.Sensitive.ContactData.PhoneNumber -> Sinks.Database.JPA.Write",,
 Base,Latest,% Change,Base,Latest,% Change
 5,3,-40.0%,8,8,0.0%
+=======
+3,2,-33.33333333333333%,8,8,0.0%
+
+"1 : Data.Sensitive.ContactData.EmailAddress -> Sinks.Database.JPA.Read
+DataFlow -> storages -> Data.Sensitive.ContactData.EmailAddress -> Sinks.Database.JPA.Read",,,"2 : Data.Sensitive.ContactData.EmailAddress -> Sinks.Database.JPA.Write
+DataFlow -> storages -> Data.Sensitive.ContactData.EmailAddress -> Sinks.Database.JPA.Write",,
+Base,Latest,% Change,Base,Latest,% Change
+3,2,-33.33333333333333%,6,6,0.0%
+>>>>>>> Stashed changes
 
 "1 : Data.Sensitive.PersonalIdentification.LastName -> Sinks.Database.JPA.Read
 DataFlow -> storages -> Data.Sensitive.PersonalIdentification.LastName -> Sinks.Database.JPA.Read",,,"2 : Data.Sensitive.PersonalIdentification.LastName -> Sinks.Database.JPA.Write
 DataFlow -> storages -> Data.Sensitive.PersonalIdentification.LastName -> Sinks.Database.JPA.Write",,
 Base,Latest,% Change,Base,Latest,% Change
+<<<<<<< Updated upstream
 3,1,-66.66666666666666%,7,7,0.0%
+=======
+3,2,-33.33333333333333%,7,7,0.0%
+>>>>>>> Stashed changes
 
 "1 : Data.Sensitive.NationalIdentificationNumbers.Passport -> Sinks.Database.JPA.Read
 DataFlow -> storages -> Data.Sensitive.NationalIdentificationNumbers.Passport -> Sinks.Database.JPA.Read",,,"2 : Data.Sensitive.NationalIdentificationNumbers.Passport -> Sinks.Database.JPA.Write
 DataFlow -> storages -> Data.Sensitive.NationalIdentificationNumbers.Passport -> Sinks.Database.JPA.Write",,
 Base,Latest,% Change,Base,Latest,% Change
+<<<<<<< Updated upstream
 3,1,-66.66666666666666%,6,6,0.0%
+=======
+3,2,-33.33333333333333%,6,6,0.0%
+
+"1 : Data.Sensitive.AccountData.AccountID -> Sinks.Database.JPA.Read
+DataFlow -> storages -> Data.Sensitive.AccountData.AccountID -> Sinks.Database.JPA.Read",,,"2 : Data.Sensitive.AccountData.AccountID -> Sinks.Database.JPA.Write
+DataFlow -> storages -> Data.Sensitive.AccountData.AccountID -> Sinks.Database.JPA.Write",,
+Base,Latest,% Change,Base,Latest,% Change
+10,9,-10.0%,12,12,0.0%
+
+"1 : Data.Sensitive.PersonalIdentification.Age -> Sinks.Database.JPA.Read
+DataFlow -> storages -> Data.Sensitive.PersonalIdentification.Age -> Sinks.Database.JPA.Read",,,"2 : Data.Sensitive.PersonalIdentification.Age -> Sinks.Database.JPA.Write
+DataFlow -> storages -> Data.Sensitive.PersonalIdentification.Age -> Sinks.Database.JPA.Write",,
+Base,Latest,% Change,Base,Latest,% Change
+3,2,-33.33333333333333%,6,6,0.0%
+
+"1 : Data.Sensitive.PersonalIdentification.DateofBirth -> Sinks.Database.JPA.Read
+DataFlow -> storages -> Data.Sensitive.PersonalIdentification.DateofBirth -> Sinks.Database.JPA.Read",,,"2 : Data.Sensitive.PersonalIdentification.DateofBirth -> Sinks.Database.JPA.Write
+DataFlow -> storages -> Data.Sensitive.PersonalIdentification.DateofBirth -> Sinks.Database.JPA.Write",,
+Base,Latest,% Change,Base,Latest,% Change
+3,2,-33.33333333333333%,6,6,0.0%
+>>>>>>> Stashed changes
 
 "1 : Data.Sensitive.AccountData.AccountName -> Sinks.Database.JPA.Read
 DataFlow -> storages -> Data.Sensitive.AccountData.AccountName -> Sinks.Database.JPA.Read",,,"2 : Data.Sensitive.AccountData.AccountName -> Sinks.Database.JPA.Write
 DataFlow -> storages -> Data.Sensitive.AccountData.AccountName -> Sinks.Database.JPA.Write",,
 Base,Latest,% Change,Base,Latest,% Change
+<<<<<<< Updated upstream
 7,4,-42.857142857142854%,9,9,0.0%
 
 "1 : Data.Sensitive.ContactData.EmailAddress -> Leakages.Log.Console
 DataFlow -> leakages -> Data.Sensitive.ContactData.EmailAddress -> Leakages.Log.Console",,
 Base,Latest,% Change
 2,1,-50.0%
+=======
+7,6,-14.285714285714285%,9,9,0.0%
+>>>>>>> Stashed changes
 
 "1 : Data.Sensitive.PersonalIdentification.FirstName -> Leakages.Log.Console
 DataFlow -> leakages -> Data.Sensitive.PersonalIdentification.FirstName -> Leakages.Log.Console",,
 Base,Latest,% Change
+<<<<<<< Updated upstream
 2,1,-50.0%
 
 "1 : Data.Sensitive.PersonalIdentification.DateofBirth -> Leakages.Log.Console
@@ -494,22 +591,53 @@ Base,Latest,% Change
 
 "1 : Data.Sensitive.AccountData.AccountPassword -> Leakages.Log.Console
 DataFlow -> leakages -> Data.Sensitive.AccountData.AccountPassword -> Leakages.Log.Console",,
+=======
+2,2,0.0%
+
+"1 : Data.Sensitive.AccountData.AccountPassword -> Leakages.Log.Console
+DataFlow -> leakages -> Data.Sensitive.AccountData.AccountPassword -> Leakages.Log.Console",,
+Base,Latest,% Change
+2,2,0.0%
+
+"1 : Data.Sensitive.ContactData.PhoneNumber -> Leakages.Log.Console
+DataFlow -> leakages -> Data.Sensitive.ContactData.PhoneNumber -> Leakages.Log.Console",,
+Base,Latest,% Change
+2,2,0.0%
+
+"1 : Data.Sensitive.ContactData.EmailAddress -> Leakages.Log.Console
+DataFlow -> leakages -> Data.Sensitive.ContactData.EmailAddress -> Leakages.Log.Console",,
+>>>>>>> Stashed changes
 Base,Latest,% Change
 2,2,0.0%
 
 "1 : Data.Sensitive.PersonalIdentification.Age -> Leakages.Log.Console
 DataFlow -> leakages -> Data.Sensitive.PersonalIdentification.Age -> Leakages.Log.Console",,
 Base,Latest,% Change
+<<<<<<< Updated upstream
 2,1,-50.0%
 
 "1 : Data.Sensitive.ContactData.PhoneNumber -> Leakages.Log.Console
 DataFlow -> leakages -> Data.Sensitive.ContactData.PhoneNumber -> Leakages.Log.Console",,
 Base,Latest,% Change
 2,1,-50.0%
+=======
+2,2,0.0%
+
+"1 : Data.Sensitive.NationalIdentificationNumbers.Passport -> Leakages.Log.Console
+DataFlow -> leakages -> Data.Sensitive.NationalIdentificationNumbers.Passport -> Leakages.Log.Console",,
+Base,Latest,% Change
+2,2,0.0%
+
+"1 : Data.Sensitive.AccountData.AccountID -> Leakages.Log.Console
+DataFlow -> leakages -> Data.Sensitive.AccountData.AccountID -> Leakages.Log.Console",,
+Base,Latest,% Change
+2,2,0.0%
+>>>>>>> Stashed changes
 
 "1 : Data.Sensitive.PersonalIdentification.LastName -> Leakages.Log.Console
 DataFlow -> leakages -> Data.Sensitive.PersonalIdentification.LastName -> Leakages.Log.Console",,
 Base,Latest,% Change
+<<<<<<< Updated upstream
 2,1,-50.0%
 
 "1 : Data.Sensitive.NationalIdentificationNumbers.Passport -> Leakages.Log.Console
@@ -562,16 +690,84 @@ Base,Latest,% Change
 DataFlow -> third_parties -> Data.Sensitive.PersonalIdentification.Age -> Sinks.ThirdParties.API",,
 Base,Latest,% Change
 2,NA,0.00%
+=======
+2,2,0.0%
+
+"1 : Data.Sensitive.AccountData.LanguagePreferences -> Leakages.Log.Console
+DataFlow -> leakages -> Data.Sensitive.AccountData.LanguagePreferences -> Leakages.Log.Console",,
+Base,Latest,% Change
+2,2,0.0%
+
+"1 : Data.Sensitive.PersonalIdentification.DateofBirth -> Leakages.Log.Console
+DataFlow -> leakages -> Data.Sensitive.PersonalIdentification.DateofBirth -> Leakages.Log.Console",,
+Base,Latest,% Change
+2,2,0.0%
+
+"1 : Data.Sensitive.AccountData.AccountName -> Leakages.Log.Warn
+DataFlow -> leakages -> Data.Sensitive.AccountData.AccountName -> Leakages.Log.Warn",,,"2 : Data.Sensitive.AccountData.AccountName -> Leakages.Log.Console
+DataFlow -> leakages -> Data.Sensitive.AccountData.AccountName -> Leakages.Log.Console",,
+Base,Latest,% Change,Base,Latest,% Change
+2,2,0.0%,2,2,0.0%
+
+"1 : Data.Sensitive.PersonalIdentification.FirstName -> Sinks.ThirdParties.API
+DataFlow -> third_parties -> Data.Sensitive.PersonalIdentification.FirstName -> Sinks.ThirdParties.API",,
+Base,Latest,% Change
+2,2,0.0%
+
+"1 : Data.Sensitive.ContactData.PhoneNumber -> Sinks.ThirdParties.API
+DataFlow -> third_parties -> Data.Sensitive.ContactData.PhoneNumber -> Sinks.ThirdParties.API",,
+Base,Latest,% Change
+2,2,0.0%
+
+"1 : Data.Sensitive.AccountData.AccountPassword -> Sinks.ThirdParties.API
+DataFlow -> third_parties -> Data.Sensitive.AccountData.AccountPassword -> Sinks.ThirdParties.API",,
+Base,Latest,% Change
+2,2,0.0%
+
+"1 : Data.Sensitive.ContactData.EmailAddress -> Sinks.ThirdParties.API
+DataFlow -> third_parties -> Data.Sensitive.ContactData.EmailAddress -> Sinks.ThirdParties.API",,
+Base,Latest,% Change
+2,2,0.0%
+
+"1 : Data.Sensitive.PersonalIdentification.Age -> Sinks.ThirdParties.API
+DataFlow -> third_parties -> Data.Sensitive.PersonalIdentification.Age -> Sinks.ThirdParties.API",,
+Base,Latest,% Change
+2,2,0.0%
+
+"1 : Data.Sensitive.NationalIdentificationNumbers.Passport -> Sinks.ThirdParties.API
+DataFlow -> third_parties -> Data.Sensitive.NationalIdentificationNumbers.Passport -> Sinks.ThirdParties.API",,
+Base,Latest,% Change
+2,2,0.0%
+
+"1 : Data.Sensitive.AccountData.AccountID -> Sinks.ThirdParties.API
+DataFlow -> third_parties -> Data.Sensitive.AccountData.AccountID -> Sinks.ThirdParties.API",,
+Base,Latest,% Change
+2,2,0.0%
+>>>>>>> Stashed changes
 
 "1 : Data.Sensitive.PersonalIdentification.LastName -> Sinks.ThirdParties.API
 DataFlow -> third_parties -> Data.Sensitive.PersonalIdentification.LastName -> Sinks.ThirdParties.API",,
 Base,Latest,% Change
+<<<<<<< Updated upstream
 2,NA,0.00%
 
 "1 : Data.Sensitive.NationalIdentificationNumbers.Passport -> Sinks.ThirdParties.API
 DataFlow -> third_parties -> Data.Sensitive.NationalIdentificationNumbers.Passport -> Sinks.ThirdParties.API",,
 Base,Latest,% Change
 2,NA,0.00%
+=======
+2,2,0.0%
+
+"1 : Data.Sensitive.AccountData.LanguagePreferences -> Sinks.ThirdParties.API
+DataFlow -> third_parties -> Data.Sensitive.AccountData.LanguagePreferences -> Sinks.ThirdParties.API",,
+Base,Latest,% Change
+2,2,0.0%
+
+"1 : Data.Sensitive.PersonalIdentification.DateofBirth -> Sinks.ThirdParties.API
+DataFlow -> third_parties -> Data.Sensitive.PersonalIdentification.DateofBirth -> Sinks.ThirdParties.API",,
+Base,Latest,% Change
+2,2,0.0%
+>>>>>>> Stashed changes
 
 "1 : Data.Sensitive.AccountData.AccountName -> Sinks.ThirdParties.API
 DataFlow -> third_parties -> Data.Sensitive.AccountData.AccountName -> Sinks.ThirdParties.API",,
@@ -585,5 +781,1198 @@ Base,Latest,% Change
 CPU Utilization Report
 ""
 RepoName,BankingSystem-Backend
+<<<<<<< Updated upstream
+=======
+%Cpu(s),  0.8 us,  2.0 sy,  0.0 ni, 96.4 id,  0.0 wa,  0.0 hi,  0.8 si,"  0.0 st
+"
+MiB Mem ,   7621.3 total,   4594.0 free,   1406.8 used,"   1620.5 buff/cache
+"
+
+%Cpu(s),  2.9 us,  9.5 sy,  0.0 ni, 87.7 id,  0.0 wa,  0.0 hi,  0.0 si,"  0.0 st
+"
+MiB Mem ,   7621.3 total,   4173.6 free,   1445.2 used,"   2002.4 buff/cache
+"
+
+%Cpu(s), 15.3 us,  2.5 sy,  0.0 ni, 80.6 id,  0.0 wa,  0.0 hi,  1.7 si,"  0.0 st
+"
+MiB Mem ,   7621.3 total,   2915.7 free,   1782.5 used,"   2923.1 buff/cache
+"
+
+--,--,--,--,--
+--,--,--,--,--
+Base Version,,,,Latest Version
+privadoCoreVersion,1.1.3,,,privadoCoreVersion,1.1.3-264
+privadoCLIVersion,v2.1.1,,,privadoCLIVersion,v2.1.1
+privadoMainVersion,"1.2.0
+",,,privadoMainVersion,"1.2.0-139
+"
+Scan time analytics
+RepoName,BankingSystem-Backend
+Base version time,,,,Latest version time,,% change wrt base
+0m30.387s,,,,0m28.017s,,-8.0%
+
+
+Analysis for sources
+repo_name,Number of Sources ( Base ),Number of Sources ( Latest ),List of Sources ( Base ),List of Sources ( Latest ),% of change w.r.t base,New Sources added in Latest,Existing Sources remvoed from Latest
+BankingSystem-Backend,11,11,"Language Preferences
+Account ID
+First Name
+Account Password
+Date of Birth
+Last Name
+Email Address
+Age
+Passport
+Phone Number
+Account Name","Language Preferences
+Account ID
+First Name
+Account Password
+Date of Birth
+Last Name
+Email Address
+Age
+Passport
+Phone Number
+Account Name",0.0%,--,--
+
+
+Analysis for Storages Sinks
+repo_name,Number of storages sinks (base),Number of storages sinks (latest),List of storages Sinks (base),List of storages Sinks ( Latest ),% of change w.r.t base,New storages Sinks added in Latest,Existing storages Sinks remvoed from Latest
+BankingSystem-Backend,10,10,"JPA Repository(Read)
+JPA Repository(Write)","JPA Repository(Read)
+JPA Repository(Write)",0.0%,--,--
+
+
+Analysis for third_parties Sinks
+repo_name,Number of third_parties sinks (base),Number of third_parties sinks (latest),List of third_parties Sinks (base),List of third_parties Sinks ( Latest ),% of change w.r.t base,New third_parties Sinks added in Latest,Existing third_parties Sinks remvoed from Latest
+BankingSystem-Backend,11,11,Third Party API,Third Party API,0.0%,--,--
+
+
+Analysis for collections
+repo_name,Number of Collections - Spring Web Interface Annotation ( Base ) ,Number of Collections - Spring Web Interface Annotation ( Latest ),List of  sourceId ( Base ),List of  sourceId ( Latest ),% of change w.r.t base,New sourceIds added in Latest,Existing sourceIds removed from Latest
+BankingSystem-Backend,10,10,"Data.Sensitive.AccountData.AccountPassword
+Data.Sensitive.AccountData.AccountName
+Data.Sensitive.PersonalIdentification.FirstName
+Data.Sensitive.PersonalIdentification.Age
+Data.Sensitive.ContactData.EmailAddress
+Data.Sensitive.PersonalIdentification.LastName
+Data.Sensitive.ContactData.PhoneNumber
+Data.Sensitive.PersonalIdentification.DateofBirth
+Data.Sensitive.AccountData.AccountID
+Data.Sensitive.NationalIdentificationNumbers.Passport","Data.Sensitive.AccountData.AccountPassword
+Data.Sensitive.AccountData.AccountName
+Data.Sensitive.PersonalIdentification.FirstName
+Data.Sensitive.PersonalIdentification.Age
+Data.Sensitive.ContactData.EmailAddress
+Data.Sensitive.PersonalIdentification.LastName
+Data.Sensitive.ContactData.PhoneNumber
+Data.Sensitive.PersonalIdentification.DateofBirth
+Data.Sensitive.AccountData.AccountID
+Data.Sensitive.NationalIdentificationNumbers.Passport",0.0%,--,--
+
+
+Analysis for Leakages DataFlows
+repo_name,Number of leakages sinks (base),Number of leakages sinks (latest),List of leakages Sinks (base),List of leakages Sinks ( Latest ),% of change w.r.t base,New leakages Sinks added in Latest,Existing leakages Sinks remvoed from Latest
+BankingSystem-Backend,11,11,"Data.Sensitive.ContactData.EmailAddress
+Data.Sensitive.AccountData.AccountName
+Data.Sensitive.PersonalIdentification.DateofBirth
+Data.Sensitive.AccountData.AccountPassword
+Data.Sensitive.PersonalIdentification.FirstName
+Data.Sensitive.NationalIdentificationNumbers.Passport
+Data.Sensitive.ContactData.PhoneNumber
+Data.Sensitive.PersonalIdentification.Age
+Data.Sensitive.AccountData.LanguagePreferences
+Data.Sensitive.AccountData.AccountID
+Data.Sensitive.PersonalIdentification.LastName","Data.Sensitive.AccountData.AccountPassword
+Data.Sensitive.AccountData.LanguagePreferences
+Data.Sensitive.NationalIdentificationNumbers.Passport
+Data.Sensitive.PersonalIdentification.FirstName
+Data.Sensitive.PersonalIdentification.Age
+Data.Sensitive.ContactData.EmailAddress
+Data.Sensitive.PersonalIdentification.LastName
+Data.Sensitive.PersonalIdentification.DateofBirth
+Data.Sensitive.AccountData.AccountName
+Data.Sensitive.ContactData.PhoneNumber
+Data.Sensitive.AccountData.AccountID",0.0%,--,--
+
+
+NUMBER OF PATHS ANANLYSIS: Analysis for Leakage DataFlows
+RepoName,BankingSystem-Backend
+
+"1 : Data.Sensitive.PersonalIdentification.FirstName -> Sinks.Database.JPA.Read
+DataFlow -> storages -> Data.Sensitive.PersonalIdentification.FirstName -> Sinks.Database.JPA.Read",,,"2 : Data.Sensitive.PersonalIdentification.FirstName -> Sinks.Database.JPA.Write
+DataFlow -> storages -> Data.Sensitive.PersonalIdentification.FirstName -> Sinks.Database.JPA.Write",,
+Base,Latest,% Change,Base,Latest,% Change
+3,2,-33.33333333333333%,7,7,0.0%
+
+"1 : Data.Sensitive.NationalIdentificationNumbers.Passport -> Sinks.Database.JPA.Read
+DataFlow -> storages -> Data.Sensitive.NationalIdentificationNumbers.Passport -> Sinks.Database.JPA.Read",,,"2 : Data.Sensitive.NationalIdentificationNumbers.Passport -> Sinks.Database.JPA.Write
+DataFlow -> storages -> Data.Sensitive.NationalIdentificationNumbers.Passport -> Sinks.Database.JPA.Write",,
+Base,Latest,% Change,Base,Latest,% Change
+3,2,-33.33333333333333%,6,6,0.0%
+
+"1 : Data.Sensitive.AccountData.AccountPassword -> Sinks.Database.JPA.Read
+DataFlow -> storages -> Data.Sensitive.AccountData.AccountPassword -> Sinks.Database.JPA.Read",,,"2 : Data.Sensitive.AccountData.AccountPassword -> Sinks.Database.JPA.Write
+DataFlow -> storages -> Data.Sensitive.AccountData.AccountPassword -> Sinks.Database.JPA.Write",,
+Base,Latest,% Change,Base,Latest,% Change
+3,2,-33.33333333333333%,8,8,0.0%
+
+"1 : Data.Sensitive.AccountData.AccountID -> Sinks.Database.JPA.Read
+DataFlow -> storages -> Data.Sensitive.AccountData.AccountID -> Sinks.Database.JPA.Read",,,"2 : Data.Sensitive.AccountData.AccountID -> Sinks.Database.JPA.Write
+DataFlow -> storages -> Data.Sensitive.AccountData.AccountID -> Sinks.Database.JPA.Write",,
+Base,Latest,% Change,Base,Latest,% Change
+10,9,-10.0%,12,12,0.0%
+
+"1 : Data.Sensitive.ContactData.EmailAddress -> Sinks.Database.JPA.Read
+DataFlow -> storages -> Data.Sensitive.ContactData.EmailAddress -> Sinks.Database.JPA.Read",,,"2 : Data.Sensitive.ContactData.EmailAddress -> Sinks.Database.JPA.Write
+DataFlow -> storages -> Data.Sensitive.ContactData.EmailAddress -> Sinks.Database.JPA.Write",,
+Base,Latest,% Change,Base,Latest,% Change
+3,2,-33.33333333333333%,6,6,0.0%
+
+"1 : Data.Sensitive.PersonalIdentification.DateofBirth -> Sinks.Database.JPA.Read
+DataFlow -> storages -> Data.Sensitive.PersonalIdentification.DateofBirth -> Sinks.Database.JPA.Read",,,"2 : Data.Sensitive.PersonalIdentification.DateofBirth -> Sinks.Database.JPA.Write
+DataFlow -> storages -> Data.Sensitive.PersonalIdentification.DateofBirth -> Sinks.Database.JPA.Write",,
+Base,Latest,% Change,Base,Latest,% Change
+3,2,-33.33333333333333%,6,6,0.0%
+
+"1 : Data.Sensitive.ContactData.PhoneNumber -> Sinks.Database.JPA.Read
+DataFlow -> storages -> Data.Sensitive.ContactData.PhoneNumber -> Sinks.Database.JPA.Read",,,"2 : Data.Sensitive.ContactData.PhoneNumber -> Sinks.Database.JPA.Write
+DataFlow -> storages -> Data.Sensitive.ContactData.PhoneNumber -> Sinks.Database.JPA.Write",,
+Base,Latest,% Change,Base,Latest,% Change
+5,4,-20.0%,8,8,0.0%
+
+"1 : Data.Sensitive.PersonalIdentification.Age -> Sinks.Database.JPA.Read
+DataFlow -> storages -> Data.Sensitive.PersonalIdentification.Age -> Sinks.Database.JPA.Read",,,"2 : Data.Sensitive.PersonalIdentification.Age -> Sinks.Database.JPA.Write
+DataFlow -> storages -> Data.Sensitive.PersonalIdentification.Age -> Sinks.Database.JPA.Write",,
+Base,Latest,% Change,Base,Latest,% Change
+3,2,-33.33333333333333%,6,6,0.0%
+
+"1 : Data.Sensitive.PersonalIdentification.LastName -> Sinks.Database.JPA.Read
+DataFlow -> storages -> Data.Sensitive.PersonalIdentification.LastName -> Sinks.Database.JPA.Read",,,"2 : Data.Sensitive.PersonalIdentification.LastName -> Sinks.Database.JPA.Write
+DataFlow -> storages -> Data.Sensitive.PersonalIdentification.LastName -> Sinks.Database.JPA.Write",,
+Base,Latest,% Change,Base,Latest,% Change
+3,2,-33.33333333333333%,7,7,0.0%
+
+"1 : Data.Sensitive.AccountData.AccountName -> Sinks.Database.JPA.Read
+DataFlow -> storages -> Data.Sensitive.AccountData.AccountName -> Sinks.Database.JPA.Read",,,"2 : Data.Sensitive.AccountData.AccountName -> Sinks.Database.JPA.Write
+DataFlow -> storages -> Data.Sensitive.AccountData.AccountName -> Sinks.Database.JPA.Write",,
+Base,Latest,% Change,Base,Latest,% Change
+7,6,-14.285714285714285%,9,9,0.0%
+
+"1 : Data.Sensitive.PersonalIdentification.FirstName -> Leakages.Log.Console
+DataFlow -> leakages -> Data.Sensitive.PersonalIdentification.FirstName -> Leakages.Log.Console",,
+Base,Latest,% Change
+2,2,0.0%
+
+"1 : Data.Sensitive.NationalIdentificationNumbers.Passport -> Leakages.Log.Console
+DataFlow -> leakages -> Data.Sensitive.NationalIdentificationNumbers.Passport -> Leakages.Log.Console",,
+Base,Latest,% Change
+2,2,0.0%
+
+"1 : Data.Sensitive.AccountData.AccountPassword -> Leakages.Log.Console
+DataFlow -> leakages -> Data.Sensitive.AccountData.AccountPassword -> Leakages.Log.Console",,
+Base,Latest,% Change
+2,2,0.0%
+
+"1 : Data.Sensitive.AccountData.AccountID -> Leakages.Log.Console
+DataFlow -> leakages -> Data.Sensitive.AccountData.AccountID -> Leakages.Log.Console",,
+Base,Latest,% Change
+2,2,0.0%
+
+"1 : Data.Sensitive.AccountData.LanguagePreferences -> Leakages.Log.Console
+DataFlow -> leakages -> Data.Sensitive.AccountData.LanguagePreferences -> Leakages.Log.Console",,
+Base,Latest,% Change
+2,2,0.0%
+
+"1 : Data.Sensitive.ContactData.EmailAddress -> Leakages.Log.Console
+DataFlow -> leakages -> Data.Sensitive.ContactData.EmailAddress -> Leakages.Log.Console",,
+Base,Latest,% Change
+2,2,0.0%
+
+"1 : Data.Sensitive.PersonalIdentification.DateofBirth -> Leakages.Log.Console
+DataFlow -> leakages -> Data.Sensitive.PersonalIdentification.DateofBirth -> Leakages.Log.Console",,
+Base,Latest,% Change
+2,2,0.0%
+
+"1 : Data.Sensitive.ContactData.PhoneNumber -> Leakages.Log.Console
+DataFlow -> leakages -> Data.Sensitive.ContactData.PhoneNumber -> Leakages.Log.Console",,
+Base,Latest,% Change
+2,2,0.0%
+
+"1 : Data.Sensitive.PersonalIdentification.Age -> Leakages.Log.Console
+DataFlow -> leakages -> Data.Sensitive.PersonalIdentification.Age -> Leakages.Log.Console",,
+Base,Latest,% Change
+2,2,0.0%
+
+"1 : Data.Sensitive.PersonalIdentification.LastName -> Leakages.Log.Console
+DataFlow -> leakages -> Data.Sensitive.PersonalIdentification.LastName -> Leakages.Log.Console",,
+Base,Latest,% Change
+2,2,0.0%
+
+"1 : Data.Sensitive.AccountData.AccountName -> Leakages.Log.Warn
+DataFlow -> leakages -> Data.Sensitive.AccountData.AccountName -> Leakages.Log.Warn",,,"2 : Data.Sensitive.AccountData.AccountName -> Leakages.Log.Console
+DataFlow -> leakages -> Data.Sensitive.AccountData.AccountName -> Leakages.Log.Console",,
+Base,Latest,% Change,Base,Latest,% Change
+2,2,0.0%,2,2,0.0%
+
+"1 : Data.Sensitive.PersonalIdentification.FirstName -> Sinks.ThirdParties.API
+DataFlow -> third_parties -> Data.Sensitive.PersonalIdentification.FirstName -> Sinks.ThirdParties.API",,
+Base,Latest,% Change
+2,2,0.0%
+
+"1 : Data.Sensitive.NationalIdentificationNumbers.Passport -> Sinks.ThirdParties.API
+DataFlow -> third_parties -> Data.Sensitive.NationalIdentificationNumbers.Passport -> Sinks.ThirdParties.API",,
+Base,Latest,% Change
+2,2,0.0%
+
+"1 : Data.Sensitive.AccountData.AccountPassword -> Sinks.ThirdParties.API
+DataFlow -> third_parties -> Data.Sensitive.AccountData.AccountPassword -> Sinks.ThirdParties.API",,
+Base,Latest,% Change
+2,2,0.0%
+
+"1 : Data.Sensitive.AccountData.AccountID -> Sinks.ThirdParties.API
+DataFlow -> third_parties -> Data.Sensitive.AccountData.AccountID -> Sinks.ThirdParties.API",,
+Base,Latest,% Change
+2,2,0.0%
+
+"1 : Data.Sensitive.AccountData.LanguagePreferences -> Sinks.ThirdParties.API
+DataFlow -> third_parties -> Data.Sensitive.AccountData.LanguagePreferences -> Sinks.ThirdParties.API",,
+Base,Latest,% Change
+2,2,0.0%
+
+"1 : Data.Sensitive.PersonalIdentification.DateofBirth -> Sinks.ThirdParties.API
+DataFlow -> third_parties -> Data.Sensitive.PersonalIdentification.DateofBirth -> Sinks.ThirdParties.API",,
+Base,Latest,% Change
+2,2,0.0%
+
+"1 : Data.Sensitive.ContactData.EmailAddress -> Sinks.ThirdParties.API
+DataFlow -> third_parties -> Data.Sensitive.ContactData.EmailAddress -> Sinks.ThirdParties.API",,
+Base,Latest,% Change
+2,2,0.0%
+
+"1 : Data.Sensitive.ContactData.PhoneNumber -> Sinks.ThirdParties.API
+DataFlow -> third_parties -> Data.Sensitive.ContactData.PhoneNumber -> Sinks.ThirdParties.API",,
+Base,Latest,% Change
+2,2,0.0%
+
+"1 : Data.Sensitive.PersonalIdentification.Age -> Sinks.ThirdParties.API
+DataFlow -> third_parties -> Data.Sensitive.PersonalIdentification.Age -> Sinks.ThirdParties.API",,
+Base,Latest,% Change
+2,2,0.0%
+
+"1 : Data.Sensitive.PersonalIdentification.LastName -> Sinks.ThirdParties.API
+DataFlow -> third_parties -> Data.Sensitive.PersonalIdentification.LastName -> Sinks.ThirdParties.API",,
+Base,Latest,% Change
+2,2,0.0%
+
+"1 : Data.Sensitive.AccountData.AccountName -> Sinks.ThirdParties.API
+DataFlow -> third_parties -> Data.Sensitive.AccountData.AccountName -> Sinks.ThirdParties.API",,
+Base,Latest,% Change
+2,2,0.0%
+
+
+
+
+
+CPU Utilization Report
+""
+RepoName,BankingSystem-Backend
+%Cpu(s),  5.6 us,  1.6 sy,  0.0 ni, 91.1 id,  0.0 wa,  0.0 hi,  1.6 si,"  0.0 st
+"
+MiB Mem ,   7621.3 total,   3041.6 free,   1544.9 used,"   3034.8 buff/cache
+"
+
+%Cpu(s), 15.0 us,  2.8 sy,  0.0 ni, 79.3 id,  0.0 wa,  0.0 hi,  2.8 si,"  0.0 st
+"
+MiB Mem ,   7621.3 total,   2830.9 free,   1752.3 used,"   3038.1 buff/cache
+"
+
+%Cpu(s),  6.1 us,  4.1 sy,  0.0 ni, 89.0 id,  0.0 wa,  0.0 hi,  0.8 si,"  0.0 st
+"
+MiB Mem ,   7621.3 total,   3029.1 free,   1554.0 used,"   3038.2 buff/cache
+"
+
+--,--,--,--,--
+--,--,--,--,--
+Base Version,,,,Latest Version
+privadoCoreVersion,1.1.3,,,privadoCoreVersion,1.1.3-264
+privadoCLIVersion,v2.1.1,,,privadoCLIVersion,v2.1.1
+privadoMainVersion,"1.2.0
+",,,privadoMainVersion,"1.2.0-139
+"
+Scan time analytics
+RepoName,BankingSystem-Backend
+Base version time,,,,Latest version time,,% change wrt base
+0m22.971s,,,,0m28.669s,,25.0%
+
+
+Analysis for sources
+repo_name,Number of Sources ( Base ),Number of Sources ( Latest ),List of Sources ( Base ),List of Sources ( Latest ),% of change w.r.t base,New Sources added in Latest,Existing Sources remvoed from Latest
+BankingSystem-Backend,11,11,"Language Preferences
+Account ID
+First Name
+Account Password
+Date of Birth
+Last Name
+Email Address
+Age
+Passport
+Phone Number
+Account Name","Language Preferences
+Account ID
+First Name
+Account Password
+Date of Birth
+Last Name
+Email Address
+Age
+Passport
+Phone Number
+Account Name",0.0%,--,--
+
+
+Analysis for Storages Sinks
+repo_name,Number of storages sinks (base),Number of storages sinks (latest),List of storages Sinks (base),List of storages Sinks ( Latest ),% of change w.r.t base,New storages Sinks added in Latest,Existing storages Sinks remvoed from Latest
+BankingSystem-Backend,10,10,"JPA Repository(Write)
+JPA Repository(Read)","JPA Repository(Write)
+JPA Repository(Read)",0.0%,--,--
+
+
+Analysis for third_parties Sinks
+repo_name,Number of third_parties sinks (base),Number of third_parties sinks (latest),List of third_parties Sinks (base),List of third_parties Sinks ( Latest ),% of change w.r.t base,New third_parties Sinks added in Latest,Existing third_parties Sinks remvoed from Latest
+BankingSystem-Backend,11,11,Third Party API,Third Party API,0.0%,--,--
+
+
+Analysis for collections
+repo_name,Number of Collections - Spring Web Interface Annotation ( Base ) ,Number of Collections - Spring Web Interface Annotation ( Latest ),List of  sourceId ( Base ),List of  sourceId ( Latest ),% of change w.r.t base,New sourceIds added in Latest,Existing sourceIds removed from Latest
+BankingSystem-Backend,10,10,"Data.Sensitive.AccountData.AccountPassword
+Data.Sensitive.AccountData.AccountName
+Data.Sensitive.PersonalIdentification.FirstName
+Data.Sensitive.PersonalIdentification.Age
+Data.Sensitive.ContactData.EmailAddress
+Data.Sensitive.PersonalIdentification.LastName
+Data.Sensitive.ContactData.PhoneNumber
+Data.Sensitive.PersonalIdentification.DateofBirth
+Data.Sensitive.AccountData.AccountID
+Data.Sensitive.NationalIdentificationNumbers.Passport","Data.Sensitive.AccountData.AccountPassword
+Data.Sensitive.AccountData.AccountName
+Data.Sensitive.PersonalIdentification.FirstName
+Data.Sensitive.PersonalIdentification.Age
+Data.Sensitive.ContactData.EmailAddress
+Data.Sensitive.PersonalIdentification.LastName
+Data.Sensitive.ContactData.PhoneNumber
+Data.Sensitive.PersonalIdentification.DateofBirth
+Data.Sensitive.AccountData.AccountID
+Data.Sensitive.NationalIdentificationNumbers.Passport",0.0%,--,--
+
+
+Analysis for Leakages DataFlows
+repo_name,Number of leakages sinks (base),Number of leakages sinks (latest),List of leakages Sinks (base),List of leakages Sinks ( Latest ),% of change w.r.t base,New leakages Sinks added in Latest,Existing leakages Sinks remvoed from Latest
+BankingSystem-Backend,11,11,"Data.Sensitive.ContactData.EmailAddress
+Data.Sensitive.AccountData.AccountName
+Data.Sensitive.PersonalIdentification.DateofBirth
+Data.Sensitive.AccountData.AccountPassword
+Data.Sensitive.PersonalIdentification.FirstName
+Data.Sensitive.NationalIdentificationNumbers.Passport
+Data.Sensitive.ContactData.PhoneNumber
+Data.Sensitive.PersonalIdentification.Age
+Data.Sensitive.AccountData.LanguagePreferences
+Data.Sensitive.AccountData.AccountID
+Data.Sensitive.PersonalIdentification.LastName","Data.Sensitive.AccountData.AccountPassword
+Data.Sensitive.AccountData.LanguagePreferences
+Data.Sensitive.NationalIdentificationNumbers.Passport
+Data.Sensitive.PersonalIdentification.FirstName
+Data.Sensitive.PersonalIdentification.Age
+Data.Sensitive.ContactData.EmailAddress
+Data.Sensitive.PersonalIdentification.LastName
+Data.Sensitive.PersonalIdentification.DateofBirth
+Data.Sensitive.AccountData.AccountName
+Data.Sensitive.ContactData.PhoneNumber
+Data.Sensitive.AccountData.AccountID",0.0%,--,--
+
+
+NUMBER OF PATHS ANANLYSIS: Analysis for Leakage DataFlows
+RepoName,BankingSystem-Backend
+
+"1 : Data.Sensitive.AccountData.AccountID -> Sinks.Database.JPA.Read
+DataFlow -> storages -> Data.Sensitive.AccountData.AccountID -> Sinks.Database.JPA.Read",,,"2 : Data.Sensitive.AccountData.AccountID -> Sinks.Database.JPA.Write
+DataFlow -> storages -> Data.Sensitive.AccountData.AccountID -> Sinks.Database.JPA.Write",,
+Base,Latest,% Change,Base,Latest,% Change
+10,9,-10.0%,12,12,0.0%
+
+"1 : Data.Sensitive.NationalIdentificationNumbers.Passport -> Sinks.Database.JPA.Read
+DataFlow -> storages -> Data.Sensitive.NationalIdentificationNumbers.Passport -> Sinks.Database.JPA.Read",,,"2 : Data.Sensitive.NationalIdentificationNumbers.Passport -> Sinks.Database.JPA.Write
+DataFlow -> storages -> Data.Sensitive.NationalIdentificationNumbers.Passport -> Sinks.Database.JPA.Write",,
+Base,Latest,% Change,Base,Latest,% Change
+3,2,-33.33333333333333%,6,6,0.0%
+
+"1 : Data.Sensitive.PersonalIdentification.Age -> Sinks.Database.JPA.Read
+DataFlow -> storages -> Data.Sensitive.PersonalIdentification.Age -> Sinks.Database.JPA.Read",,,"2 : Data.Sensitive.PersonalIdentification.Age -> Sinks.Database.JPA.Write
+DataFlow -> storages -> Data.Sensitive.PersonalIdentification.Age -> Sinks.Database.JPA.Write",,
+Base,Latest,% Change,Base,Latest,% Change
+3,2,-33.33333333333333%,6,6,0.0%
+
+"1 : Data.Sensitive.PersonalIdentification.FirstName -> Sinks.Database.JPA.Read
+DataFlow -> storages -> Data.Sensitive.PersonalIdentification.FirstName -> Sinks.Database.JPA.Read",,,"2 : Data.Sensitive.PersonalIdentification.FirstName -> Sinks.Database.JPA.Write
+DataFlow -> storages -> Data.Sensitive.PersonalIdentification.FirstName -> Sinks.Database.JPA.Write",,
+Base,Latest,% Change,Base,Latest,% Change
+3,2,-33.33333333333333%,7,7,0.0%
+
+"1 : Data.Sensitive.AccountData.AccountPassword -> Sinks.Database.JPA.Read
+DataFlow -> storages -> Data.Sensitive.AccountData.AccountPassword -> Sinks.Database.JPA.Read",,,"2 : Data.Sensitive.AccountData.AccountPassword -> Sinks.Database.JPA.Write
+DataFlow -> storages -> Data.Sensitive.AccountData.AccountPassword -> Sinks.Database.JPA.Write",,
+Base,Latest,% Change,Base,Latest,% Change
+3,2,-33.33333333333333%,8,8,0.0%
+
+"1 : Data.Sensitive.ContactData.PhoneNumber -> Sinks.Database.JPA.Read
+DataFlow -> storages -> Data.Sensitive.ContactData.PhoneNumber -> Sinks.Database.JPA.Read",,,"2 : Data.Sensitive.ContactData.PhoneNumber -> Sinks.Database.JPA.Write
+DataFlow -> storages -> Data.Sensitive.ContactData.PhoneNumber -> Sinks.Database.JPA.Write",,
+Base,Latest,% Change,Base,Latest,% Change
+5,4,-20.0%,8,8,0.0%
+
+"1 : Data.Sensitive.ContactData.EmailAddress -> Sinks.Database.JPA.Read
+DataFlow -> storages -> Data.Sensitive.ContactData.EmailAddress -> Sinks.Database.JPA.Read",,,"2 : Data.Sensitive.ContactData.EmailAddress -> Sinks.Database.JPA.Write
+DataFlow -> storages -> Data.Sensitive.ContactData.EmailAddress -> Sinks.Database.JPA.Write",,
+Base,Latest,% Change,Base,Latest,% Change
+3,2,-33.33333333333333%,6,6,0.0%
+
+"1 : Data.Sensitive.PersonalIdentification.DateofBirth -> Sinks.Database.JPA.Read
+DataFlow -> storages -> Data.Sensitive.PersonalIdentification.DateofBirth -> Sinks.Database.JPA.Read",,,"2 : Data.Sensitive.PersonalIdentification.DateofBirth -> Sinks.Database.JPA.Write
+DataFlow -> storages -> Data.Sensitive.PersonalIdentification.DateofBirth -> Sinks.Database.JPA.Write",,
+Base,Latest,% Change,Base,Latest,% Change
+3,2,-33.33333333333333%,6,6,0.0%
+
+"1 : Data.Sensitive.PersonalIdentification.LastName -> Sinks.Database.JPA.Read
+DataFlow -> storages -> Data.Sensitive.PersonalIdentification.LastName -> Sinks.Database.JPA.Read",,,"2 : Data.Sensitive.PersonalIdentification.LastName -> Sinks.Database.JPA.Write
+DataFlow -> storages -> Data.Sensitive.PersonalIdentification.LastName -> Sinks.Database.JPA.Write",,
+Base,Latest,% Change,Base,Latest,% Change
+3,2,-33.33333333333333%,7,7,0.0%
+
+"1 : Data.Sensitive.AccountData.AccountName -> Sinks.Database.JPA.Read
+DataFlow -> storages -> Data.Sensitive.AccountData.AccountName -> Sinks.Database.JPA.Read",,,"2 : Data.Sensitive.AccountData.AccountName -> Sinks.Database.JPA.Write
+DataFlow -> storages -> Data.Sensitive.AccountData.AccountName -> Sinks.Database.JPA.Write",,
+Base,Latest,% Change,Base,Latest,% Change
+7,6,-14.285714285714285%,9,9,0.0%
+
+"1 : Data.Sensitive.AccountData.AccountID -> Leakages.Log.Console
+DataFlow -> leakages -> Data.Sensitive.AccountData.AccountID -> Leakages.Log.Console",,
+Base,Latest,% Change
+2,2,0.0%
+
+"1 : Data.Sensitive.NationalIdentificationNumbers.Passport -> Leakages.Log.Console
+DataFlow -> leakages -> Data.Sensitive.NationalIdentificationNumbers.Passport -> Leakages.Log.Console",,
+Base,Latest,% Change
+2,2,0.0%
+
+"1 : Data.Sensitive.PersonalIdentification.Age -> Leakages.Log.Console
+DataFlow -> leakages -> Data.Sensitive.PersonalIdentification.Age -> Leakages.Log.Console",,
+Base,Latest,% Change
+2,2,0.0%
+
+"1 : Data.Sensitive.PersonalIdentification.FirstName -> Leakages.Log.Console
+DataFlow -> leakages -> Data.Sensitive.PersonalIdentification.FirstName -> Leakages.Log.Console",,
+Base,Latest,% Change
+2,2,0.0%
+
+"1 : Data.Sensitive.AccountData.AccountPassword -> Leakages.Log.Console
+DataFlow -> leakages -> Data.Sensitive.AccountData.AccountPassword -> Leakages.Log.Console",,
+Base,Latest,% Change
+2,2,0.0%
+
+"1 : Data.Sensitive.ContactData.PhoneNumber -> Leakages.Log.Console
+DataFlow -> leakages -> Data.Sensitive.ContactData.PhoneNumber -> Leakages.Log.Console",,
+Base,Latest,% Change
+2,2,0.0%
+
+"1 : Data.Sensitive.AccountData.LanguagePreferences -> Leakages.Log.Console
+DataFlow -> leakages -> Data.Sensitive.AccountData.LanguagePreferences -> Leakages.Log.Console",,
+Base,Latest,% Change
+2,2,0.0%
+
+"1 : Data.Sensitive.ContactData.EmailAddress -> Leakages.Log.Console
+DataFlow -> leakages -> Data.Sensitive.ContactData.EmailAddress -> Leakages.Log.Console",,
+Base,Latest,% Change
+2,2,0.0%
+
+"1 : Data.Sensitive.PersonalIdentification.DateofBirth -> Leakages.Log.Console
+DataFlow -> leakages -> Data.Sensitive.PersonalIdentification.DateofBirth -> Leakages.Log.Console",,
+Base,Latest,% Change
+2,2,0.0%
+
+"1 : Data.Sensitive.PersonalIdentification.LastName -> Leakages.Log.Console
+DataFlow -> leakages -> Data.Sensitive.PersonalIdentification.LastName -> Leakages.Log.Console",,
+Base,Latest,% Change
+2,2,0.0%
+
+"1 : Data.Sensitive.AccountData.AccountName -> Leakages.Log.Warn
+DataFlow -> leakages -> Data.Sensitive.AccountData.AccountName -> Leakages.Log.Warn",,,"2 : Data.Sensitive.AccountData.AccountName -> Leakages.Log.Console
+DataFlow -> leakages -> Data.Sensitive.AccountData.AccountName -> Leakages.Log.Console",,
+Base,Latest,% Change,Base,Latest,% Change
+2,2,0.0%,2,2,0.0%
+
+"1 : Data.Sensitive.AccountData.AccountID -> Sinks.ThirdParties.API
+DataFlow -> third_parties -> Data.Sensitive.AccountData.AccountID -> Sinks.ThirdParties.API",,
+Base,Latest,% Change
+2,2,0.0%
+
+"1 : Data.Sensitive.NationalIdentificationNumbers.Passport -> Sinks.ThirdParties.API
+DataFlow -> third_parties -> Data.Sensitive.NationalIdentificationNumbers.Passport -> Sinks.ThirdParties.API",,
+Base,Latest,% Change
+2,2,0.0%
+
+"1 : Data.Sensitive.PersonalIdentification.Age -> Sinks.ThirdParties.API
+DataFlow -> third_parties -> Data.Sensitive.PersonalIdentification.Age -> Sinks.ThirdParties.API",,
+Base,Latest,% Change
+2,2,0.0%
+
+"1 : Data.Sensitive.PersonalIdentification.FirstName -> Sinks.ThirdParties.API
+DataFlow -> third_parties -> Data.Sensitive.PersonalIdentification.FirstName -> Sinks.ThirdParties.API",,
+Base,Latest,% Change
+2,2,0.0%
+
+"1 : Data.Sensitive.AccountData.AccountPassword -> Sinks.ThirdParties.API
+DataFlow -> third_parties -> Data.Sensitive.AccountData.AccountPassword -> Sinks.ThirdParties.API",,
+Base,Latest,% Change
+2,2,0.0%
+
+"1 : Data.Sensitive.ContactData.PhoneNumber -> Sinks.ThirdParties.API
+DataFlow -> third_parties -> Data.Sensitive.ContactData.PhoneNumber -> Sinks.ThirdParties.API",,
+Base,Latest,% Change
+2,2,0.0%
+
+"1 : Data.Sensitive.AccountData.LanguagePreferences -> Sinks.ThirdParties.API
+DataFlow -> third_parties -> Data.Sensitive.AccountData.LanguagePreferences -> Sinks.ThirdParties.API",,
+Base,Latest,% Change
+2,2,0.0%
+
+"1 : Data.Sensitive.ContactData.EmailAddress -> Sinks.ThirdParties.API
+DataFlow -> third_parties -> Data.Sensitive.ContactData.EmailAddress -> Sinks.ThirdParties.API",,
+Base,Latest,% Change
+2,2,0.0%
+
+"1 : Data.Sensitive.PersonalIdentification.DateofBirth -> Sinks.ThirdParties.API
+DataFlow -> third_parties -> Data.Sensitive.PersonalIdentification.DateofBirth -> Sinks.ThirdParties.API",,
+Base,Latest,% Change
+2,2,0.0%
+
+"1 : Data.Sensitive.PersonalIdentification.LastName -> Sinks.ThirdParties.API
+DataFlow -> third_parties -> Data.Sensitive.PersonalIdentification.LastName -> Sinks.ThirdParties.API",,
+Base,Latest,% Change
+2,2,0.0%
+
+"1 : Data.Sensitive.AccountData.AccountName -> Sinks.ThirdParties.API
+DataFlow -> third_parties -> Data.Sensitive.AccountData.AccountName -> Sinks.ThirdParties.API",,
+Base,Latest,% Change
+2,2,0.0%
+
+
+
+
+
+CPU Utilization Report
+""
+RepoName,BankingSystem-Backend
+%Cpu(s),  0.8 us,  0.4 sy,  0.0 ni, 98.8 id,  0.0 wa,  0.0 hi,  0.0 si,"  0.0 st
+"
+MiB Mem ,   7621.3 total,   2968.7 free,   1612.3 used,"   3040.3 buff/cache
+"
+
+%Cpu(s), 41.4 us,  2.8 sy,  0.0 ni, 54.6 id,  0.0 wa,  0.0 hi,  1.2 si,"  0.0 st
+"
+MiB Mem ,   7621.3 total,   2757.5 free,   1822.7 used,"   3041.1 buff/cache
+"
+
+--,--,--,--,--
+--,--,--,--,--
+Base Version,,,,Latest Version
+privadoCoreVersion,1.1.3,,,privadoCoreVersion,1.1.3-264
+privadoCLIVersion,v2.1.1,,,privadoCLIVersion,v2.1.1
+privadoMainVersion,"1.2.0
+",,,privadoMainVersion,"1.2.0-139
+"
+Scan time analytics
+RepoName,BankingSystem-Backend
+Base version time,,,,Latest version time,,% change wrt base
+0m22.290s,,,,0m28.176s,,26.0%
+
+
+Analysis for sources
+repo_name,Number of Sources ( Base ),Number of Sources ( Latest ),List of Sources ( Base ),List of Sources ( Latest ),% of change w.r.t base,New Sources added in Latest,Existing Sources remvoed from Latest
+BankingSystem-Backend,11,11,"Language Preferences
+Account ID
+First Name
+Account Password
+Date of Birth
+Last Name
+Email Address
+Age
+Passport
+Phone Number
+Account Name","Language Preferences
+Account ID
+First Name
+Account Password
+Date of Birth
+Last Name
+Email Address
+Age
+Passport
+Phone Number
+Account Name",0.0%,--,--
+
+
+Analysis for Storages Sinks
+repo_name,Number of storages sinks (base),Number of storages sinks (latest),List of storages Sinks (base),List of storages Sinks ( Latest ),% of change w.r.t base,New storages Sinks added in Latest,Existing storages Sinks remvoed from Latest
+BankingSystem-Backend,10,10,"JPA Repository(Read)
+JPA Repository(Write)","JPA Repository(Read)
+JPA Repository(Write)",0.0%,--,--
+
+
+Analysis for third_parties Sinks
+repo_name,Number of third_parties sinks (base),Number of third_parties sinks (latest),List of third_parties Sinks (base),List of third_parties Sinks ( Latest ),% of change w.r.t base,New third_parties Sinks added in Latest,Existing third_parties Sinks remvoed from Latest
+BankingSystem-Backend,11,11,Third Party API,Third Party API,0.0%,--,--
+
+
+Analysis for collections
+repo_name,Number of Collections - Spring Web Interface Annotation ( Base ) ,Number of Collections - Spring Web Interface Annotation ( Latest ),List of  sourceId ( Base ),List of  sourceId ( Latest ),% of change w.r.t base,New sourceIds added in Latest,Existing sourceIds removed from Latest
+BankingSystem-Backend,10,10,"Data.Sensitive.AccountData.AccountPassword
+Data.Sensitive.AccountData.AccountName
+Data.Sensitive.PersonalIdentification.FirstName
+Data.Sensitive.PersonalIdentification.Age
+Data.Sensitive.ContactData.EmailAddress
+Data.Sensitive.PersonalIdentification.LastName
+Data.Sensitive.ContactData.PhoneNumber
+Data.Sensitive.PersonalIdentification.DateofBirth
+Data.Sensitive.AccountData.AccountID
+Data.Sensitive.NationalIdentificationNumbers.Passport","Data.Sensitive.AccountData.AccountPassword
+Data.Sensitive.AccountData.AccountName
+Data.Sensitive.PersonalIdentification.FirstName
+Data.Sensitive.PersonalIdentification.Age
+Data.Sensitive.ContactData.EmailAddress
+Data.Sensitive.PersonalIdentification.LastName
+Data.Sensitive.ContactData.PhoneNumber
+Data.Sensitive.PersonalIdentification.DateofBirth
+Data.Sensitive.AccountData.AccountID
+Data.Sensitive.NationalIdentificationNumbers.Passport",0.0%,--,--
+
+
+Analysis for Leakages DataFlows
+repo_name,Number of leakages sinks (base),Number of leakages sinks (latest),List of leakages Sinks (base),List of leakages Sinks ( Latest ),% of change w.r.t base,New leakages Sinks added in Latest,Existing leakages Sinks remvoed from Latest
+BankingSystem-Backend,11,11,"Data.Sensitive.ContactData.EmailAddress
+Data.Sensitive.AccountData.AccountName
+Data.Sensitive.PersonalIdentification.DateofBirth
+Data.Sensitive.AccountData.AccountPassword
+Data.Sensitive.PersonalIdentification.FirstName
+Data.Sensitive.NationalIdentificationNumbers.Passport
+Data.Sensitive.ContactData.PhoneNumber
+Data.Sensitive.PersonalIdentification.Age
+Data.Sensitive.AccountData.LanguagePreferences
+Data.Sensitive.AccountData.AccountID
+Data.Sensitive.PersonalIdentification.LastName","Data.Sensitive.AccountData.AccountPassword
+Data.Sensitive.AccountData.LanguagePreferences
+Data.Sensitive.NationalIdentificationNumbers.Passport
+Data.Sensitive.PersonalIdentification.FirstName
+Data.Sensitive.PersonalIdentification.Age
+Data.Sensitive.ContactData.EmailAddress
+Data.Sensitive.PersonalIdentification.LastName
+Data.Sensitive.PersonalIdentification.DateofBirth
+Data.Sensitive.AccountData.AccountName
+Data.Sensitive.ContactData.PhoneNumber
+Data.Sensitive.AccountData.AccountID",0.0%,--,--
+
+
+NUMBER OF PATHS ANANLYSIS: Analysis for Leakage DataFlows
+RepoName,BankingSystem-Backend
+
+"1 : Data.Sensitive.PersonalIdentification.FirstName -> Sinks.Database.JPA.Read
+DataFlow -> storages -> Data.Sensitive.PersonalIdentification.FirstName -> Sinks.Database.JPA.Read",,,"2 : Data.Sensitive.PersonalIdentification.FirstName -> Sinks.Database.JPA.Write
+DataFlow -> storages -> Data.Sensitive.PersonalIdentification.FirstName -> Sinks.Database.JPA.Write",,
+Base,Latest,% Change,Base,Latest,% Change
+3,2,-33.33333333333333%,7,7,0.0%
+
+"1 : Data.Sensitive.PersonalIdentification.LastName -> Sinks.Database.JPA.Read
+DataFlow -> storages -> Data.Sensitive.PersonalIdentification.LastName -> Sinks.Database.JPA.Read",,,"2 : Data.Sensitive.PersonalIdentification.LastName -> Sinks.Database.JPA.Write
+DataFlow -> storages -> Data.Sensitive.PersonalIdentification.LastName -> Sinks.Database.JPA.Write",,
+Base,Latest,% Change,Base,Latest,% Change
+3,2,-33.33333333333333%,7,7,0.0%
+
+"1 : Data.Sensitive.ContactData.PhoneNumber -> Sinks.Database.JPA.Read
+DataFlow -> storages -> Data.Sensitive.ContactData.PhoneNumber -> Sinks.Database.JPA.Read",,,"2 : Data.Sensitive.ContactData.PhoneNumber -> Sinks.Database.JPA.Write
+DataFlow -> storages -> Data.Sensitive.ContactData.PhoneNumber -> Sinks.Database.JPA.Write",,
+Base,Latest,% Change,Base,Latest,% Change
+5,4,-20.0%,8,8,0.0%
+
+"1 : Data.Sensitive.ContactData.EmailAddress -> Sinks.Database.JPA.Read
+DataFlow -> storages -> Data.Sensitive.ContactData.EmailAddress -> Sinks.Database.JPA.Read",,,"2 : Data.Sensitive.ContactData.EmailAddress -> Sinks.Database.JPA.Write
+DataFlow -> storages -> Data.Sensitive.ContactData.EmailAddress -> Sinks.Database.JPA.Write",,
+Base,Latest,% Change,Base,Latest,% Change
+3,2,-33.33333333333333%,6,6,0.0%
+
+"1 : Data.Sensitive.NationalIdentificationNumbers.Passport -> Sinks.Database.JPA.Read
+DataFlow -> storages -> Data.Sensitive.NationalIdentificationNumbers.Passport -> Sinks.Database.JPA.Read",,,"2 : Data.Sensitive.NationalIdentificationNumbers.Passport -> Sinks.Database.JPA.Write
+DataFlow -> storages -> Data.Sensitive.NationalIdentificationNumbers.Passport -> Sinks.Database.JPA.Write",,
+Base,Latest,% Change,Base,Latest,% Change
+3,2,-33.33333333333333%,6,6,0.0%
+
+"1 : Data.Sensitive.AccountData.AccountID -> Sinks.Database.JPA.Read
+DataFlow -> storages -> Data.Sensitive.AccountData.AccountID -> Sinks.Database.JPA.Read",,,"2 : Data.Sensitive.AccountData.AccountID -> Sinks.Database.JPA.Write
+DataFlow -> storages -> Data.Sensitive.AccountData.AccountID -> Sinks.Database.JPA.Write",,
+Base,Latest,% Change,Base,Latest,% Change
+10,9,-10.0%,12,12,0.0%
+
+"1 : Data.Sensitive.PersonalIdentification.Age -> Sinks.Database.JPA.Read
+DataFlow -> storages -> Data.Sensitive.PersonalIdentification.Age -> Sinks.Database.JPA.Read",,,"2 : Data.Sensitive.PersonalIdentification.Age -> Sinks.Database.JPA.Write
+DataFlow -> storages -> Data.Sensitive.PersonalIdentification.Age -> Sinks.Database.JPA.Write",,
+Base,Latest,% Change,Base,Latest,% Change
+3,2,-33.33333333333333%,6,6,0.0%
+
+"1 : Data.Sensitive.AccountData.AccountPassword -> Sinks.Database.JPA.Read
+DataFlow -> storages -> Data.Sensitive.AccountData.AccountPassword -> Sinks.Database.JPA.Read",,,"2 : Data.Sensitive.AccountData.AccountPassword -> Sinks.Database.JPA.Write
+DataFlow -> storages -> Data.Sensitive.AccountData.AccountPassword -> Sinks.Database.JPA.Write",,
+Base,Latest,% Change,Base,Latest,% Change
+3,2,-33.33333333333333%,8,8,0.0%
+
+"1 : Data.Sensitive.PersonalIdentification.DateofBirth -> Sinks.Database.JPA.Read
+DataFlow -> storages -> Data.Sensitive.PersonalIdentification.DateofBirth -> Sinks.Database.JPA.Read",,,"2 : Data.Sensitive.PersonalIdentification.DateofBirth -> Sinks.Database.JPA.Write
+DataFlow -> storages -> Data.Sensitive.PersonalIdentification.DateofBirth -> Sinks.Database.JPA.Write",,
+Base,Latest,% Change,Base,Latest,% Change
+3,2,-33.33333333333333%,6,6,0.0%
+
+"1 : Data.Sensitive.AccountData.AccountName -> Sinks.Database.JPA.Read
+DataFlow -> storages -> Data.Sensitive.AccountData.AccountName -> Sinks.Database.JPA.Read",,,"2 : Data.Sensitive.AccountData.AccountName -> Sinks.Database.JPA.Write
+DataFlow -> storages -> Data.Sensitive.AccountData.AccountName -> Sinks.Database.JPA.Write",,
+Base,Latest,% Change,Base,Latest,% Change
+7,6,-14.285714285714285%,9,9,0.0%
+
+"1 : Data.Sensitive.PersonalIdentification.FirstName -> Leakages.Log.Console
+DataFlow -> leakages -> Data.Sensitive.PersonalIdentification.FirstName -> Leakages.Log.Console",,
+Base,Latest,% Change
+2,2,0.0%
+
+"1 : Data.Sensitive.PersonalIdentification.LastName -> Leakages.Log.Console
+DataFlow -> leakages -> Data.Sensitive.PersonalIdentification.LastName -> Leakages.Log.Console",,
+Base,Latest,% Change
+2,2,0.0%
+
+"1 : Data.Sensitive.ContactData.PhoneNumber -> Leakages.Log.Console
+DataFlow -> leakages -> Data.Sensitive.ContactData.PhoneNumber -> Leakages.Log.Console",,
+Base,Latest,% Change
+2,2,0.0%
+
+"1 : Data.Sensitive.ContactData.EmailAddress -> Leakages.Log.Console
+DataFlow -> leakages -> Data.Sensitive.ContactData.EmailAddress -> Leakages.Log.Console",,
+Base,Latest,% Change
+2,2,0.0%
+
+"1 : Data.Sensitive.AccountData.LanguagePreferences -> Leakages.Log.Console
+DataFlow -> leakages -> Data.Sensitive.AccountData.LanguagePreferences -> Leakages.Log.Console",,
+Base,Latest,% Change
+2,2,0.0%
+
+"1 : Data.Sensitive.NationalIdentificationNumbers.Passport -> Leakages.Log.Console
+DataFlow -> leakages -> Data.Sensitive.NationalIdentificationNumbers.Passport -> Leakages.Log.Console",,
+Base,Latest,% Change
+2,2,0.0%
+
+"1 : Data.Sensitive.AccountData.AccountID -> Leakages.Log.Console
+DataFlow -> leakages -> Data.Sensitive.AccountData.AccountID -> Leakages.Log.Console",,
+Base,Latest,% Change
+2,2,0.0%
+
+"1 : Data.Sensitive.PersonalIdentification.Age -> Leakages.Log.Console
+DataFlow -> leakages -> Data.Sensitive.PersonalIdentification.Age -> Leakages.Log.Console",,
+Base,Latest,% Change
+2,2,0.0%
+
+"1 : Data.Sensitive.AccountData.AccountPassword -> Leakages.Log.Console
+DataFlow -> leakages -> Data.Sensitive.AccountData.AccountPassword -> Leakages.Log.Console",,
+Base,Latest,% Change
+2,2,0.0%
+
+"1 : Data.Sensitive.PersonalIdentification.DateofBirth -> Leakages.Log.Console
+DataFlow -> leakages -> Data.Sensitive.PersonalIdentification.DateofBirth -> Leakages.Log.Console",,
+Base,Latest,% Change
+2,2,0.0%
+
+"1 : Data.Sensitive.AccountData.AccountName -> Leakages.Log.Warn
+DataFlow -> leakages -> Data.Sensitive.AccountData.AccountName -> Leakages.Log.Warn",,,"2 : Data.Sensitive.AccountData.AccountName -> Leakages.Log.Console
+DataFlow -> leakages -> Data.Sensitive.AccountData.AccountName -> Leakages.Log.Console",,
+Base,Latest,% Change,Base,Latest,% Change
+2,2,0.0%,2,2,0.0%
+
+"1 : Data.Sensitive.PersonalIdentification.FirstName -> Sinks.ThirdParties.API
+DataFlow -> third_parties -> Data.Sensitive.PersonalIdentification.FirstName -> Sinks.ThirdParties.API",,
+Base,Latest,% Change
+2,2,0.0%
+
+"1 : Data.Sensitive.PersonalIdentification.LastName -> Sinks.ThirdParties.API
+DataFlow -> third_parties -> Data.Sensitive.PersonalIdentification.LastName -> Sinks.ThirdParties.API",,
+Base,Latest,% Change
+2,2,0.0%
+
+"1 : Data.Sensitive.ContactData.PhoneNumber -> Sinks.ThirdParties.API
+DataFlow -> third_parties -> Data.Sensitive.ContactData.PhoneNumber -> Sinks.ThirdParties.API",,
+Base,Latest,% Change
+2,2,0.0%
+
+"1 : Data.Sensitive.ContactData.EmailAddress -> Sinks.ThirdParties.API
+DataFlow -> third_parties -> Data.Sensitive.ContactData.EmailAddress -> Sinks.ThirdParties.API",,
+Base,Latest,% Change
+2,2,0.0%
+
+"1 : Data.Sensitive.AccountData.LanguagePreferences -> Sinks.ThirdParties.API
+DataFlow -> third_parties -> Data.Sensitive.AccountData.LanguagePreferences -> Sinks.ThirdParties.API",,
+Base,Latest,% Change
+2,2,0.0%
+
+"1 : Data.Sensitive.NationalIdentificationNumbers.Passport -> Sinks.ThirdParties.API
+DataFlow -> third_parties -> Data.Sensitive.NationalIdentificationNumbers.Passport -> Sinks.ThirdParties.API",,
+Base,Latest,% Change
+2,2,0.0%
+
+"1 : Data.Sensitive.AccountData.AccountID -> Sinks.ThirdParties.API
+DataFlow -> third_parties -> Data.Sensitive.AccountData.AccountID -> Sinks.ThirdParties.API",,
+Base,Latest,% Change
+2,2,0.0%
+
+"1 : Data.Sensitive.PersonalIdentification.Age -> Sinks.ThirdParties.API
+DataFlow -> third_parties -> Data.Sensitive.PersonalIdentification.Age -> Sinks.ThirdParties.API",,
+Base,Latest,% Change
+2,2,0.0%
+
+"1 : Data.Sensitive.AccountData.AccountPassword -> Sinks.ThirdParties.API
+DataFlow -> third_parties -> Data.Sensitive.AccountData.AccountPassword -> Sinks.ThirdParties.API",,
+Base,Latest,% Change
+2,2,0.0%
+
+"1 : Data.Sensitive.PersonalIdentification.DateofBirth -> Sinks.ThirdParties.API
+DataFlow -> third_parties -> Data.Sensitive.PersonalIdentification.DateofBirth -> Sinks.ThirdParties.API",,
+Base,Latest,% Change
+2,2,0.0%
+
+"1 : Data.Sensitive.AccountData.AccountName -> Sinks.ThirdParties.API
+DataFlow -> third_parties -> Data.Sensitive.AccountData.AccountName -> Sinks.ThirdParties.API",,
+Base,Latest,% Change
+2,2,0.0%
+
+
+
+
+
+CPU Utilization Report
+""
+RepoName,BankingSystem-Backend
+%Cpu(s),  0.8 us,  1.6 sy,  0.0 ni, 97.2 id,  0.0 wa,  0.0 hi,  0.4 si,"  0.0 st
+"
+MiB Mem ,   7621.3 total,   2933.7 free,   1643.8 used,"   3043.9 buff/cache
+"
+
+%Cpu(s), 15.3 us,  1.6 sy,  0.0 ni, 83.1 id,  0.0 wa,  0.0 hi,  0.0 si,"  0.0 st
+"
+MiB Mem ,   7621.3 total,   2621.0 free,   1948.5 used,"   3051.7 buff/cache
+"
+
+%Cpu(s), 14.5 us,  2.1 sy,  0.0 ni, 83.4 id,  0.0 wa,  0.0 hi,  0.0 si,"  0.0 st
+"
+MiB Mem ,   7621.3 total,   2573.5 free,   1995.9 used,"   3051.8 buff/cache
+"
+
+--,--,--,--,--
+--,--,--,--,--
+Base Version,,,,Latest Version
+privadoCoreVersion,1.1.3,,,privadoCoreVersion,1.1.3-264
+privadoCLIVersion,v2.1.1,,,privadoCLIVersion,v2.1.1
+privadoMainVersion,"1.2.0
+",,,privadoMainVersion,"1.2.0-139
+"
+Scan time analytics
+RepoName,BankingSystem-Backend
+Base version time,,,,Latest version time,,% change wrt base
+0m22.453s,,,,0m27.654s,,23.0%
+
+
+Analysis for sources
+repo_name,Number of Sources ( Base ),Number of Sources ( Latest ),List of Sources ( Base ),List of Sources ( Latest ),% of change w.r.t base,New Sources added in Latest,Existing Sources remvoed from Latest
+BankingSystem-Backend,11,11,"Language Preferences
+Account ID
+First Name
+Account Password
+Date of Birth
+Last Name
+Email Address
+Age
+Passport
+Phone Number
+Account Name","Language Preferences
+Account ID
+First Name
+Account Password
+Date of Birth
+Last Name
+Email Address
+Age
+Passport
+Phone Number
+Account Name",0.0%,--,--
+
+
+Analysis for Storages Sinks
+repo_name,Number of storages sinks (base),Number of storages sinks (latest),List of storages Sinks (base),List of storages Sinks ( Latest ),% of change w.r.t base,New storages Sinks added in Latest,Existing storages Sinks remvoed from Latest
+BankingSystem-Backend,10,10,"JPA Repository(Write)
+JPA Repository(Read)","JPA Repository(Write)
+JPA Repository(Read)",0.0%,--,--
+
+
+Analysis for third_parties Sinks
+repo_name,Number of third_parties sinks (base),Number of third_parties sinks (latest),List of third_parties Sinks (base),List of third_parties Sinks ( Latest ),% of change w.r.t base,New third_parties Sinks added in Latest,Existing third_parties Sinks remvoed from Latest
+BankingSystem-Backend,11,11,Third Party API,Third Party API,0.0%,--,--
+
+
+Analysis for collections
+repo_name,Number of Collections - Spring Web Interface Annotation ( Base ) ,Number of Collections - Spring Web Interface Annotation ( Latest ),List of  sourceId ( Base ),List of  sourceId ( Latest ),% of change w.r.t base,New sourceIds added in Latest,Existing sourceIds removed from Latest
+BankingSystem-Backend,10,10,"Data.Sensitive.AccountData.AccountPassword
+Data.Sensitive.AccountData.AccountName
+Data.Sensitive.PersonalIdentification.FirstName
+Data.Sensitive.PersonalIdentification.Age
+Data.Sensitive.ContactData.EmailAddress
+Data.Sensitive.PersonalIdentification.LastName
+Data.Sensitive.ContactData.PhoneNumber
+Data.Sensitive.PersonalIdentification.DateofBirth
+Data.Sensitive.AccountData.AccountID
+Data.Sensitive.NationalIdentificationNumbers.Passport","Data.Sensitive.AccountData.AccountPassword
+Data.Sensitive.AccountData.AccountName
+Data.Sensitive.PersonalIdentification.FirstName
+Data.Sensitive.PersonalIdentification.Age
+Data.Sensitive.ContactData.EmailAddress
+Data.Sensitive.PersonalIdentification.LastName
+Data.Sensitive.ContactData.PhoneNumber
+Data.Sensitive.PersonalIdentification.DateofBirth
+Data.Sensitive.AccountData.AccountID
+Data.Sensitive.NationalIdentificationNumbers.Passport",0.0%,--,--
+
+
+Analysis for Leakages DataFlows
+repo_name,Number of leakages sinks (base),Number of leakages sinks (latest),List of leakages Sinks (base),List of leakages Sinks ( Latest ),% of change w.r.t base,New leakages Sinks added in Latest,Existing leakages Sinks remvoed from Latest
+BankingSystem-Backend,11,11,"Data.Sensitive.ContactData.EmailAddress
+Data.Sensitive.AccountData.AccountName
+Data.Sensitive.PersonalIdentification.DateofBirth
+Data.Sensitive.AccountData.AccountPassword
+Data.Sensitive.PersonalIdentification.FirstName
+Data.Sensitive.NationalIdentificationNumbers.Passport
+Data.Sensitive.ContactData.PhoneNumber
+Data.Sensitive.PersonalIdentification.Age
+Data.Sensitive.AccountData.LanguagePreferences
+Data.Sensitive.AccountData.AccountID
+Data.Sensitive.PersonalIdentification.LastName","Data.Sensitive.AccountData.AccountPassword
+Data.Sensitive.AccountData.LanguagePreferences
+Data.Sensitive.NationalIdentificationNumbers.Passport
+Data.Sensitive.PersonalIdentification.FirstName
+Data.Sensitive.PersonalIdentification.Age
+Data.Sensitive.ContactData.EmailAddress
+Data.Sensitive.PersonalIdentification.LastName
+Data.Sensitive.PersonalIdentification.DateofBirth
+Data.Sensitive.AccountData.AccountName
+Data.Sensitive.ContactData.PhoneNumber
+Data.Sensitive.AccountData.AccountID",0.0%,--,--
+
+
+NUMBER OF PATHS ANANLYSIS: Analysis for Leakage DataFlows
+RepoName,BankingSystem-Backend
+
+"1 : Data.Sensitive.AccountData.AccountID -> Sinks.Database.JPA.Write
+DataFlow -> storages -> Data.Sensitive.AccountData.AccountID -> Sinks.Database.JPA.Write",,,"2 : Data.Sensitive.AccountData.AccountID -> Sinks.Database.JPA.Read
+DataFlow -> storages -> Data.Sensitive.AccountData.AccountID -> Sinks.Database.JPA.Read",,
+Base,Latest,% Change,Base,Latest,% Change
+12,12,0.0%,10,9,-10.0%
+
+"1 : Data.Sensitive.PersonalIdentification.LastName -> Sinks.Database.JPA.Write
+DataFlow -> storages -> Data.Sensitive.PersonalIdentification.LastName -> Sinks.Database.JPA.Write",,,"2 : Data.Sensitive.PersonalIdentification.LastName -> Sinks.Database.JPA.Read
+DataFlow -> storages -> Data.Sensitive.PersonalIdentification.LastName -> Sinks.Database.JPA.Read",,
+Base,Latest,% Change,Base,Latest,% Change
+7,7,0.0%,3,2,-33.33333333333333%
+
+"1 : Data.Sensitive.PersonalIdentification.FirstName -> Sinks.Database.JPA.Write
+DataFlow -> storages -> Data.Sensitive.PersonalIdentification.FirstName -> Sinks.Database.JPA.Write",,,"2 : Data.Sensitive.PersonalIdentification.FirstName -> Sinks.Database.JPA.Read
+DataFlow -> storages -> Data.Sensitive.PersonalIdentification.FirstName -> Sinks.Database.JPA.Read",,
+Base,Latest,% Change,Base,Latest,% Change
+7,7,0.0%,3,2,-33.33333333333333%
+
+"1 : Data.Sensitive.PersonalIdentification.Age -> Sinks.Database.JPA.Write
+DataFlow -> storages -> Data.Sensitive.PersonalIdentification.Age -> Sinks.Database.JPA.Write",,,"2 : Data.Sensitive.PersonalIdentification.Age -> Sinks.Database.JPA.Read
+DataFlow -> storages -> Data.Sensitive.PersonalIdentification.Age -> Sinks.Database.JPA.Read",,
+Base,Latest,% Change,Base,Latest,% Change
+6,6,0.0%,3,2,-33.33333333333333%
+
+"1 : Data.Sensitive.PersonalIdentification.DateofBirth -> Sinks.Database.JPA.Write
+DataFlow -> storages -> Data.Sensitive.PersonalIdentification.DateofBirth -> Sinks.Database.JPA.Write",,,"2 : Data.Sensitive.PersonalIdentification.DateofBirth -> Sinks.Database.JPA.Read
+DataFlow -> storages -> Data.Sensitive.PersonalIdentification.DateofBirth -> Sinks.Database.JPA.Read",,
+Base,Latest,% Change,Base,Latest,% Change
+6,6,0.0%,3,2,-33.33333333333333%
+
+"1 : Data.Sensitive.ContactData.EmailAddress -> Sinks.Database.JPA.Write
+DataFlow -> storages -> Data.Sensitive.ContactData.EmailAddress -> Sinks.Database.JPA.Write",,,"2 : Data.Sensitive.ContactData.EmailAddress -> Sinks.Database.JPA.Read
+DataFlow -> storages -> Data.Sensitive.ContactData.EmailAddress -> Sinks.Database.JPA.Read",,
+Base,Latest,% Change,Base,Latest,% Change
+6,6,0.0%,3,2,-33.33333333333333%
+
+"1 : Data.Sensitive.AccountData.AccountPassword -> Sinks.Database.JPA.Write
+DataFlow -> storages -> Data.Sensitive.AccountData.AccountPassword -> Sinks.Database.JPA.Write",,,"2 : Data.Sensitive.AccountData.AccountPassword -> Sinks.Database.JPA.Read
+DataFlow -> storages -> Data.Sensitive.AccountData.AccountPassword -> Sinks.Database.JPA.Read",,
+Base,Latest,% Change,Base,Latest,% Change
+8,8,0.0%,3,2,-33.33333333333333%
+
+"1 : Data.Sensitive.ContactData.PhoneNumber -> Sinks.Database.JPA.Write
+DataFlow -> storages -> Data.Sensitive.ContactData.PhoneNumber -> Sinks.Database.JPA.Write",,,"2 : Data.Sensitive.ContactData.PhoneNumber -> Sinks.Database.JPA.Read
+DataFlow -> storages -> Data.Sensitive.ContactData.PhoneNumber -> Sinks.Database.JPA.Read",,
+Base,Latest,% Change,Base,Latest,% Change
+8,8,0.0%,5,4,-20.0%
+
+"1 : Data.Sensitive.AccountData.AccountName -> Sinks.Database.JPA.Write
+DataFlow -> storages -> Data.Sensitive.AccountData.AccountName -> Sinks.Database.JPA.Write",,,"2 : Data.Sensitive.AccountData.AccountName -> Sinks.Database.JPA.Read
+DataFlow -> storages -> Data.Sensitive.AccountData.AccountName -> Sinks.Database.JPA.Read",,
+Base,Latest,% Change,Base,Latest,% Change
+9,9,0.0%,7,6,-14.285714285714285%
+
+"1 : Data.Sensitive.NationalIdentificationNumbers.Passport -> Sinks.Database.JPA.Write
+DataFlow -> storages -> Data.Sensitive.NationalIdentificationNumbers.Passport -> Sinks.Database.JPA.Write",,,"2 : Data.Sensitive.NationalIdentificationNumbers.Passport -> Sinks.Database.JPA.Read
+DataFlow -> storages -> Data.Sensitive.NationalIdentificationNumbers.Passport -> Sinks.Database.JPA.Read",,
+Base,Latest,% Change,Base,Latest,% Change
+6,6,0.0%,3,2,-33.33333333333333%
+
+"1 : Data.Sensitive.AccountData.AccountID -> Leakages.Log.Console
+DataFlow -> leakages -> Data.Sensitive.AccountData.AccountID -> Leakages.Log.Console",,
+Base,Latest,% Change
+2,2,0.0%
+
+"1 : Data.Sensitive.PersonalIdentification.LastName -> Leakages.Log.Console
+DataFlow -> leakages -> Data.Sensitive.PersonalIdentification.LastName -> Leakages.Log.Console",,
+Base,Latest,% Change
+2,2,0.0%
+
+"1 : Data.Sensitive.PersonalIdentification.FirstName -> Leakages.Log.Console
+DataFlow -> leakages -> Data.Sensitive.PersonalIdentification.FirstName -> Leakages.Log.Console",,
+Base,Latest,% Change
+2,2,0.0%
+
+"1 : Data.Sensitive.PersonalIdentification.DateofBirth -> Leakages.Log.Console
+DataFlow -> leakages -> Data.Sensitive.PersonalIdentification.DateofBirth -> Leakages.Log.Console",,
+Base,Latest,% Change
+2,2,0.0%
+
+"1 : Data.Sensitive.ContactData.EmailAddress -> Leakages.Log.Console
+DataFlow -> leakages -> Data.Sensitive.ContactData.EmailAddress -> Leakages.Log.Console",,
+Base,Latest,% Change
+2,2,0.0%
+
+"1 : Data.Sensitive.PersonalIdentification.Age -> Leakages.Log.Console
+DataFlow -> leakages -> Data.Sensitive.PersonalIdentification.Age -> Leakages.Log.Console",,
+Base,Latest,% Change
+2,2,0.0%
+
+"1 : Data.Sensitive.AccountData.LanguagePreferences -> Leakages.Log.Console
+DataFlow -> leakages -> Data.Sensitive.AccountData.LanguagePreferences -> Leakages.Log.Console",,
+Base,Latest,% Change
+2,2,0.0%
+
+"1 : Data.Sensitive.AccountData.AccountPassword -> Leakages.Log.Console
+DataFlow -> leakages -> Data.Sensitive.AccountData.AccountPassword -> Leakages.Log.Console",,
+Base,Latest,% Change
+2,2,0.0%
+
+"1 : Data.Sensitive.ContactData.PhoneNumber -> Leakages.Log.Console
+DataFlow -> leakages -> Data.Sensitive.ContactData.PhoneNumber -> Leakages.Log.Console",,
+Base,Latest,% Change
+2,2,0.0%
+
+"1 : Data.Sensitive.AccountData.AccountName -> Leakages.Log.Warn
+DataFlow -> leakages -> Data.Sensitive.AccountData.AccountName -> Leakages.Log.Warn",,,"2 : Data.Sensitive.AccountData.AccountName -> Leakages.Log.Console
+DataFlow -> leakages -> Data.Sensitive.AccountData.AccountName -> Leakages.Log.Console",,
+Base,Latest,% Change,Base,Latest,% Change
+2,2,0.0%,2,2,0.0%
+
+"1 : Data.Sensitive.NationalIdentificationNumbers.Passport -> Leakages.Log.Console
+DataFlow -> leakages -> Data.Sensitive.NationalIdentificationNumbers.Passport -> Leakages.Log.Console",,
+Base,Latest,% Change
+2,2,0.0%
+
+"1 : Data.Sensitive.AccountData.AccountID -> Sinks.ThirdParties.API
+DataFlow -> third_parties -> Data.Sensitive.AccountData.AccountID -> Sinks.ThirdParties.API",,
+Base,Latest,% Change
+2,2,0.0%
+
+"1 : Data.Sensitive.PersonalIdentification.LastName -> Sinks.ThirdParties.API
+DataFlow -> third_parties -> Data.Sensitive.PersonalIdentification.LastName -> Sinks.ThirdParties.API",,
+Base,Latest,% Change
+2,2,0.0%
+
+"1 : Data.Sensitive.PersonalIdentification.FirstName -> Sinks.ThirdParties.API
+DataFlow -> third_parties -> Data.Sensitive.PersonalIdentification.FirstName -> Sinks.ThirdParties.API",,
+Base,Latest,% Change
+2,2,0.0%
+
+"1 : Data.Sensitive.PersonalIdentification.DateofBirth -> Sinks.ThirdParties.API
+DataFlow -> third_parties -> Data.Sensitive.PersonalIdentification.DateofBirth -> Sinks.ThirdParties.API",,
+Base,Latest,% Change
+2,2,0.0%
+
+"1 : Data.Sensitive.ContactData.EmailAddress -> Sinks.ThirdParties.API
+DataFlow -> third_parties -> Data.Sensitive.ContactData.EmailAddress -> Sinks.ThirdParties.API",,
+Base,Latest,% Change
+2,2,0.0%
+
+"1 : Data.Sensitive.PersonalIdentification.Age -> Sinks.ThirdParties.API
+DataFlow -> third_parties -> Data.Sensitive.PersonalIdentification.Age -> Sinks.ThirdParties.API",,
+Base,Latest,% Change
+2,2,0.0%
+
+"1 : Data.Sensitive.AccountData.LanguagePreferences -> Sinks.ThirdParties.API
+DataFlow -> third_parties -> Data.Sensitive.AccountData.LanguagePreferences -> Sinks.ThirdParties.API",,
+Base,Latest,% Change
+2,2,0.0%
+
+"1 : Data.Sensitive.AccountData.AccountPassword -> Sinks.ThirdParties.API
+DataFlow -> third_parties -> Data.Sensitive.AccountData.AccountPassword -> Sinks.ThirdParties.API",,
+Base,Latest,% Change
+2,2,0.0%
+
+"1 : Data.Sensitive.ContactData.PhoneNumber -> Sinks.ThirdParties.API
+DataFlow -> third_parties -> Data.Sensitive.ContactData.PhoneNumber -> Sinks.ThirdParties.API",,
+Base,Latest,% Change
+2,2,0.0%
+
+"1 : Data.Sensitive.AccountData.AccountName -> Sinks.ThirdParties.API
+DataFlow -> third_parties -> Data.Sensitive.AccountData.AccountName -> Sinks.ThirdParties.API",,
+Base,Latest,% Change
+2,2,0.0%
+
+"1 : Data.Sensitive.NationalIdentificationNumbers.Passport -> Sinks.ThirdParties.API
+DataFlow -> third_parties -> Data.Sensitive.NationalIdentificationNumbers.Passport -> Sinks.ThirdParties.API",,
+Base,Latest,% Change
+2,2,0.0%
+
+
+
+
+
+CPU Utilization Report
+""
+RepoName,BankingSystem-Backend
+%Cpu(s),  0.8 us,  1.2 sy,  0.0 ni, 97.5 id,  0.0 wa,  0.0 hi,  0.4 si,"  0.0 st
+"
+MiB Mem ,   7621.3 total,   2917.3 free,   1656.5 used,"   3047.5 buff/cache
+"
+
+%Cpu(s),  0.0 us,  0.0 sy,  0.0 ni,100.0 id,  0.0 wa,  0.0 hi,  0.0 si,"  0.0 st
+"
+MiB Mem ,   7621.3 total,   2903.0 free,   1665.5 used,"   3052.8 buff/cache
+"
+
+%Cpu(s), 23.9 us,  4.6 sy,  0.0 ni, 71.4 id,  0.0 wa,  0.0 hi,  0.0 si,"  0.0 st
+"
+MiB Mem ,   7621.3 total,   2552.0 free,   2014.0 used,"   3055.3 buff/cache
+"
+
+>>>>>>> Stashed changes
 --,--,--,--,--
 --,--,--,--,--
