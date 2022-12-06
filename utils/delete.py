@@ -5,7 +5,7 @@ def delete_temp():
     cwd = os.getcwd()
     path = f'{cwd}/temp/'
     if os.path.isdir(path):
-        shutil.rmtree(path)
+        shutil.rmtree(path, ignore_errors=False)
 
-if __name__ == '__main__':
-    delete_temp()
+
+delete_temp()

@@ -14,7 +14,6 @@ def main(stable_file, dev_file, cpu_usage, stable_time, dev_time):
     print(filename)
     previous_file = open(stable_file)
     current_file = open(dev_file)
-    trigger_metadata_file = open(trigger_metadata)
     time_data_stable = open(stable_time)
     time_data_dev = open(dev_time)
 
@@ -48,15 +47,9 @@ def main(stable_file, dev_file, cpu_usage, stable_time, dev_time):
 
     previous_data = json.load(previous_file)
     current_data = json.load(current_file)
-    trigger_metadata_str = trigger_metadata_file.read()
 
-    trigger_metadata_json = eval(trigger_metadata_str)
     report = []
     repo_name = previous_data['repoName']
-    branch_name_stable = 'main'
-    branch_name_dev = trigger_metadata_json['pr_branch'] or trigger_metadata_json['push_branch'] or "--"
-    pr_id = ('#' + str(trigger_metadata_json['prNumber'])) or "--"
-    commitID = trigger_metadata_json['commitID'] or "--"
 
 
 
@@ -69,10 +62,6 @@ def main(stable_file, dev_file, cpu_usage, stable_time, dev_time):
     report.append(['privadoCLIVersion', previous_data['privadoCLIVersion'], '', '', 'privadoCLIVersion', current_data['privadoCLIVersion']])
 
     report.append(['privadoMainVersion', previous_data['privadoMainVersion'], '', '', 'privadoMainVersion', current_data['privadoMainVersion']])
-    report.append(['Branch Name', branch_name_stable, '', '', 'Branch Name', branch_name_dev])
-    report.append(['', '', '', '', 'PR Number',  pr_id])
-    report.append(['Commit ID', commitID])
-    report.append([])
     report.append(["Scan time analytics"])
     report.append(["RepoName", repo_name])
     report.append(['Base version time', '','','', 'Latest version time', '', '% change wrt base'])
@@ -163,7 +152,6 @@ def main(stable_file, dev_file, cpu_usage, stable_time, dev_time):
 
     previous_file.close()
     current_file.close()
-    trigger_metadata_file.close()
 
 
 def top_level_collection_processor(collections_stable, collections_dev, repo_name):
@@ -178,8 +166,9 @@ def top_level_collection_processor(collections_stable, collections_dev, repo_nam
 
 def process_collection(collections_stable, collections_dev, repo_name, collection_name):
     collection_headings = ['repo_name', f'Number of Collections - {collection_name} ( Base ) ', f'Number of Collections - {collection_name} ( Latest )', 'List of  sourceId ( Base )', 'List of  sourceId ( Latest )', '% of change w.r.t base', 'New sourceIds added in Latest', 'Existing sourceIds removed from Latest']
-    stable_collections = len(collections_stable)
-    dev_collections = len(collections_dev)
+    print(collections_stable['collections'])
+    stable_collections = len(collections_stable['collections'])
+    dev_collections = len(collections_dev['collections'])
 
     collections_sources_stable = []
     collections_sources_dev = []
@@ -195,7 +184,7 @@ def process_collection(collections_stable, collections_dev, repo_name, collectio
 
 
     try:
-        percent_change = f'{((collections_sources_dev - collections_sources_stable) / collections_sources_stable) * 100}%'  
+        percent_change = f'{((dev_collections - stable_collections) / stable_collections) * 100}%'  
     except:
         percent_change = '0.00%'
 

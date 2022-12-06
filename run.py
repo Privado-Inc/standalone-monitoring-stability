@@ -2,6 +2,7 @@ import utils.clone_repo as clone_utils
 import utils.repo_link_generator
 from utils.scan import scan_repo_report
 from utils.compare import main as compare_and_generate_report
+from utils.delete import delete_temp
 import sys
 import os
 
@@ -19,13 +20,14 @@ def workflow():
         clone_utils.clone_repo(repo_link)
     scan_repo_report()
     for repo_name in valid_repositories:
-        stable_file = f'${cwd}/result/stable/${repo_name}.json'
-        dev_file = f'${cwd}/result/dev/${repo_name}.json'
-        cpu_usage = f'${cwd}/result/dev/${repo_name}.json'
-        compare_and_generate_report(f'${cwd}/', dev_file, cpu_usage, stable_time, dev_time)
+        stable_file = f'{cwd}/temp/result/stable/{repo_name}.json'
+        dev_file = f'{cwd}/temp/result/dev/{repo_name}.json'
+        cpu_usage = f'{cwd}/temp/cpu_mem/{repo_name}_cpu_mem.txt'
+        stable_time = f'{cwd}/temp/result/stable/{repo_name}_time.txt'
+        dev_time = f'{cwd}/temp/result/dev/{repo_name}_time.txt'
+        compare_and_generate_report(stable_file, dev_file, cpu_usage, stable_time, dev_time)
 
-            
-        
+    delete_temp()
 
 
 

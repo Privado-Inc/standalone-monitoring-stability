@@ -1,3 +1,1 @@
-https://github.com/Privado-Demo/privado-analytics.git
-https://github.com/Privado-Demo/shift-privacy-left-app.git
-https://github.com/Privado-Demo/privado-accounts-api.git
+https://github.com/saurabh-sudo/BankingSystem-Backend.git
