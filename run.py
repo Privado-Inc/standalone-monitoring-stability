@@ -23,12 +23,7 @@ def workflow():
     valid_repositories = []
     cwd = os.getcwd()
     clone_utils.install_privado()
-<<<<<<< Updated upstream
-    
-    for repo_link in utils.repo_link_generator.generate_repo_link(sys.argv[1]):
-=======
     for repo_link in utils.repo_link_generator.generate_repo_link(args.file):
->>>>>>> Stashed changes
         try:
             repo_name = repo_link.split('/')[-1].split('.')[0]
         except:

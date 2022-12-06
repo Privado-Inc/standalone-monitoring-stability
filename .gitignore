@@ -1,10 +1,6 @@
 temp
 utils/__pycache__
-<<<<<<< Updated upstream
-*.csv
-=======
 # Local environment
 env
 # Environment variables 
 .env
->>>>>>> Stashed changes
