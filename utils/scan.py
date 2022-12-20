@@ -1,6 +1,7 @@
 import os
 import shutil
 import subprocess
+import platform
 
 def main():
     scan_repo_report()
@@ -18,7 +19,10 @@ def scan_repo_report():
         scan_dir = cwd + '/temp/repos/' + repo
 
         # monitor cpu and memory usage
-        process = subprocess.Popen(["sh", f"{cwd}/utils/cpu_and_memory_usage.sh", repo, "stable"])
+        if platform.system() == 'Darwin':
+            process = subprocess.Popen(["sh", f"{cwd}/utils/cpu_and_memory/cpu_and_memory_usage_mac.sh", repo, "stable"])
+        else:
+            process = subprocess.Popen(["sh", f"{cwd}/utils/cpu_and_memory/cpu_and_memory_usage.sh", repo, "stable"])
 
         # Scan the cloned repo with stable
         os.system('bash -c "{ time ' + privado_dir + '/privado scan --overwrite --skip-upload ' + scan_dir + ' ; } 2> ' + cwd + '/temp/result/stable/' + repo + '_time.txt" ' )
