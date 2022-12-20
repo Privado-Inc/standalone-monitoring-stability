@@ -23,6 +23,12 @@ def workflow():
     valid_repositories = []
     cwd = os.getcwd()
     clone_utils.install_privado()
+
+    # Delete previous scan report if exist
+    path = f'{cwd}/comparison_report.csv'
+    if os.path.isdir(path):
+        os.remove(path)
+
     try: 
         for repo_link in utils.repo_link_generator.generate_repo_link(args.file):
             try:
