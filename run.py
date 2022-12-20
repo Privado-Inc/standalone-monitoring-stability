@@ -26,7 +26,8 @@ def workflow():
 
     # Delete previous scan report if exist
     path = f'{cwd}/comparison_report.csv'
-    if os.path.isdir(path):
+    print(path)
+    if os.path.isfile(path):
         os.remove(path)
 
     try: 
