@@ -9,10 +9,13 @@ def install_privado():
     print("Please make sure you have Docker install locally.")
     print("Getting the latest image of Privado...")
     path = os.path.join(os.path.expanduser('~'), ".privado/bin")
-    if os.path.isdir(path):
-        print("Already Have Privado.")
-    else:
-        os.system("curl -o- https://raw.githubusercontent.com/Privado-Inc/privado-cli/main/install.sh | bash")
+    try: 
+        if os.path.isdir(path):
+            print("Already Have Privado.")
+        else:
+            os.system("curl -o- https://raw.githubusercontent.com/Privado-Inc/privado-cli/main/install.sh | bash")
+    except:
+        print("Not able to install Privado")
 
 def clone_repo(url):
 
