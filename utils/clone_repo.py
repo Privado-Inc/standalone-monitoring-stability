@@ -19,11 +19,14 @@ def install_privado():
 
 def clone_repo(url):
 
-    repo_name = url.split('/')[-1].split('.')[0]
-    location = "./temp/repos/" + repo_name
-    print("Cloning the Repo: " + repo_name)
-    Repo.clone_from(url, location)
-    print("Cloning Successful: " + repo_name)
+    try: 
+        repo_name = url.split('/')[-1].split('.')[0]
+        location = "./temp/repos/" + repo_name
+        print("Cloning the Repo: " + repo_name)
+        os.system("git clone " + url + " " + location)
+        print("Cloning Successful: " + repo_name)
+    except: 
+        print("Not able to install Repos")
     
     print("All repos cloned.")
 

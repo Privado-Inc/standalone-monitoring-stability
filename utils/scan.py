@@ -35,7 +35,6 @@ def scan_repo_report():
         dest_path = f'{cwd}/temp/result/stable/{repo}.json'
         shutil.copy(src_path,dest_path)
 
-
         # Scan the cloned repo with dev
         os.system('bash -c "{ time PRIVADO_DEV=1 ' + privado_dir + '/privado scan --overwrite --skip-upload ' + scan_dir + ' ; } 2> ' + cwd + '/temp/result/dev/' + repo + '_time.txt" ' )
 
@@ -43,8 +42,9 @@ def scan_repo_report():
         # Move the privado.json file to the result folder   
         shutil.copy(src_path, dest_path)
 
-        process.kill()
-        #os.system(f"kill -9 {process.pid}")
+        #process.kill()
+        print(process.pid)
+        os.system(f"kill -9 {process.pid}")
 
 # Return list of cloned repo name
 def get_list_repos():
