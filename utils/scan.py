@@ -12,6 +12,7 @@ def scan_repo_report():
 
     privado_dir = os.path.join(os.path.expanduser('~'), ".privado/bin")
 
+    # create dir if not exist
     if not os.path.isdir(cwd + '/temp/result/stable'):
         os.system('mkdir -p temp/result/stable && mkdir -p temp/result/dev && mkdir -p temp/cpu_mem')
 
@@ -42,7 +43,7 @@ def scan_repo_report():
         # Move the privado.json file to the result folder   
         shutil.copy(src_path, dest_path)
 
-        #process.kill()
+        #process.kill() kill backgroud running process created for cpu monitoring
         print(process.pid)
         os.system(f"kill -9 {process.pid}")
 
