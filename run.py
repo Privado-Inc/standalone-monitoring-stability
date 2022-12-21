@@ -17,8 +17,6 @@ parser.set_defaults(feature=True)
 
 args = parser.parse_args()
 
-print((args.upload))
-
 def workflow():
     valid_repositories = []
     cwd = os.getcwd()
@@ -26,7 +24,6 @@ def workflow():
 
     # Delete previous scan report if exist
     path = f'{cwd}/comparison_report.csv'
-    print(path)
     if os.path.isfile(path):
         os.remove(path)
 

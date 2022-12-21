@@ -11,7 +11,6 @@ def main(stable_file, dev_file, cpu_usage, stable_time, dev_time):
     except:
         print('Please enter a valid file')
         return
-    print(filename)
     previous_file = open(stable_file)
     current_file = open(dev_file)
     time_data_stable = open(stable_time)
@@ -404,8 +403,6 @@ def process_cpu_data(cpu_utilization_data):
         for j in range(0, len(cpu_data)):
             if j == 0:
                 v = cpu_data[j].split(':')
-                print(v[0])
-                print(v[1])
                 value.append(v[0])
                 value.append(v[1])
             else:
