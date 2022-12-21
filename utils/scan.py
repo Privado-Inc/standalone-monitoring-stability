@@ -43,8 +43,7 @@ def scan_repo_report():
         # Move the privado.json file to the result folder   
         shutil.copy(src_path, dest_path)
 
-        #process.kill() kill backgroud running process created for cpu monitoring
-        print(process.pid)
+        # kill backgroud running process created for cpu monitoring
         os.system(f"kill -9 {process.pid}")
 
 # Return list of cloned repo name
