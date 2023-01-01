@@ -9,7 +9,7 @@ Steps to use the standalone-comparison-tool
 	5. Run `pip install -r requirements.txt` to install all the dependencies.
 	6. Run `python3 ./run.py -f [first_branch] -s [second_branch]`
 
-* To use the previous privado file download
+* To use the previously downloaded privado files
     *   Run `python3 ./run.py -f [first_branch] -s [second_branch] -c`
 
 * To specify a custom repository list:
