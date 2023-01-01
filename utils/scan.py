@@ -3,50 +3,53 @@ import shutil
 import subprocess
 import platform
 
-def main():
-    scan_repo_report()
-
-def scan_repo_report():
+def scan_repo_report(first_branch, second_branch):
     repos = get_list_repos()
     cwd = os.getcwd()
 
-    privado_dir = os.path.join(os.path.expanduser('~'), ".privado/bin")
-
-    # create dir if not exist
-    if not os.path.isdir(cwd + '/temp/result/stable'):
-        os.system('mkdir -p temp/result/stable && mkdir -p temp/result/dev && mkdir -p temp/cpu_mem')
+    # create dirs for results if not exist
+    if not os.path.isdir(cwd + '/temp/result/' + first_branch): os.system('mkdir -p ' + cwd + '/temp/result/' + first_branch)
+    if not os.path.isdir(cwd + '/temp/result/' + second_branch): os.system('mkdir -p ' + cwd + '/temp/result/' + second_branch)  
+    if not os.path.isdir(cwd + '/temp/cpu_mem'): os.system('mkdir -p ' + cwd + '/temp/cpu_mem')
 
     for repo in repos:         
         scan_dir = cwd + '/temp/repos/' + repo
 
         # monitor cpu and memory usage
         try:
-            if platform.system() == 'Darwin':
-                process = subprocess.Popen(["sh", f"{cwd}/utils/cpu_and_memory/cpu_and_memory_usage_mac.sh", repo, "stable"])
-            else:
-                process = subprocess.Popen(["sh", f"{cwd}/utils/cpu_and_memory/cpu_and_memory_usage.sh", repo, "stable"])
-        except:
-            print("Unable to fetch CPU and memory Status")
+            try:
+                # monitor cpu and memory usage
+                # For mac devices
+                if platform.system() == 'Darwin': 
+                    process = subprocess.Popen(["sh", f"{cwd}/utils/cpu_and_memory/cpu_and_memory_usage_mac.sh", repo, "stable"])
+                else:
+                    process = subprocess.Popen(["sh", f"{cwd}/utils/cpu_and_memory/cpu_and_memory_usage.sh", repo, "stable"])
+            except:
+                print("Unable to fetch CPU and memory Status")
     
-        # Scan the cloned repo with stable
-        os.system('bash -c "{ time ' + privado_dir + '/privado scan --overwrite --skip-upload ' + scan_dir + ' ; } 2> ' + cwd + '/temp/result/stable/' + repo + '_time.txt" ' )
+            # Scan the cloned repo with first branch
+            first_command = f'cd {cwd}/temp/binary/{first_branch}/bin && {{ time ./privado-core scan {scan_dir} -ic {cwd}/temp/privado --skip-upload ;}} 2> {cwd}/temp/result/{first_branch}/{repo}_time.txt' 
+            # Execute the command to generate the binary file for first branch
+            os.system(first_command)
 
-        # Move the privado.json file to the result folder
-        src_path = f'{scan_dir}/.privado/privado.json' 
-        dest_path = f'{cwd}/temp/result/stable/{repo}.json'
-        shutil.copy(src_path,dest_path)
+            # Move the privado.json file to the result folder
+            src_path = f'{scan_dir}/.privado/privado.json'
+            dest_path = f'{cwd}/temp/result/{first_branch}/{repo}.json'
+            shutil.move(src_path,dest_path)
 
-        # Scan the cloned repo with dev
-        os.system('bash -c "{ time PRIVADO_DEV=1 ' + privado_dir + '/privado scan --overwrite --skip-upload ' + scan_dir + ' ; } 2> ' + cwd + '/temp/result/dev/' + repo + '_time.txt" ' )
+            # Scan the cloned repo with second branch
+            second_command = f'cd {cwd}/temp/binary/{second_branch}/bin && {{ time ./privado-core scan {scan_dir} -ic {cwd}/temp/privado --skip-upload ; }} 2> {cwd}/temp/result/{second_branch}/{repo}_time.txt'
+            # Execute the command to generate the binary file for seconf branch
+            os.system(second_command)
+            
+            # Move the privado.json file to the result folder
+            dest_path = f'{cwd}/temp/result/{second_branch}/{repo}.json'   
+            shutil.move(src_path, dest_path)
+        finally:
+            # kill backgroud running process created for cpu monitoring
+            os.system(f"kill -9 {process.pid}")
 
-        dest_path = f'{cwd}/temp/result/dev/{repo}.json'
-        # Move the privado.json file to the result folder   
-        shutil.copy(src_path, dest_path)
-
-        # kill backgroud running process created for cpu monitoring
-        os.system(f"kill -9 {process.pid}")
-
-# Return list of cloned repo name
+# Return list of cloned repo name stored in /temp/repos dir
 def get_list_repos():
     result = []
     repos = os.listdir(os.getcwd() + "/temp/repos")
@@ -54,6 +57,3 @@ def get_list_repos():
         if not repo.startswith('.'):
             result.append(repo)
     return result
-
-if __name__ == "__main__":
-    main()
