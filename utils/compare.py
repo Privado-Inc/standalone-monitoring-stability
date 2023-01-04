@@ -17,8 +17,24 @@ def main(stable_file, dev_file, cpu_usage, stable_time, dev_time):
     time_data_dev = open(dev_time)
 
     # Comes with a newline at the start, so the second element
-    time_final_stable =  (time_data_stable.read().split('\n')[1]).split('\t')[1]
-    time_final_dev =  (time_data_dev.read().split('\n')[1]).split('\t')[1]
+    try:
+        time_final_stable = (time_data_stable.read().split('\n'))
+        time_final_dev = (time_data_dev.read().split('\n'))
+    except:
+        print()
+
+    for time in time_final_stable:
+        if ("real" in time):
+            time_final_stable = time
+            break
+    
+    for time in time_final_dev:
+        if ("real" in time):
+            time_final_dev = time
+            break
+
+    time_final_dev = time_final_dev.split('\t')[1]
+    time_final_stable = time_final_stable.split('\t')[1]
 
     split_minutes_seconds_dev = re.split('[a-zA-Z]+', time_final_dev[:-1]) 
     split_minutes_seconds_stable = re.split('[a-zA-Z]+', time_final_stable[:-1]) 
@@ -143,7 +159,6 @@ def top_level_collection_processor(collections_stable, collections_dev, repo_nam
 
 def process_collection(collections_stable, collections_dev, repo_name, collection_name):
     collection_headings = ['repo_name', f'Number of Collections - {collection_name} ( Base ) ', f'Number of Collections - {collection_name} ( Latest )', 'List of  sourceId ( Base )', 'List of  sourceId ( Latest )', '% of change w.r.t base', 'New sourceIds added in Latest', 'Existing sourceIds removed from Latest']
-    print(collections_stable['collections'])
     stable_collections = len(collections_stable['collections'])
     dev_collections = len(collections_dev['collections'])
 

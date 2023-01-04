@@ -5,3 +5,4 @@
 # Environment variables 
 .env
 *.csv
+.DS_Store
