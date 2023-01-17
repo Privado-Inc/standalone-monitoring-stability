@@ -61,8 +61,8 @@ def workflow():
             compare_and_generate_report(stable_file, dev_file, cpu_usage, stable_time, dev_time)
 
         if (args.upload): post_report_to_slack()
-    except:
-        print("An exception occurred")
+    except Exception as e:
+        print("An exception occurred" + str(e))
     finally:
         clean_after_scan()
 

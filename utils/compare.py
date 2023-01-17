@@ -1,8 +1,8 @@
 import csv 
-import sys
 import json
 import re
 import os
+import hashlib
 
 def main(stable_file, dev_file, cpu_usage, stable_time, dev_time):
 
@@ -20,8 +20,8 @@ def main(stable_file, dev_file, cpu_usage, stable_time, dev_time):
     try:
         time_final_stable = (time_data_stable.read().split('\n'))
         time_final_dev = (time_data_dev.read().split('\n'))
-    except:
-        print()
+    except Exception as e:
+        print("Error occurced during parsing time data", e)
 
     for time in time_final_stable:
         if ("real" in time):
@@ -173,7 +173,8 @@ def process_collection(collections_stable, collections_dev, repo_name, collectio
 
     try:
         percent_change = f'{((dev_collections - stable_collections) / stable_collections) * 100}%'  
-    except:
+    except Exception as e:
+        print(e)
         percent_change = '0.00%'
 
     new_latest = '\n'.join(list(set(collections_sources_dev) - set(collections_sources_stable)))
@@ -282,7 +283,8 @@ def process_sinks(stable_dataflows, dev_dataflows, repo_name,key='storages'):
     # percent change in latest sources wrt stable release
     try:
         percent_change = f'{round((((dev_sinks - stable_sinks) / stable_sinks) * 100),2)}%'   
-    except:
+    except Exception as e:
+        print(e)
         percent_change = '0.00%'
     new_latest = '\n'.join(set(sink_names_dev.split('\n')) - set(sink_names_stable.split('\n')))
     removed_dev = '\n'.join(list(set(sink_names_stable.split('\n')) - set(sink_names_dev.split('\n'))))
@@ -315,7 +317,8 @@ def process_leakages(stable_dataflows, dev_dataflows, repo_name,key='leakages'):
 
     try:
         percent_change = f'{round((((num_dev_leakages - num_stable_leakages) / num_stable_leakages) * 100),2)}%'   
-    except:
+    except Exception as e:
+        print(e)
         percent_change = '0.00%'
     new_latest = '\n'.join(set(leakage_names_dev.split('\n')) - set(leakage_names_stable.split('\n'))) 
     removed_dev = '\n'.join(list(set(leakage_names_stable.split('\n')) - set(leakage_names_dev.split('\n'))))
@@ -338,75 +341,104 @@ def process_path_analysis(source_stable, source_dev, repo_name):
 
     return path_value
 
-def sub_process_path(source_stable, source_dev, value):
+def sub_process_path(source_stable, source_dev, name):
 
     final_result_list = []
 
-    process_stable_data = {}
-    process_dev_data = {}
-    
-    source_data_list = set()
+    process_source_stable_data = {} # Map to store the 
+    process_source_dev_data = {}
 
+    path_ids_list = {}
+
+    # Process source data and storing all unique source in set
     for i in source_stable:
         source_id = i['sourceId']
-        sinks_data = {}
+        sink_data = {}
         for j in i['sinks']:
-            sinks_data[j['id']] = len(j['paths'])
-        process_stable_data[source_id] = sinks_data
-        source_data_list.add(i['sourceId'])
+            hash_path = []
+            for path in j['paths']:
+                value = json_to_hash(path['path'])
+                hash_path.append(value)
+                path_ids_list[value] = path['pathId']
+            sink_data[j['id']] = hash_path
+        process_source_stable_data[source_id] = sink_data
 
     for i in source_dev:
         source_id = i['sourceId']
-        sinks_data = {}
+        sink_data = {}
         for j in i['sinks']:
-            sinks_data[j['id']] = len(j['paths'])
-        process_dev_data[source_id] = sinks_data
-        source_data_list.add(i['sourceId'])
+            hash_path = []
+            for path in j['paths']:
+                value = json_to_hash(path['path'])
+                hash_path.append(value)
+                path_ids_list[value] = path['pathId']
+            sink_data[j['id']] = hash_path
+        process_source_dev_data[source_id] = sink_data
 
-    for i in source_data_list:
+    for i in set(process_source_dev_data.keys()).union(set(process_source_stable_data.keys())):
 
-        sub_heading_list = []
-        sub_title_list = []
-        sub_result_list = []
-        counter = 1
+        if not process_source_stable_data.__contains__(i):
+            final_result_list.append([f"{i} (Source) is missing in base branch"])
+            final_result_list.append([])
+            continue
 
-        base_list = process_stable_data[i] if process_stable_data.__contains__(i) else []
-        dev_list = process_dev_data[i] if process_dev_data.__contains__(i) else []
-        sinks_list = set()
+        if not process_source_dev_data.__contains__(i):
+            final_result_list.append([f"{i} (Source) is missing in head branch"])
+            final_result_list.append([])
+            continue
 
-        for j in base_list:
-            sinks_list.add(j)
+        stable_sink_data = process_source_stable_data[i]
+        dev_sink_data = process_source_dev_data[i]
 
-        for j in dev_list:
-            sinks_list.add(j)
+        final_result_list.append([f"{name}: {i}"])
 
-        for j in sinks_list:
-            base_count = base_list[j] if j in base_list else "NA"
-            dev_count = dev_list[j] if j in dev_list else "NA"
+        for j in set(stable_sink_data.keys()).union(set(dev_sink_data.keys())):
 
-            path_flow = str(counter) + " : " + str(i) + " -> " + str(j)
-            complete_path = "DataFlow -> " + value + " -> " + str(i) + " -> " + str(j)
+            final_result_list.append([j])
 
-            sub_heading_list.append('\n'.join([path_flow, complete_path]))
-            sub_heading_list.append("")
-            sub_heading_list.append("")
-            sub_title_list.append("Base")
-            sub_title_list.append("Latest")
-            sub_title_list.append("% Change")
-            sub_result_list.append(base_count)
-            sub_result_list.append(dev_count)
-            try:
-                sub_result_list.append(f'{((dev_count - base_count) / base_count) * 100}%')
-            except:
-                sub_result_list.append('0.00%')
-            counter = counter + 1
+            if not stable_sink_data.__contains__(j):
+                final_result_list.append([f"{j} (Sink) is missing in Base branch"])
+                continue
+            
+            if not dev_sink_data.__contains__(j):
+                final_result_list.append([f"{j} (Sink) is missing in Head branch"])
+                continue
 
-        final_result_list.append(sub_heading_list)
-        final_result_list.append(sub_title_list)
-        final_result_list.append(sub_result_list)
+            stable_path_data = stable_sink_data[j]
+            dev_path_data = dev_sink_data[j]
+
+            missing_path = set()
+            new_path = set()
+
+            final_result_list.append(["Total Path in Head", "Total Path in Base", "% Change"])
+            final_result_list.append([len(stable_path_data), len(dev_path_data), f'{round((((len(dev_path_data) - len(stable_path_data)) / len(stable_path_data)) * 100),2)}%'])
+
+            for k in set(stable_path_data).union(set(dev_path_data)):
+
+                if not stable_path_data.__contains__(k):
+                    missing_path.add(k)
+
+                elif not dev_path_data.__contains__(k):
+                    new_path.add(k)
+
+            if len(missing_path) != 0:
+                final_result_list.append(["Missing Path ID in Head"])
+                for j in missing_path:
+                    final_result_list.append([str(j)])
+
+            if len(new_path) != 0:
+                final_result_list.append(["New Path Id in Base"])
+                for j in new_path:
+                    final_result_list.append([str(j)])
         final_result_list.append([])
-    
+
     return final_result_list
+
+def json_to_hash(json_obj):
+    json_str = json.dumps(json_obj, sort_keys=True)
+    hash_object = hashlib.sha256(json_str.encode())
+    hex_dig = hash_object.hexdigest()
+    return hex_dig
 
 def process_cpu_data(cpu_utilization_data):
 
@@ -430,4 +462,4 @@ def process_cpu_data(cpu_utilization_data):
     return final_result_list
 
 if __name__ == "__main__":
-    main()
+    main("/utils/privado1.json","/utils/privado.json",0,0,0)
