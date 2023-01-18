@@ -58,6 +58,8 @@ def workflow():
             cpu_usage = f'{cwd}/temp/cpu_mem/{repo_name}_cpu_mem.txt'
             stable_time = f'{cwd}/temp/result/{args.first}/{repo_name}_time.txt'
             dev_time = f'{cwd}/temp/result/{args.second}/{repo_name}_time.txt'
+            os.system(f"cat {dev_time}")
+            os.system(f"cat {stable_time}")
             compare_and_generate_report(stable_file, dev_file, cpu_usage, stable_time, dev_time)
 
         if (args.upload): post_report_to_slack()

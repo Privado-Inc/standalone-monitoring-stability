@@ -35,37 +35,40 @@ def main(stable_file, dev_file, cpu_usage, stable_time, dev_time):
         if ("real" in time):
             time_final_dev = time
             break
+        
+    try: 
+        print("a1")
+        time_final_dev = time_final_dev.split('\t')[1]
+        print("a2")
+        time_final_stable = time_final_stable.split('\t')[1]
+        print("a3")
 
-    print("a1")
-    time_final_dev = time_final_dev.split('\t')[1]
-    print("a2")
-    time_final_stable = time_final_stable.split('\t')[1]
-    print("a3")
+        print("a4")
+        split_minutes_seconds_dev = re.split('[a-zA-Z]+', time_final_dev[:-1]) 
+        print("a5")
+        split_minutes_seconds_stable = re.split('[a-zA-Z]+', time_final_stable[:-1]) 
+        print("a6")
 
-    print("a4")
-    split_minutes_seconds_dev = re.split('[a-zA-Z]+', time_final_dev[:-1]) 
-    print("a5")
-    split_minutes_seconds_stable = re.split('[a-zA-Z]+', time_final_stable[:-1]) 
-    print("a6")
+        time_stable_minutes = 0
+        time_dev_minutes = 0
+        minutes_multiplier = 1/60
+        
+        print("a5")
+        for i in range(len(split_minutes_seconds_dev) - 1, -1, -1):
+            time_dev_minutes += (minutes_multiplier * float(split_minutes_seconds_dev[i]))
+            minutes_multiplier *= 60
+        print("a6")
+        
+        print("a7")
+        minutes_multiplier = 1/60
+        for i in range(len(split_minutes_seconds_stable) - 1, -1, -1):
+            time_stable_minutes += (minutes_multiplier * float(split_minutes_seconds_stable[i]))
+        print("a8")
 
-    time_stable_minutes = 0
-    time_dev_minutes = 0
-    minutes_multiplier = 1/60
-    
-    print("a5")
-    for i in range(len(split_minutes_seconds_dev) - 1, -1, -1):
-        time_dev_minutes += (minutes_multiplier * float(split_minutes_seconds_dev[i]))
-        minutes_multiplier *= 60
-    print("a6")
-    
-    print("a7")
-    minutes_multiplier = 1/60
-    for i in range(len(split_minutes_seconds_stable) - 1, -1, -1):
-        time_stable_minutes += (minutes_multiplier * float(split_minutes_seconds_stable[i]))
-    print("a8")
-
-    # Percent change on the latest branch wrt base branch
-    percent_change_time = f'{round(((time_dev_minutes - time_stable_minutes) / time_stable_minutes), 2) * 100}%'
+        # Percent change on the latest branch wrt base branch
+        percent_change_time = f'{round(((time_dev_minutes - time_stable_minutes) / time_stable_minutes), 2) * 100}%'
+    except Exception as e:
+        print(e)
 
     previous_data = json.load(previous_file)
     current_data = json.load(current_file)
