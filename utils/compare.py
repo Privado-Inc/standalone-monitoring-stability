@@ -35,6 +35,10 @@ def main(stable_file, dev_file, cpu_usage, stable_time, dev_time):
         if ("real" in time):
             time_final_dev = time
             break
+    time_stable_minutes = 0
+    time_dev_minutes = 0
+    percent_change_time = 0
+
         
     try: 
         print("a1")
@@ -49,8 +53,6 @@ def main(stable_file, dev_file, cpu_usage, stable_time, dev_time):
         split_minutes_seconds_stable = re.split('[a-zA-Z]+', time_final_stable[:-1]) 
         print("a6")
 
-        time_stable_minutes = 0
-        time_dev_minutes = 0
         minutes_multiplier = 1/60
         
         print("a5")
