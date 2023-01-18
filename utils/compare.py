@@ -5,7 +5,7 @@ import os
 import hashlib
 
 def main(stable_file, dev_file, cpu_usage, stable_time, dev_time):
-
+    print("a443")
     try:
         filename = stable_file.split('/')[-1].split('.')[0]
     except:
@@ -33,23 +33,33 @@ def main(stable_file, dev_file, cpu_usage, stable_time, dev_time):
             time_final_dev = time
             break
 
+    print("a1")
     time_final_dev = time_final_dev.split('\t')[1]
+    print("a2")
     time_final_stable = time_final_stable.split('\t')[1]
+    print("a3")
 
+    print("a4")
     split_minutes_seconds_dev = re.split('[a-zA-Z]+', time_final_dev[:-1]) 
+    print("a5")
     split_minutes_seconds_stable = re.split('[a-zA-Z]+', time_final_stable[:-1]) 
+    print("a6")
 
     time_stable_minutes = 0
     time_dev_minutes = 0
     minutes_multiplier = 1/60
     
+    print("a5")
     for i in range(len(split_minutes_seconds_dev) - 1, -1, -1):
         time_dev_minutes += (minutes_multiplier * float(split_minutes_seconds_dev[i]))
         minutes_multiplier *= 60
+    print("a6")
     
+    print("a7")
     minutes_multiplier = 1/60
     for i in range(len(split_minutes_seconds_stable) - 1, -1, -1):
         time_stable_minutes += (minutes_multiplier * float(split_minutes_seconds_stable[i]))
+    print("a8")
 
     # Percent change on the latest branch wrt base branch
     percent_change_time = f'{round(((time_dev_minutes - time_stable_minutes) / time_stable_minutes), 2) * 100}%'
@@ -281,8 +291,10 @@ def process_sinks(stable_dataflows, dev_dataflows,key='storages'):
     except Exception as e:
         print(e)
         percent_change = '0.00%'
+    print("addd4")
     new_latest = '\n'.join(set(sink_names_dev.split('\n')) - set(sink_names_stable.split('\n')))
     removed_dev = '\n'.join(list(set(sink_names_stable.split('\n')) - set(sink_names_dev.split('\n'))))
+    print("a4rer")
 
     result = [stable_sinks, dev_sinks, sink_names_stable, sink_names_dev, percent_change, new_latest, removed_dev]
 
@@ -315,8 +327,10 @@ def process_leakages(stable_dataflows, dev_dataflows, repo_name,key='leakages'):
     except Exception as e:
         print(e)
         percent_change = '0.00%'
+    print("a4eresfgf")
     new_latest = '\n'.join(set(leakage_names_dev.split('\n')) - set(leakage_names_stable.split('\n'))) 
     removed_dev = '\n'.join(list(set(leakage_names_stable.split('\n')) - set(leakage_names_dev.split('\n'))))
+    print("a4grw")
     
     result = [repo_name, num_stable_leakages, num_dev_leakages, leakage_names_stable, leakage_names_dev, percent_change, new_latest, removed_dev]
     
@@ -509,8 +523,10 @@ def process_cpu_data(cpu_utilization_data):
 
     final_result_list = []
 
+    print("rarr4")
     for i in range(0, len(cpu_utilization_data)):
         cpu_data = cpu_utilization_data[i].split(',')
+        print("a4trfed")
         value = []
         for j in range(0, len(cpu_data)):
             if j == 0:

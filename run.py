@@ -62,7 +62,7 @@ def workflow():
 
         if (args.upload): post_report_to_slack()
     except Exception as e:
-        print("An exception occurred" + str(e))
+        print("An exception occurred " + str(e))
     finally:
         clean_after_scan()
 
