@@ -340,21 +340,32 @@ def process_path_analysis(source_stable, source_dev, repo_name):
         value = sub_process_path(source_stable['dataFlow'][i], source_dev['dataFlow'][i], i)
         for j in value[0]:
             path_value.append(j)
-        for k in range(0, 9):
+        for k in range(0, 8):
             delta[k] += value[1][k]
+        path_value.append([])
 
-    result.append(["Total Sources", "Missing Sources", "New Sources"])
-    result.append([delta[0], delta[1], delta[2]])
-    result.append(["Total Sinks", "Missing Sinks", "New Sinks"])
-    result.append([delta[3], delta[4], delta[5]])
-    result.append(["Total Paths", "Missing Paths", "New Paths"])
-    result.append([delta[6], delta[7], delta[8]])
+    # result.append(["Total Sources", "Missing Sources", "New Sources"])
+    # result.append([delta[0], delta[1], delta[2]])
+    # result.append(["Total Sinks", "Missing Sinks", "New Sinks"])
+    # result.append([delta[3], delta[4], delta[5]])
+    # result.append(["Total Paths", "Missing Paths", "New Paths"])
+    # result.append([delta[6], delta[7], delta[8]])
+    # for k in value:
+    #     result.append(k)
+
+    result.append(["Total Sources in Head", "Total Sources in Base", "Additional Sources", "Missing Sources", "Delta %"])
+    result.append([delta[0], delta[1], delta[2], delta[3], 0])
+    result.append(["Total Sinks in Head", "Total Sinks in Base", "Additinal Sinks", "Missing Sinks", "Delta %"])
+    result.append([delta[4], delta[5], delta[6], delta[7], 0])
+
     for k in path_value:
         result.append(k)
 
     return result
 
 def sub_process_path(source_stable, source_dev, name):
+
+    print("-------" + name)
 
     final_result_list = []
 
@@ -364,7 +375,7 @@ def sub_process_path(source_stable, source_dev, name):
     path_ids_list = {}
 
     delta = []
-    for i in range(0, 9):
+    for i in range(0, 8):
         delta.append(0)
 
     # Process source data and storing all unique source in set
@@ -395,56 +406,81 @@ def sub_process_path(source_stable, source_dev, name):
         process_source_dev_data[source_id] = sink_data
     
     source_union = set(process_source_dev_data.keys()).union(set(process_source_stable_data.keys()))
-    delta[0] = len(source_union) # total source count
+    delta[0] = len(process_source_dev_data.keys()) # total source count in Head
+    delta[1] = len(process_source_stable_data.keys())
+
+    final_result_list.append(["Flows", "Head Branch", "Main Branch", "Additional In Head", "Missing in Base", "Delta in %", "Additional Path ID", "Missing Path Id"])
+    final_result_list.append(["Total Flows"])
 
     for i in source_union:
 
-        final_result_list.append([f"{name}: {i}"])
+        # final_result_list.append([f"{name}: {i}"])
 
         if not process_source_stable_data.__contains__(i):
-            path_count = standalone_source_process(process_source_dev_data[i])
-            final_result_list.append(["Total Path in Head", "Total Path in Base (Source Missing)", "%change"])
-            final_result_list.append([path_count, "0", "100%"])
-            final_result_list.append([])
-            delta[2] += 1 # count of new source
-            delta[5] += len(list(process_source_dev_data[i].keys()))
-            delta[8] += path_count
+            # path_count = standalone_source_process(process_source_dev_data[i])
+            # final_result_list.append(["Total Path in Head", "Total Path in Base (Source Missing)", "%change"])
+            # final_result_list.append([path_count, "0", "100%"])
+            # final_result_list.append([])
+            delta[2] += 1 
+            delta[6] += len(list(process_source_dev_data[i].keys()))
+            delta[4] += len(list(process_source_dev_data[i].keys()))
+            # delta[7] += path_count
+            for sink in process_source_dev_data[i].keys():
+                additional_ids = []
+                for id in process_source_dev_data[i][sink]:
+                    additional_ids.append(path_ids_list[id])
+                final_result_list.append([f'{name}: {i} -> {sink}', len(process_source_dev_data[i][sink]), 0, len(process_source_dev_data[i][sink]), 0, "100%", '\n'.join(additional_ids), 0])
             continue
 
         if not process_source_dev_data.__contains__(i):
-            path_count = standalone_source_process(process_source_stable_data[i])
-            final_result_list.append(["Total Paths in Head (Source Missing)", "Total Paths in Base", "%change"])
-            final_result_list.append(["0", path_count, "-100%"])
-            final_result_list.append([])
-            delta[1] += 1 # count of missing source
-            delta[4] += len(list(process_source_stable_data[i].keys()))
-            delta[7] += path_count
+            # path_count = standalone_source_process(process_source_stable_data[i])
+            # final_result_list.append(["Total Paths in Head (Source Missing)", "Total Paths in Base", "%change"])
+            # final_result_list.append(["0", path_count, "-100%"])
+            # final_result_list.append([])
+            delta[3] += 1 
+            delta[7] += len(list(process_source_stable_data[i].keys()))
+            delta[5] += len(list(process_source_stable_data[i].keys()))
+            # delta[8] += path_count
+            for sink in process_source_stable_data[i].keys():
+                missing_ids = []
+                for id in process_source_stable_data[i][sink]:
+                    missing_ids.append(path_ids_list[id])
+                final_result_list.append([f'{name}: {i} -> {sink}', 0, len(process_source_stable_data[i][sink]), 0, len(process_source_stable_data[i][sink]), "-100%", 0,'\n'.join(missing_ids)])
             continue
 
         stable_sink_data = process_source_stable_data[i]
         dev_sink_data = process_source_dev_data[i]
 
         sink_union = set(stable_sink_data.keys()).union(set(dev_sink_data.keys()))
-        delta[3] += len(sink_union)
+        delta[4] += len(dev_sink_data.keys())
+        delta[5] += len(stable_sink_data.keys())
 
         for j in sink_union:
 
-            final_result_list.append([j])
+            # final_result_list.append([j])
 
             if not stable_sink_data.__contains__(j):
-                path_count = len(dev_sink_data[j])
-                final_result_list.append(["Total Paths in Head", "Total Paths in Base (Sink Missing)", "% Change"])
-                final_result_list.append([str(path_count), "0", "100%"])
-                delta[5] += 1 # count of new sink
-                delta[8] += path_count
+                # path_count = len(dev_sink_data[j])
+                # final_result_list.append(["Total Paths in Head", "Total Paths in Base (Sink Missing)", "% Change"])
+                # final_result_list.append([str(path_count), "0", "100%"])
+                delta[6] += 1 
+                # delta[7] += path_count
+                additional_ids = []
+                for id in dev_sink_data[j]:
+                    additional_ids.append(path_ids_list[id])
+                final_result_list.append([f'{name}: {i} -> {j}', 0, len(dev_sink_data[j]), 0, len(dev_sink_data[j]), "100%", '\n'.join(additional_ids),0])
                 continue
             
             if not dev_sink_data.__contains__(j):
-                path_count = len(stable_sink_data[j])
-                final_result_list.append(["Total Paths in Head (Sink Missing)", "Total Paths in Base", "% Change"])
-                final_result_list.append(["0", str(path_count), "-100%"])
-                delta[4] += 1 # count of missing sink
-                delta[7] += path_count
+                # path_count = len(stable_sink_data[j])
+                # final_result_list.append(["Total Paths in Head (Sink Missing)", "Total Paths in Base", "% Change"])
+                # final_result_list.append(["0", str(path_count), "-100%"])
+                delta[7] += 1 
+                # delta[8] += path_count
+                missing_ids = []
+                for id in stable_sink_data[j]:
+                    missing_ids.append(path_ids_list[id])
+                final_result_list.append([f'{name}: {i} -> {j}', len(stable_sink_data[j]), 0, len(stable_sink_data[j]), 0, "-100%", 0 ,'\n'.join(missing_ids)])
                 continue
 
             stable_path_data = stable_sink_data[j]
@@ -454,50 +490,53 @@ def sub_process_path(source_stable, source_dev, name):
             new_path = set()
 
             path_union = set(stable_path_data).union(set(dev_path_data))
-            delta[6] += len(path_union)
+            # delta[6] += len(path_union)
 
             absolute_path_change = 0
             total_path_count = len(path_union)
-            temp_result = []
+            # temp_result = []
 
             for k in path_union:
 
                 if not stable_path_data.__contains__(k):
                     absolute_path_change += 1
-                    missing_path.add(k)
+                    missing_path.add(path_ids_list[k])
 
                 elif not dev_path_data.__contains__(k):
                     absolute_path_change += 1
-                    new_path.add(k)
+                    new_path.add(path_ids_list[k])
 
-            if len(missing_path) != 0:
-                temp_result.append(["Missing Path ID in Head"])
-                delta[8] += len(missing_path) # count of missing path
-                for j in missing_path:
-                    temp_result.append([path_ids_list[j]])
+            final_result_list.append([f'{name}: {i} -> {j}', len(stable_path_data), len(dev_path_data), len(new_path), len(missing_path), f'{round((( absolute_path_change / (2 * total_path_count)) * 100),2)}%', '\n'.join(new_path), '\n'.join(missing_path)])
 
-            if len(new_path) != 0:
-                temp_result.append(["New Path Id in Head"])
-                delta[7] += len(new_path) # count of new path
-                for j in new_path:
-                    temp_result.append([path_ids_list[j]])
+            # if len(missing_path) != 0:
+            #     # temp_result.append(["Missing Path ID in Head"])
+            #     # delta[8] += len(missing_path) # count of missing path
+            #     for j in missing_path:
+            #         temp_result.append([path_ids_list[j]])
 
-            final_result_list.append(["Total Path in Head", "Total Path in Base", "% Change"])
-            final_result_list.append([len(stable_path_data), len(dev_path_data), f'{round((( absolute_path_change / (2 * total_path_count)) * 100),2)}%'])
+            # if len(new_path) != 0:
+            #     temp_result.append(["New Path Id in Head"])
+            #     # delta[7] += len(new_path) # count of new path
+            #     for j in new_path:
+            #         temp_result.append([path_ids_list[j]])
 
-            temp_result.append([])
-            for k in temp_result:
-                final_result_list.append(k)
+            # final_result_list.append(["Total Path in Head", "Total Path in Base", "% Change"])
+            # final_result_list.append([len(stable_path_data), len(dev_path_data), f'{round((( absolute_path_change / (2 * total_path_count)) * 100),2)}%'])
+
+            # temp_result.append([])
+            # for k in temp_result:
+            #     final_result_list.append(k)
 
     return [final_result_list, delta]
 
 def standalone_source_process(sinks_data):
     
-    total_path = 0 
-    for i in list(sinks_data.keys()):
-        total_path += len(sinks_data[i])
+    result = []
+
+    total_path = len(sinks_data)
+    result.append(sinks_data)
     
-    return total_path
+    return [total_path, result]
 
 def json_to_hash(json_obj):
     json_str = json.dumps(json_obj, sort_keys=True)
@@ -527,4 +566,4 @@ def process_cpu_data(cpu_utilization_data):
     return final_result_list
 
 if __name__ == "__main__":
-    main("/utils/privado1.json","/utils/privado.json",0,0,0)
+    main("/utils/privado.json","/utils/privado1.json",0,0,0)
