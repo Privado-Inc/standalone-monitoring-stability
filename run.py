@@ -7,6 +7,7 @@ from utils.delete import delete_action, clean_after_scan
 from utils.clone_repo import clone_repo_with_location
 import os
 import argparse
+import traceback
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-r", "--repos", default=f"{os.getcwd()}/repos.txt")
@@ -17,11 +18,12 @@ parser.add_argument('-s', "--second", default=None)
 parser.add_argument('-c', action='store_true')
 parser.set_defaults(feature=True)
 
-args = parser.parse_args()
+args: argparse.Namespace = parser.parse_args()
+
 def workflow():
 
     # check if branch name present in args
-    if args.first == None or args.second == None:
+    if args.first is None or args.second is None:
         print("Please provide flags '-f' and '-s' followed by branch name")
         return
 
@@ -42,13 +44,16 @@ def workflow():
         for repo_link in utils.repo_link_generator.generate_repo_link(args.repos):
             try:
                 repo_name = repo_link.split('/')[-1].split('.')[0]
-            except:
-                print("Not a valid git repository")
+                print(repo_link)
+                is_git_url: bool = utils.repo_link_generator.check_git_url(repo_link)
+            except Exception:
+                traceback.print_exc()
                 continue
+            
             location = cwd + "/temp/repos/" + repo_name
             os.system("mkdir -p " + location)
+            clone_repo_with_location(repo_link, location, is_git_url)
             valid_repositories.append(repo_name)
-            clone_repo_with_location(repo_link, location) 
 
         scan_repo_report(args.first, args.second)
         
@@ -62,7 +67,9 @@ def workflow():
 
         if (args.upload): post_report_to_slack()
     except Exception as e:
-        print("An exception occurred" + str(e))
+        traceback.print_exc()
+        print(f"An exception occurred {str(e)}")
+
     finally:
         clean_after_scan()
 

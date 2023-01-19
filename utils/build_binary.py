@@ -2,7 +2,9 @@ import os
 from git import Repo
 from utils.clone_repo import clone_repo_with_name
 
-def build(first_branch, second_branch):
+def build(first_branch, second_branch, skip_build = False):
+    if skip_build:
+        return
     pwd = os.getcwd()
     temp_dir = f'{pwd}/temp'
     if not os.path.isdir(f'{temp_dir}/privado-core'):
@@ -26,7 +28,7 @@ def build_binary_and_move(repo, branch_name):
         repo.git.checkout(branch_name)
         o = repo.remotes.origin
         o.pull()
-    except:
+    except Exception:
         print(branch_name + " doesn't exist")
     print("Buliding Privado Binary for " + branch_name)
     os.system("cd " + core_dir + " && sbt clean && sbt stage")
