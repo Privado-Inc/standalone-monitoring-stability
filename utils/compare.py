@@ -24,35 +24,37 @@ def main(stable_file, dev_file, cpu_usage, stable_time, dev_time):
         print("Error occurced during parsing time data", e)
 
     for time in time_final_stable:
-        if ("real" in time):
-            time_final_stable = time
+        if ("elapsed" in time):
+            time_value = time.split()[2]
+            time_final_stable = time_value.split("e")[0]
             break
     
     for time in time_final_dev:
-        if ("real" in time):
-            time_final_dev = time
+        if ("elapsed" in time):
+            time_value = time.split()[2]
+            time_final_dev = time_value.split("e")[0]
             break
 
-    time_final_dev = time_final_dev.split('\t')[1]
-    time_final_stable = time_final_stable.split('\t')[1]
+    # time_final_dev = time_final_dev.split('\t')[1]
+    # time_final_stable = time_final_stable.split('\t')[1]
 
-    split_minutes_seconds_dev = re.split('[a-zA-Z]+', time_final_dev[:-1]) 
-    split_minutes_seconds_stable = re.split('[a-zA-Z]+', time_final_stable[:-1]) 
+    # split_minutes_seconds_dev = re.split('[a-zA-Z]+', time_final_dev[:-1]) 
+    # split_minutes_seconds_stable = re.split('[a-zA-Z]+', time_final_stable[:-1]) 
 
-    time_stable_minutes = 0
-    time_dev_minutes = 0
-    minutes_multiplier = 1/60
+    # time_stable_minutes = 0
+    # time_dev_minutes = 0
+    # minutes_multiplier = 1/60
     
-    for i in range(len(split_minutes_seconds_dev) - 1, -1, -1):
-        time_dev_minutes += (minutes_multiplier * float(split_minutes_seconds_dev[i]))
-        minutes_multiplier *= 60
+    # for i in range(len(split_minutes_seconds_dev) - 1, -1, -1):
+    #     time_dev_minutes += (minutes_multiplier * float(split_minutes_seconds_dev[i]))
+    #     minutes_multiplier *= 60
     
-    minutes_multiplier = 1/60
-    for i in range(len(split_minutes_seconds_stable) - 1, -1, -1):
-        time_stable_minutes += (minutes_multiplier * float(split_minutes_seconds_stable[i]))
+    # minutes_multiplier = 1/60
+    # for i in range(len(split_minutes_seconds_stable) - 1, -1, -1):
+    #     time_stable_minutes += (minutes_multiplier * float(split_minutes_seconds_stable[i]))
 
-    # Percent change on the latest branch wrt base branch
-    percent_change_time = f'{round(((time_dev_minutes - time_stable_minutes) / time_stable_minutes), 2) * 100}%'
+    # # Percent change on the latest branch wrt base branch
+    # percent_change_time = f'{round(((time_dev_minutes - time_stable_minutes) / time_stable_minutes), 2) * 100}%'
 
     previous_data = json.load(previous_file)
     current_data = json.load(current_file)
@@ -68,8 +70,8 @@ def main(stable_file, dev_file, cpu_usage, stable_time, dev_time):
     report.append(['privadoMainVersion', previous_data['privadoMainVersion'], '', '', 'privadoMainVersion', current_data['privadoMainVersion']])
     report.append(["Scan time analytics"])
     report.append(["RepoName", repo_name])
-    report.append(['Base version time', '','','', 'Latest version time', '', '% change wrt base'])
-    report.append([time_final_stable, '','','', time_final_dev, '', percent_change_time])
+    report.append(['Base version time', '','','', 'Latest version time'])
+    report.append([time_final_stable, '','','', time_final_dev])
 
     report.append([])
     report.append([])
