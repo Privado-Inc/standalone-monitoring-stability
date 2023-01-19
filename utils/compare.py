@@ -60,7 +60,7 @@ def main(stable_file, dev_file, cpu_usage, stable_time, dev_time):
     report = []
     repo_name = previous_data['repoName']
 
-    report.append(['Base Version', '', '', '', 'Latest Version'])
+    report.append(['Base Version', '', '', '', 'Head Version'])
     report.append(['privadoCoreVersion', previous_data['privadoCoreVersion'], '', '', 'privadoCoreVersion', current_data['privadoCoreVersion']])
     
     report.append(['privadoCLIVersion', previous_data['privadoCLIVersion'], '', '', 'privadoCLIVersion', current_data['privadoCLIVersion']])
@@ -77,8 +77,17 @@ def main(stable_file, dev_file, cpu_usage, stable_time, dev_time):
     source_data_dev = current_data['sources']
     
     report.append(['Analysis for sources'])
-    for row in process_new_sources(source_data_stable, source_data_dev, repo_name):
+    for row in process_new_sources(source_data_stable, source_data_dev):
         report.append(row)
+
+    report.append([])
+    report.append([])
+
+    report.append(['Analysis for collections'])
+
+    for collection in top_level_collection_processor(previous_data['collections'], current_data['collections']):
+        for row in collection:
+            report.append(row)
 
     report.append([])
     report.append([])
@@ -88,47 +97,34 @@ def main(stable_file, dev_file, cpu_usage, stable_time, dev_time):
 
     report.append(['Analysis for Storages Sinks'])
 
-    for row in process_sinks(dataflow_stable, dataflow_dev, repo_name,key='storages'):
+    for row in process_sinks(dataflow_stable, dataflow_dev,key='storages'):
         report.append(row)
 
     report.append([])
     report.append([])
-
 
     report.append(['Analysis for third_parties Sinks'])
 
-    for row in process_sinks(dataflow_stable, dataflow_dev, repo_name,key='third_parties'):
-        report.append(row)
-
-    
-    report.append([])
-    report.append([])
-
-
-    report.append(['Analysis for collections'])
-
-    for collection in top_level_collection_processor(previous_data['collections'], current_data['collections'], repo_name):
-        for row in collection:
-            report.append(row)
-
-    report.append([])
-    report.append([])
-
-    report.append(['Analysis for Leakages DataFlows'])
-
-    for row in process_leakages(dataflow_stable, dataflow_dev, repo_name):
+    for row in process_sinks(dataflow_stable, dataflow_dev,key='third_parties'):
         report.append(row)
 
     report.append([])
     report.append([])
-    report.append(["NUMBER OF PATHS ANANLYSIS: Analysis for Leakage DataFlows"])
+
+    report.append(['Analysis for Leakages Sinks'])
+
+    # for row in process_leakages(dataflow_stable, dataflow_dev, repo_name):
+    #     report.append(row)
+    for row in process_sinks(dataflow_stable, dataflow_dev,key='leakages'):
+        report.append(row)
+
+    report.append([])
+    report.append([])
+    report.append(["Paths Analysis: Analysis for Leakage DataFlows"])
 
     for row in process_path_analysis(previous_data, current_data, repo_name):
         report.append(row) 
 
-    report.append([])
-    report.append([])
-    
     report.append([])
     report.append([])
 
@@ -148,17 +144,17 @@ def main(stable_file, dev_file, cpu_usage, stable_time, dev_time):
     previous_file.close()
     current_file.close()
 
-def top_level_collection_processor(collections_stable, collections_dev, repo_name):
+def top_level_collection_processor(collections_stable, collections_dev):
     report = []
     for collection in list(zip(collections_stable, collections_dev)):
         stable_c = collection[0]
         dev_c = collection[1]
-        report.append(process_collection(stable_c, dev_c, repo_name,stable_c['name']))
+        report.append(process_collection(stable_c, dev_c,stable_c['name']))
 
     return report
 
-def process_collection(collections_stable, collections_dev, repo_name, collection_name):
-    collection_headings = ['repo_name', f'Number of Collections - {collection_name} ( Base ) ', f'Number of Collections - {collection_name} ( Latest )', 'List of  sourceId ( Base )', 'List of  sourceId ( Latest )', '% of change w.r.t base', 'New sourceIds added in Latest', 'Existing sourceIds removed from Latest']
+def process_collection(collections_stable, collections_dev, collection_name):
+    collection_headings = [f'Number of Collections - {collection_name} ( Base ) ', f'Number of Collections - {collection_name} ( Latest )', 'List of  sourceId ( Base )', 'List of  sourceId ( Latest )', '% of change w.r.t base', 'New sourceIds added in Latest', 'Existing sourceIds removed from Latest']
     stable_collections = len(collections_stable['collections'])
     dev_collections = len(collections_dev['collections'])
 
@@ -183,7 +179,7 @@ def process_collection(collections_stable, collections_dev, repo_name, collectio
     collections_sources_stable = '\n'.join(collections_sources_stable)
     collections_sources_dev = '\n'.join(collections_sources_dev)
 
-    result = [repo_name, stable_collections, dev_collections, collections_sources_stable, collections_sources_dev, percent_change, new_latest, removed_dev]
+    result = [stable_collections, dev_collections, collections_sources_stable, collections_sources_dev, percent_change, new_latest, removed_dev]
     
     return [
         collection_headings,
@@ -227,9 +223,9 @@ def create_csv(data):
 
     print("Report written")
 
-def process_new_sources(source_stable, source_dev, repo_name):
+def process_new_sources(source_stable, source_dev):
 
-    source_headings = ['repo_name', 'Number of Sources ( Base )', 'Number of Sources ( Latest )', 'List of Sources ( Base )', 'List of Sources ( Latest )', '% of change w.r.t base', 'New Sources added in Latest', 'Existing Sources remvoed from Latest']
+    source_headings = ['Number of Sources ( Base )', 'Number of Sources ( Latest )', 'List of Sources ( Base )', 'List of Sources ( Latest )', '% of change w.r.t base', 'New Sources added in Latest', 'Existing Sources remvoed from Latest']
     stable_sources = len(source_stable)
     dev_sources = len(source_dev)
 
@@ -242,17 +238,16 @@ def process_new_sources(source_stable, source_dev, repo_name):
     new_latest = '\n'.join(list(set(source_names_dev) - set(source_names_stable)))
     removed_dev = '\n'.join(list(set(source_names_stable) - set(source_names_dev)))
 
-    result = [repo_name, stable_sources, dev_sources, source_names_stable, source_names_dev, percent_change, new_latest, removed_dev]
+    result = [stable_sources, dev_sources, source_names_stable, source_names_dev, percent_change, new_latest, removed_dev]
     
     return [
         source_headings,
         list(map(lambda x: x if len(str(x)) else "--", result))
     ]
 
-def process_sinks(stable_dataflows, dev_dataflows, repo_name,key='storages'):
+def process_sinks(stable_dataflows, dev_dataflows,key='storages'):
 
     headings = [ 
-        'repo_name',
         f'Number of {key} sinks (base)',
         f'Number of {key} sinks (latest)',
         f'List of {key} Sinks (base)',
@@ -289,7 +284,7 @@ def process_sinks(stable_dataflows, dev_dataflows, repo_name,key='storages'):
     new_latest = '\n'.join(set(sink_names_dev.split('\n')) - set(sink_names_stable.split('\n')))
     removed_dev = '\n'.join(list(set(sink_names_stable.split('\n')) - set(sink_names_dev.split('\n'))))
 
-    result = [repo_name, stable_sinks, dev_sinks, sink_names_stable, sink_names_dev, percent_change, new_latest, removed_dev]
+    result = [stable_sinks, dev_sinks, sink_names_stable, sink_names_dev, percent_change, new_latest, removed_dev]
 
     return [headings, list(map(lambda x: x if len(str(x)) else "--", result))]
 
@@ -332,14 +327,32 @@ def process_leakages(stable_dataflows, dev_dataflows, repo_name,key='leakages'):
 
 def process_path_analysis(source_stable, source_dev, repo_name):
     path_value = []
-    path_value.append(['RepoName', repo_name])
+    result = []
+    delta = []
+    result.append(['RepoName', repo_name])
+    result.append([])
     path_value.append([])
 
-    for i in ['storages', 'leakages', 'third_parties']:
-        for i in sub_process_path(source_stable['dataFlow'][i], source_dev['dataFlow'][i], i):
-            path_value.append(i)
+    for i in range(0, 9):
+        delta.append(0)
 
-    return path_value
+    for i in ['storages', 'leakages', 'third_parties']:
+        value = sub_process_path(source_stable['dataFlow'][i], source_dev['dataFlow'][i], i)
+        for j in value[0]:
+            path_value.append(j)
+        for k in range(0, 9):
+            delta[k] += value[1][k]
+
+    result.append(["Total Sources", "Missing Sources", "New Sources"])
+    result.append([delta[0], delta[1], delta[2]])
+    result.append(["Total Sinks", "Missing Sinks", "New Sinks"])
+    result.append([delta[3], delta[4], delta[5]])
+    result.append(["Total Paths", "Missing Paths", "New Paths"])
+    result.append([delta[6], delta[7], delta[8]])
+    for k in path_value:
+        result.append(k)
+
+    return result
 
 def sub_process_path(source_stable, source_dev, name):
 
@@ -350,6 +363,10 @@ def sub_process_path(source_stable, source_dev, name):
 
     path_ids_list = {}
 
+    delta = []
+    for i in range(0, 9):
+        delta.append(0)
+
     # Process source data and storing all unique source in set
     for i in source_stable:
         source_id = i['sourceId']
@@ -357,7 +374,8 @@ def sub_process_path(source_stable, source_dev, name):
         for j in i['sinks']:
             hash_path = []
             for path in j['paths']:
-                value = json_to_hash(path['path'])
+                temp = [path['path'][0], path['path'][len(path['path']) - 1]]
+                value = json_to_hash(temp)
                 hash_path.append(value)
                 path_ids_list[value] = path['pathId']
             sink_data[j['id']] = hash_path
@@ -369,39 +387,64 @@ def sub_process_path(source_stable, source_dev, name):
         for j in i['sinks']:
             hash_path = []
             for path in j['paths']:
-                value = json_to_hash(path['path'])
+                temp = [path['path'][0], path['path'][len(path['path']) - 1]]
+                value = json_to_hash(temp)
                 hash_path.append(value)
                 path_ids_list[value] = path['pathId']
             sink_data[j['id']] = hash_path
         process_source_dev_data[source_id] = sink_data
+    
+    source_union = set(process_source_dev_data.keys()).union(set(process_source_stable_data.keys()))
+    delta[0] = len(source_union) # total source count
 
-    for i in set(process_source_dev_data.keys()).union(set(process_source_stable_data.keys())):
+    for i in source_union:
+
+        final_result_list.append([f"{name}: {i}"])
 
         if not process_source_stable_data.__contains__(i):
-            final_result_list.append([f"{i} (Source) is missing in base branch"])
+            path_count = standalone_source_process(process_source_dev_data[i])
+            final_result_list.append(["Total Path in Head", "Total Path in Base (Source Missing)", "%change"])
+            final_result_list.append([path_count, "0", "100%"])
             final_result_list.append([])
+            delta[2] += 1 # count of new source
+            delta[5] += len(list(process_source_dev_data[i].keys()))
+            delta[8] += path_count
             continue
 
         if not process_source_dev_data.__contains__(i):
-            final_result_list.append([f"{i} (Source) is missing in head branch"])
+            path_count = standalone_source_process(process_source_stable_data[i])
+            final_result_list.append(["Total Paths in Head (Source Missing)", "Total Paths in Base", "%change"])
+            final_result_list.append(["0", path_count, "-100%"])
             final_result_list.append([])
+            delta[1] += 1 # count of missing source
+            delta[4] += len(list(process_source_stable_data[i].keys()))
+            delta[7] += path_count
             continue
 
         stable_sink_data = process_source_stable_data[i]
         dev_sink_data = process_source_dev_data[i]
 
-        final_result_list.append([f"{name}: {i}"])
+        sink_union = set(stable_sink_data.keys()).union(set(dev_sink_data.keys()))
+        delta[3] += len(sink_union)
 
-        for j in set(stable_sink_data.keys()).union(set(dev_sink_data.keys())):
+        for j in sink_union:
 
             final_result_list.append([j])
 
             if not stable_sink_data.__contains__(j):
-                final_result_list.append([f"{j} (Sink) is missing in Base branch"])
+                path_count = len(dev_sink_data[j])
+                final_result_list.append(["Total Paths in Head", "Total Paths in Base (Sink Missing)", "% Change"])
+                final_result_list.append([str(path_count), "0", "100%"])
+                delta[5] += 1 # count of new sink
+                delta[8] += path_count
                 continue
             
             if not dev_sink_data.__contains__(j):
-                final_result_list.append([f"{j} (Sink) is missing in Head branch"])
+                path_count = len(stable_sink_data[j])
+                final_result_list.append(["Total Paths in Head (Sink Missing)", "Total Paths in Base", "% Change"])
+                final_result_list.append(["0", str(path_count), "-100%"])
+                delta[4] += 1 # count of missing sink
+                delta[7] += path_count
                 continue
 
             stable_path_data = stable_sink_data[j]
@@ -410,29 +453,51 @@ def sub_process_path(source_stable, source_dev, name):
             missing_path = set()
             new_path = set()
 
-            final_result_list.append(["Total Path in Head", "Total Path in Base", "% Change"])
-            final_result_list.append([len(stable_path_data), len(dev_path_data), f'{round((((len(dev_path_data) - len(stable_path_data)) / len(stable_path_data)) * 100),2)}%'])
+            path_union = set(stable_path_data).union(set(dev_path_data))
+            delta[6] += len(path_union)
 
-            for k in set(stable_path_data).union(set(dev_path_data)):
+            absolute_path_change = 0
+            total_path_count = len(path_union)
+            temp_result = []
+
+            for k in path_union:
 
                 if not stable_path_data.__contains__(k):
+                    absolute_path_change += 1
                     missing_path.add(k)
 
                 elif not dev_path_data.__contains__(k):
+                    absolute_path_change += 1
                     new_path.add(k)
 
             if len(missing_path) != 0:
-                final_result_list.append(["Missing Path ID in Head"])
+                temp_result.append(["Missing Path ID in Head"])
+                delta[8] += len(missing_path) # count of missing path
                 for j in missing_path:
-                    final_result_list.append([str(j)])
+                    temp_result.append([path_ids_list[j]])
 
             if len(new_path) != 0:
-                final_result_list.append(["New Path Id in Base"])
+                temp_result.append(["New Path Id in Head"])
+                delta[7] += len(new_path) # count of new path
                 for j in new_path:
-                    final_result_list.append([str(j)])
-        final_result_list.append([])
+                    temp_result.append([path_ids_list[j]])
 
-    return final_result_list
+            final_result_list.append(["Total Path in Head", "Total Path in Base", "% Change"])
+            final_result_list.append([len(stable_path_data), len(dev_path_data), f'{round((( absolute_path_change / (2 * total_path_count)) * 100),2)}%'])
+
+            temp_result.append([])
+            for k in temp_result:
+                final_result_list.append(k)
+
+    return [final_result_list, delta]
+
+def standalone_source_process(sinks_data):
+    
+    total_path = 0 
+    for i in list(sinks_data.keys()):
+        total_path += len(sinks_data[i])
+    
+    return total_path
 
 def json_to_hash(json_obj):
     json_str = json.dumps(json_obj, sort_keys=True)
