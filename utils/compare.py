@@ -482,7 +482,7 @@ def sub_process_path(source_stable, source_dev, name):
             total_flow_base += len(stable_path_data)
             final_result_list.append([f'{name}: {i} -> {j}', len(stable_path_data), len(dev_path_data), len(new_path), len(missing_path), f'{round((( absolute_path_change / (2 * total_path_count)) * 100),2)}%', '\n'.join(new_path), '\n'.join(missing_path)])
 
-    final_result_list.insert(['Total Flows', total_flow_head, total_flow_base])
+    final_result_list.insert(0, ['Total Flows', total_flow_head, total_flow_base])
     return [final_result_list, delta]
 
 def standalone_source_process(sinks_data):
