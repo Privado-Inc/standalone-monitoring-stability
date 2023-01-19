@@ -445,7 +445,7 @@ def sub_process_path(source_stable, source_dev, name):
                 for id in dev_sink_data[j]:
                     additional_ids.append(path_ids_list[id])
                     total_flow_head += len(dev_sink_data[j])
-                final_result_list.append([f'{name}: {i} -> {j}', 0, len(dev_sink_data[j]), 0, len(dev_sink_data[j]), "100%", '\n'.join(additional_ids),0])
+                final_result_list.append([f'{name}: {i} -> {j}', len(dev_sink_data[j]), 0, len(dev_sink_data[j]), 0, "100%", '\n'.join(additional_ids),0])
                 continue
             
             if not dev_sink_data.__contains__(j):
@@ -454,7 +454,7 @@ def sub_process_path(source_stable, source_dev, name):
                 for id in stable_sink_data[j]:
                     missing_ids.append(path_ids_list[id])
                     total_flow_base += len(stable_sink_data[j])
-                final_result_list.append([f'{name}: {i} -> {j}', len(stable_sink_data[j]), 0, len(stable_sink_data[j]), 0, "-100%", 0 ,'\n'.join(missing_ids)])
+                final_result_list.append([f'{name}: {i} -> {j}', 0, len(stable_sink_data[j]), 0, len(stable_sink_data[j]), "-100%", 0 ,'\n'.join(missing_ids)])
                 continue
 
             stable_path_data = stable_sink_data[j]
