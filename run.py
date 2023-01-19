@@ -16,6 +16,7 @@ parser.add_argument('--no-upload', dest='feature', action='store_false')
 parser.add_argument("-f", "--first", default = None)
 parser.add_argument('-s', "--second", default=None)
 parser.add_argument('-c', action='store_true')
+parser.add_argument('-b', "--boost", default=False)
 parser.set_defaults(feature=True)
 
 args: argparse.Namespace = parser.parse_args()
@@ -30,10 +31,10 @@ def workflow():
     valid_repositories = []
     cwd = os.getcwd()
     
-    delete_action(args.c)
+    delete_action(args.c, args.boost)
 
     # build the privado binary for both branches 
-    build(args.first, args.second)
+    build(args.first, args.second, args.boost)
 
     # Delete previous scan report if exist
     path = f'{cwd}/comparison_report.csv'
@@ -71,6 +72,6 @@ def workflow():
         print(f"An exception occurred {str(e)}")
 
     finally:
-        clean_after_scan()
+        clean_after_scan(args.boost)
 
 workflow()

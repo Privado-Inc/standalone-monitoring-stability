@@ -3,7 +3,7 @@ from git import Repo
 from utils.clone_repo import clone_repo_with_name
 
 def build(first_branch, second_branch, skip_build = False):
-    if skip_build:
+    if skip_build and os.path.exists(f"{os.getcwd()}/temp/binary"):
         return
     pwd = os.getcwd()
     temp_dir = f'{pwd}/temp'
