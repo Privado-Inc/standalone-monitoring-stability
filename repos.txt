@@ -1,5 +1,4 @@
 https://github.com/afsalashyana/Library-Assistant.git
-https://github.com/akrajilwar/Android-Login-And-Registration.git
 https://github.com/saurabh-sudo/BankingSystem-Backend.git
 https://github.com/hiteshbedre/BookStoreApp-Distributed-Application.git
 https://github.com/ShiftLeftSecurity/shiftleft-java-demo.git
