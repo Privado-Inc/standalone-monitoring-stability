@@ -15,11 +15,11 @@ def main(stable_file, dev_file, cpu_usage, stable_time, dev_time):
     current_file = open(dev_file)
     time_data_stable = open(stable_time)
     time_data_dev = open(dev_time)
+    
+    dev_time_value = "NA"
+    stable_time_value = "NA"
 
     # Comes with a newline at the start, so the second element
-    time_final_stable = 0
-    time_final_dev = 0
-
     try:
         time_final_stable = (time_data_stable.read().split('\n'))
         time_final_dev = (time_data_dev.read().split('\n'))
@@ -40,35 +40,35 @@ def main(stable_file, dev_file, cpu_usage, stable_time, dev_time):
         time_final_dev = time_final_dev.split('\t')[1]
         time_final_stable = time_final_stable.split('\t')[1]
 
-        split_minutes_seconds_dev = re.split('[a-zA-Z]+', time_final_dev[:-1]) 
-        split_minutes_seconds_stable = re.split('[a-zA-Z]+', time_final_stable[:-1]) 
+        # split_minutes_seconds_dev = re.split('[a-zA-Z]+', time_final_dev[:-1]) 
+        # split_minutes_seconds_stable = re.split('[a-zA-Z]+', time_final_stable[:-1]) 
 
-        time_stable_minutes = 0
-        time_dev_minutes = 0
-        minutes_multiplier = 1/60
+        # time_stable_minutes = 0
+        # time_dev_minutes = 0
+        # minutes_multiplier = 1/60
         
-        for i in range(len(split_minutes_seconds_dev) - 1, -1, -1):
-            time_dev_minutes += (minutes_multiplier * float(split_minutes_seconds_dev[i]))
-            minutes_multiplier *= 60
+        # for i in range(len(split_minutes_seconds_dev) - 1, -1, -1):
+        #     time_dev_minutes += (minutes_multiplier * float(split_minutes_seconds_dev[i]))
+        #     minutes_multiplier *= 60
         
-        minutes_multiplier = 1/60
-        for i in range(len(split_minutes_seconds_stable) - 1, -1, -1):
-            time_stable_minutes += (minutes_multiplier * float(split_minutes_seconds_stable[i]))
+        # minutes_multiplier = 1/60
+        # for i in range(len(split_minutes_seconds_stable) - 1, -1, -1):
+        #     time_stable_minutes += (minutes_multiplier * float(split_minutes_seconds_stable[i]))
 
-        # Percent change on the latest branch wrt base branch
-        percent_change_time = f'{round(((time_dev_minutes - time_stable_minutes) / time_stable_minutes), 2) * 100}%'
+        # # Percent change on the latest branch wrt base branch
+        # percent_change_time = f'{round(((time_dev_minutes - time_stable_minutes) / time_stable_minutes), 2) * 100}%'
 
     except Exception as e: 
         for time in time_final_stable:
             if ("elapsed" in time):
                 time_value = time.split()[2]
-                time_final_stable = time_value.split("e")[0]
+                stable_time_value = time_value.split("e")[0]
                 break
     
         for time in time_final_dev:
             if ("elapsed" in time):
                 time_value = time.split()[2]
-                time_final_dev = time_value.split("e")[0]
+                dev_time_value = time_value.split("e")[0]
                 break
 
 
@@ -78,18 +78,17 @@ def main(stable_file, dev_file, cpu_usage, stable_time, dev_time):
     report = []
     repo_name = previous_data['repoName']
 
-    report.append(['Base Version', '', '', '', 'Head Version'])
-    report.append(['privadoCoreVersion', previous_data['privadoCoreVersion'], '', '', 'privadoCoreVersion', current_data['privadoCoreVersion']])
+    # report.append(['Base Version', '', '', '', 'Head Version'])
+    # report.append(['privadoCoreVersion', previous_data['privadoCoreVersion'], '', '', 'privadoCoreVersion', current_data['privadoCoreVersion']])
     
-    report.append(['privadoCLIVersion', previous_data['privadoCLIVersion'], '', '', 'privadoCLIVersion', current_data['privadoCLIVersion']])
+    # report.append(['privadoCLIVersion', previous_data['privadoCLIVersion'], '', '', 'privadoCLIVersion', current_data['privadoCLIVersion']])
 
-    report.append(['privadoMainVersion', previous_data['privadoMainVersion'], '', '', 'privadoMainVersion', current_data['privadoMainVersion']])
-    report.append(["Scan time analytics"])
+    # report.append(['privadoMainVersion', previous_data['privadoMainVersion'], '', '', 'privadoMainVersion', current_data['privadoMainVersion']])
+    # report.append(["Scan time analytics"])
     report.append(["RepoName", repo_name])
-    report.append(['Base version time', '','','', 'Latest version time'])
-    report.append([time_final_stable, '','','', time_final_dev])
+    report.append(['Base version time', 'Latest version time'])
+    report.append([stable_time_value, dev_time_value])
 
-    report.append([])
     report.append([])
     source_data_stable = previous_data['sources']
     source_data_dev = current_data['sources']
@@ -191,8 +190,8 @@ def process_collection(collections_stable, collections_dev, collection_name):
         print(e)
         percent_change = '0.00%'
 
-    new_latest = '\n'.join(list(set(collections_sources_dev) - set(collections_sources_stable)))
-    removed_dev = '\n'.join(list(set(collections_sources_stable) - set(collections_sources_dev)))
+    new_latest = '\n'.join(list(set(collections_sources_dev).difference(set(collections_sources_stable))))
+    removed_dev = '\n'.join(list(set(collections_sources_stable).difference(set(collections_sources_dev))))
 
     collections_sources_stable = '\n'.join(collections_sources_stable)
     collections_sources_dev = '\n'.join(collections_sources_dev)
@@ -253,8 +252,8 @@ def process_new_sources(source_stable, source_dev):
     # percent change in latest sources wrt stable release
     percent_change = f'{((dev_sources - stable_sources) / stable_sources) * 100}%'   
 
-    new_latest = '\n'.join(list(set(source_names_dev) - set(source_names_stable)))
-    removed_dev = '\n'.join(list(set(source_names_stable) - set(source_names_dev)))
+    new_latest = '\n'.join(list(set(source_names_dev).difference(set(source_names_stable))))
+    removed_dev = '\n'.join(list(set(source_names_stable).difference(set(source_names_dev))))
 
     result = [stable_sources, dev_sources, source_names_stable, source_names_dev, percent_change, new_latest, removed_dev]
     
@@ -299,49 +298,12 @@ def process_sinks(stable_dataflows, dev_dataflows,key='storages'):
     except Exception as e:
         print(e)
         percent_change = '0.00%'
-    new_latest = '\n'.join(set(sink_names_dev.split('\n')) - set(sink_names_stable.split('\n')))
-    removed_dev = '\n'.join(list(set(sink_names_stable.split('\n')) - set(sink_names_dev.split('\n'))))
+    new_latest = '\n'.join(list(sink_names_dev.difference(sink_names_stable)))
+    removed_dev = '\n'.join(list(sink_names_stable.difference(sink_names_dev)))
 
     result = [stable_sinks, dev_sinks, sink_names_stable, sink_names_dev, percent_change, new_latest, removed_dev]
 
     return [headings, list(map(lambda x: x if len(str(x)) else "--", result))]
-
-
-def process_leakages(stable_dataflows, dev_dataflows, repo_name,key='leakages'):
-    headings = [ 
-        'repo_name',
-        f'Number of {key} sinks (base)',
-        f'Number of {key} sinks (latest)',
-        f'List of {key} Sinks (base)',
-        f'List of {key} Sinks ( Latest )',
-        '% of change w.r.t base',
-        f'New {key} Sinks added in Latest',
-        f'Existing {key} Sinks remvoed from Latest'
-    ]
-
-    stable_leakages = stable_dataflows[key]
-    dev_leakages = dev_dataflows[key]
-
-    num_stable_leakages = len(stable_leakages)
-    num_dev_leakages = len(dev_leakages)
-
-    leakage_names_stable = '\n'.join(list(map(lambda x: x['sourceId'], stable_leakages)))
-    leakage_names_dev = '\n'.join(list(map(lambda x: x['sourceId'], dev_leakages)))
-
-    try:
-        percent_change = f'{round((((num_dev_leakages - num_stable_leakages) / num_stable_leakages) * 100),2)}%'   
-    except Exception as e:
-        print(e)
-        percent_change = '0.00%'
-    new_latest = '\n'.join(set(leakage_names_dev.split('\n')) - set(leakage_names_stable.split('\n'))) 
-    removed_dev = '\n'.join(list(set(leakage_names_stable.split('\n')) - set(leakage_names_dev.split('\n'))))
-    
-    result = [repo_name, num_stable_leakages, num_dev_leakages, leakage_names_stable, leakage_names_dev, percent_change, new_latest, removed_dev]
-    
-    return [
-        headings,
-        list(map(lambda x: x if len(str(x)) else "--", result))
-    ]
 
 def process_path_analysis(source_stable, source_dev, repo_name):
     path_value = []
