@@ -17,14 +17,14 @@ def main(stable_file, dev_file, cpu_usage, stable_time, dev_time):
     time_data_dev = open(dev_time)
 
     # Comes with a newline at the start, so the second element
+    time_final_stable = 0
+    time_final_dev = 0
+
     try:
         time_final_stable = (time_data_stable.read().split('\n'))
         time_final_dev = (time_data_dev.read().split('\n'))
     except Exception as e:
         print("Error occurced during parsing time data", e)
-
-    time_final_stable = 0
-    time_final_dev = 0
 
     try:
         for time in time_final_stable:
