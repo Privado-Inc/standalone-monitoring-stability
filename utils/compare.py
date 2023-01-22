@@ -86,12 +86,12 @@ def main(base_file, head_file, cpu_usage, base_time, head_time, base_branch_name
     report.append([])
     
     report.append(['Analysis for Sources'])
-    for row in process_new_sources(base_data['sources'], head_data['sources']):
+    for row in process_new_sources(base_data['sources'], head_data['sources'], base_branch_name, head_branch_name):
         report.append(row)
     report.append([])
 
     report.append(['Analysis for Collections'])
-    for collection in top_level_collection_processor(base_data['collections'], head_data['collections']):
+    for collection in top_level_collection_processor(base_data['collections'], head_data['collections'], base_branch_name, head_branch_name):
         for row in collection:
             report.append(row)
     report.append([])
@@ -115,7 +115,7 @@ def main(base_file, head_file, cpu_usage, base_time, head_time, base_branch_name
     report.append([])
 
     report.append(["Paths Analysis: Analysis for Missing and Additional Flows"])
-    for row in process_path_analysis(base_data, head_data, repo_name):
+    for row in process_path_analysis(base_data, head_data, repo_name, base_branch_name, head_branch_name):
         report.append(row)
 
     cpu_utilization_data = open(cpu_usage, "r+")
