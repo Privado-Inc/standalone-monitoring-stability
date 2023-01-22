@@ -81,8 +81,8 @@ def main(base_file, head_file, cpu_usage, base_time, head_time, base_branch_name
     report.append(["RepoName", repo_name])
     report.append(["Base Branch Name", base_branch_name])
     report.append(["Head Branch Name", head_branch_name])
-    report.append([f'{base_branch_name} version time', base_time_value])
-    report.append([f'{head_branch_name} version time', head_time_value])
+    report.append([f'{base_branch_name} Branch run time', base_time_value])
+    report.append([f'{head_branch_name} Branch run time', head_time_value])
     report.append([])
     
     report.append(['Analysis for Sources'])
@@ -464,4 +464,4 @@ def process_cpu_data(cpu_utilization_data):
     return final_result_list
 
 if __name__ == "__main__":
-    main("/utils/privado.json","/utils/privado1.json",0,0,0)
+    main("/utils/privado.json","/utils/privado1.json",0,0,0, "ankit", "kk")
