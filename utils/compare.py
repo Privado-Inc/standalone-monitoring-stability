@@ -136,7 +136,7 @@ def main(base_file, head_file, cpu_usage, base_time, head_time, base_branch_name
 def top_level_collection_processor(collections_base, collections_head, base_branch_name, head_branch_name):
     report = []
     for collection in list(zip(collections_base, collections_head)):
-        report.append(process_collection(collection[0], collection[1], collection[0]['name']), base_branch_name, head_branch_name)
+        report.append(process_collection(collection[0], collection[1], collection[0]['name'], base_branch_name, head_branch_name))
 
     return report
 
