@@ -27,7 +27,7 @@ def scan_repo_report(first_branch, second_branch):
             except:
                 print("Unable to fetch CPU and memory Status")
     
-            # Scan the cloned repo with first branch
+            # Scan the cloned repo with first branch and push output to a file
             first_command = f'cd {cwd}/temp/binary/{first_branch}/bin && ({{ time ./privado-core scan {scan_dir} -ic {cwd}/temp/privado --skip-upload ;}} 2> {cwd}/temp/result/{first_branch}/{repo}_time.txt | tee {cwd}/temp/result/{first_branch}/output.txt)' 
             # Execute the command to generate the binary file for first branch
             os.system(first_command)
@@ -37,7 +37,7 @@ def scan_repo_report(first_branch, second_branch):
             dest_path = f'{cwd}/temp/result/{first_branch}/{repo}.json'
             shutil.move(src_path,dest_path)
 
-            # Scan the cloned repo with second branch
+            # Scan the cloned repo with second branch and push output to a file
             second_command = f'cd {cwd}/temp/binary/{second_branch}/bin && ({{ time ./privado-core scan {scan_dir} -ic {cwd}/temp/privado --skip-upload ; }} 2> {cwd}/temp/result/{second_branch}/{repo}_time.txt | tee {cwd}/temp/result/{second_branch}/output.txt)'
             # Execute the command to generate the binary file for seconf branch
             os.system(second_command)
