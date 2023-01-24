@@ -150,7 +150,7 @@ def compare_files(base_file_uri, head_file_uri):
 
     report = []
 
-    report.append("Comparision Result")
+    report.append(["Comparision Result"])
     report.append([])
     report.append(["First File", base_file_uri])
     report.append(["Second File", head_file_uri])
@@ -372,13 +372,11 @@ def process_path_analysis(base_source, head_source, repo_name, base_branch_name,
     return result
 
 def sub_process_path(base_source, head_source, name, base_branch_name, head_branch_name):
-
+    
     final_result_list = []
 
     process_source_base_data = {}
     process_source_head_data = {}
-
-    path_ids_list = {}
 
     total_flow_head = 0
     total_flow_base = 0
@@ -392,27 +390,31 @@ def sub_process_path(base_source, head_source, name, base_branch_name, head_bran
         source_id = i['sourceId']
         sink_data = {}
         for j in i['sinks']:
-            hash_path = []
+            hash_path = {}
             for path in j['paths']:
                 temp = [path['path'][0], path['path'][len(path['path']) - 1]]
                 value = json_to_hash(temp)
-                hash_path.append(value)
-                path_ids_list[value] = path['pathId']
+                hash_path[value] = path['pathId']
             sink_data[j['id']] = hash_path
-        process_source_base_data[source_id] = sink_data
+        if process_source_base_data.__contains__(source_id):
+            process_source_base_data[source_id][j['id']] = hash_path
+        else:
+            process_source_base_data[source_id] = sink_data
 
     for i in head_source:
         source_id = i['sourceId']
         sink_data = {}
         for j in i['sinks']:
-            hash_path = []
+            hash_path = {}
             for path in j['paths']:
                 temp = [path['path'][0], path['path'][len(path['path']) - 1]]
                 value = json_to_hash(temp)
-                hash_path.append(value)
-                path_ids_list[value] = path['pathId']
+                hash_path[value] = path['pathId']
             sink_data[j['id']] = hash_path
-        process_source_head_data[source_id] = sink_data
+        if process_source_head_data.__contains__(source_id):
+            process_source_head_data[source_id][j['id']] = sink_data
+        else:
+            process_source_head_data[source_id] = sink_data
     
     source_union = set(process_source_head_data.keys()).union(set(process_source_base_data.keys()))
     delta[0] = len(process_source_head_data.keys()) # total source count in Head
@@ -428,9 +430,9 @@ def sub_process_path(base_source, head_source, name, base_branch_name, head_bran
             delta[4] += len(list(process_source_head_data[i].keys()))
             for sink in process_source_head_data[i].keys():
                 additional_ids = []
-                for id in process_source_head_data[i][sink]:
-                    additional_ids.append(path_ids_list[id])
-                    total_flow_head += len(process_source_head_data[i][sink])
+                for id in process_source_head_data[i][sink].keys():
+                    additional_ids.append(process_source_head_data[i][sink][id])
+                total_flow_head += len(process_source_head_data[i][sink])
                 final_result_list.append([f'{name}: {i} -> {sink}', len(process_source_head_data[i][sink]), 0, len(process_source_head_data[i][sink]), 0, "100%", '\n'.join(additional_ids), 0])
             continue
 
@@ -440,9 +442,9 @@ def sub_process_path(base_source, head_source, name, base_branch_name, head_bran
             delta[5] += len(list(process_source_base_data[i].keys()))
             for sink in process_source_base_data[i].keys():
                 missing_ids = []
-                for id in process_source_base_data[i][sink]:
-                    missing_ids.append(path_ids_list[id])
-                    total_flow_base += len(process_source_base_data[i][sink])
+                for id in process_source_base_data[i][sink].keys():
+                    missing_ids.append(process_source_base_data[i][sink][id])
+                total_flow_base += len(process_source_base_data[i][sink])
                 final_result_list.append([f'{name}: {i} -> {sink}', 0, len(process_source_base_data[i][sink]), 0, len(process_source_base_data[i][sink]), "-100%", 0,'\n'.join(missing_ids)])
             continue
 
@@ -457,18 +459,18 @@ def sub_process_path(base_source, head_source, name, base_branch_name, head_bran
             if not base_sink_data.__contains__(j):
                 delta[6] += 1 
                 additional_ids = []
-                for id in head_sink_data[j]:
-                    additional_ids.append(path_ids_list[id])
-                    total_flow_head += len(head_sink_data[j])
+                for id in head_sink_data[j].keys():
+                    additional_ids.append(head_sink_data[j][id])
+                total_flow_head += len(head_sink_data[j])
                 final_result_list.append([f'{name}: {i} -> {j}', len(head_sink_data[j]), 0, len(head_sink_data[j]), 0, "100%", '\n'.join(additional_ids),0])
                 continue
             
             if not head_sink_data.__contains__(j):
                 delta[7] += 1 
                 missing_ids = []
-                for id in base_sink_data[j]:
-                    missing_ids.append(path_ids_list[id])
-                    total_flow_base += len(base_sink_data[j])
+                for id in base_sink_data[j].keys():
+                    missing_ids.append(base_sink_data[j][id])
+                total_flow_base += len(base_sink_data[j])
                 final_result_list.append([f'{name}: {i} -> {j}', 0, len(base_sink_data[j]), 0, len(base_sink_data[j]), "-100%", 0 ,'\n'.join(missing_ids)])
                 continue
 
@@ -478,7 +480,7 @@ def sub_process_path(base_source, head_source, name, base_branch_name, head_bran
             missing_path = set()
             new_path = set()
 
-            path_union = set(base_path_data).union(set(head_path_data))
+            path_union = set(base_sink_data[j].keys()).union(set(head_sink_data[j].keys()))
 
             absolute_path_change = 0
             total_path_count = len(path_union)
@@ -487,15 +489,15 @@ def sub_process_path(base_source, head_source, name, base_branch_name, head_bran
 
                 if not base_path_data.__contains__(k):
                     absolute_path_change += 1
-                    new_path.add(path_ids_list[k])
+                    new_path.add(head_path_data[k])
 
                 elif not head_path_data.__contains__(k):
                     absolute_path_change += 1
-                    missing_path.add(path_ids_list[k])
+                    missing_path.add(base_path_data[k])
 
             total_flow_head += len(head_path_data)
             total_flow_base += len(base_path_data)
-            final_result_list.append([f'{name}: {i} -> {j}', len(base_path_data), len(head_path_data), len(new_path), len(missing_path), f'{round((( absolute_path_change / (2 * total_path_count)) * 100),2)}%', '\n'.join(new_path), '\n'.join(missing_path)])
+            final_result_list.append([f'{name}: {i} -> {j}', len(head_path_data), len(base_path_data), len(new_path), len(missing_path), f'{round((( absolute_path_change / (2 * total_path_count)) * 100),2)}%', '\n'.join(new_path), '\n'.join(missing_path)])
 
     final_result_list.insert(1, ['Total Flows', total_flow_head, total_flow_base])
     return [final_result_list, delta]
