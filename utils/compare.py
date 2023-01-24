@@ -133,6 +133,70 @@ def main(base_file, head_file, cpu_usage, base_time, head_time, base_branch_name
     base_file.close()
     head_file.close()
 
+# when only need to compare the privado.json file
+def compare_files(base_file_uri, head_file_uri):
+    if not os.path.isfile(base_file_uri):
+        print(f'Please provide complete vaild base file: {base_file_uri}')
+        return
+
+    if not os.path.isfile(head_file_uri):
+        print(f'Please provide complete vaild head file: {head_file_uri}')
+        return
+
+    base_file = open(base_file_uri)
+    head_file = open(head_file_uri)
+    base_data = json.load(base_file)
+    head_data = json.load(head_file)
+
+    report = []
+
+    report.append("Comparision Result")
+    report.append([])
+    report.append(["First File", base_file_uri])
+    report.append(["Second File", head_file_uri])
+    report.append([])
+
+    report.append(['Analysis for Sources'])
+    for row in process_new_sources(base_data['sources'], head_data['sources'], "First", "Second"):
+        report.append(row)
+    report.append([])
+
+    report.append(['Analysis for Collections'])
+    for collection in top_level_collection_processor(base_data['collections'], head_data['collections'], "First", "Second"):
+        for row in collection:
+            report.append(row)
+    report.append([])
+
+    dataflow_base = base_data['dataFlow']
+    dataflow_head = head_data['dataFlow']
+
+    report.append(['Analysis for Storages Sinks'])
+    for row in process_sinks(dataflow_base, dataflow_head, "First", "Second", key='storages'):
+        report.append(row)
+    report.append([])
+
+    report.append(['Analysis for Third Parties Sinks'])
+    for row in process_sinks(dataflow_base, dataflow_head, "First", "Second", key='third_parties'):
+        report.append(row)
+    report.append([])
+
+    report.append(['Analysis for Leakages Sinks'])
+    for row in process_sinks(dataflow_base, dataflow_head, "First", "Second", key='leakages'):
+        report.append(row)
+    report.append([])
+
+    report.append(["Paths Analysis: Analysis for Missing and Additional Flows"])
+    for row in process_path_analysis(base_data, head_data, "NA", "First", "Second"):
+        report.append(row)
+
+    report.append(['---------', '---------', 'END', '---------', '---------'])
+
+    create_csv(report)
+
+    base_file.close()
+    head_file.close()
+
+
 def top_level_collection_processor(collections_base, collections_head, base_branch_name, head_branch_name):
     report = []
     for collection in list(zip(collections_base, collections_head)):
@@ -141,7 +205,7 @@ def top_level_collection_processor(collections_base, collections_head, base_bran
     return report
 
 def process_collection(collections_base, collections_head, collection_name, base_branch_name, head_branch_name):
-    collection_headings = [f'Number of Collections - {collection_name} ( {base_branch_name} ) ', f'Number of Collections - {collection_name} ( Latest )', 'List of  sourceId ( Base )', 'List of  sourceId ( Latest )', '% of change w.r.t base', 'New sourceIds added in Latest', 'Existing sourceIds removed from Latest']
+    collection_headings = [f'Number of Collections - {collection_name} ( {base_branch_name} ) ', f'Number of Collections - {collection_name} ( {head_branch_name} )', f'List of  sourceId ( {base_branch_name} )', f'List of  sourceId ( {head_branch_name} )', f'% of change w.r.t {base_branch_name}', f'New sourceIds added in {head_branch_name}', f'Existing sourceIds removed from {head_branch_name}']
     base_collections = len(collections_base['collections'])
     head_collections = len(collections_head['collections'])
 
@@ -211,7 +275,7 @@ def create_csv(data):
 
 def process_new_sources(source_base, source_head, base_branch_name, head_branch_name):
 
-    source_headings = [f'Number of Sources ( {base_branch_name} )', f'Number of Sources ( {head_branch_name} )', f'List of Sources ( {base_branch_name} )', f'List of Sources ( {head_branch_name} )', '% of change w.r.t base', f'New Sources added in {head_branch_name}', f'Missing Sources in {head_branch_name}']
+    source_headings = [f'Number of Sources ( {base_branch_name} )', f'Number of Sources ( {head_branch_name} )', f'List of Sources ( {base_branch_name} )', f'List of Sources ( {head_branch_name} )', '% change', f'New Sources added in {head_branch_name}', f'Missing Sources in {head_branch_name}']
     base_sources = len(source_base)
     head_sources = len(source_head)
 
@@ -354,7 +418,7 @@ def sub_process_path(base_source, head_source, name, base_branch_name, head_bran
     delta[0] = len(process_source_head_data.keys()) # total source count in Head
     delta[1] = len(process_source_base_data.keys())
 
-    final_result_list.append([f'Flow ({name})', f'{head_branch_name} Branch', f'{base_branch_name} Branch', f'Additional in {head_branch_name}', f'Missing in {base_branch_name}', "Delta in %", "Additional Path ID", "Missing Path Id"])
+    final_result_list.append([f'Flow ({name})', head_branch_name, base_branch_name, f'Additional in {head_branch_name}', f'Missing in {base_branch_name}', "Delta in %", "Additional Path ID", "Missing Path Id"])
 
     for i in source_union:
 

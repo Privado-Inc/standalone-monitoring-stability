@@ -1,6 +1,6 @@
 import utils.repo_link_generator
 from utils.scan import scan_repo_report
-from utils.compare import main as compare_and_generate_report
+from utils.compare import main as compare_and_generate_report, compare_files
 from utils.post_to_slack import post_report_to_slack
 from utils.build_binary import build
 from utils.delete import delete_action, clean_after_scan
@@ -14,9 +14,10 @@ parser.add_argument("-r", "--repos", default=f"{os.getcwd()}/repos.txt")
 parser.add_argument('--upload', action='store_true')
 parser.add_argument('--no-upload', dest='feature', action='store_false')
 parser.add_argument("-f", "--first", default = None)
-parser.add_argument('-s', "--second", default=None)
+parser.add_argument('-s', "--second", default= None)
 parser.add_argument('-c', action='store_true')
 parser.add_argument('-b', "--boost", default=False)
+parser.add_argument('-m', action='store_true')
 parser.set_defaults(feature=True)
 
 args: argparse.Namespace = parser.parse_args()
@@ -26,6 +27,11 @@ def workflow():
     # check if branch name present in args
     if args.first is None or args.second is None:
         print("Please provide flags '-f' and '-s' followed by branch name")
+        return
+
+    # When Privado.json files provided
+    if args.m:
+        compare_files(args.first, args.second)
         return
 
     valid_repositories = []
