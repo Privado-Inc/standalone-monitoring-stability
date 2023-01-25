@@ -397,7 +397,7 @@ def sub_process_path(base_source, head_source, name, base_branch_name, head_bran
                 hash_path[value] = path['pathId']
             sink_data[j['id']] = hash_path
         if process_source_base_data.__contains__(source_id):
-            process_source_base_data[source_id][j['id']] = hash_path
+            process_source_base_data[source_id][j['id']] = sink_data
         else:
             process_source_base_data[source_id] = sink_data
 
