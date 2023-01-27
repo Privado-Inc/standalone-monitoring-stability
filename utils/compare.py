@@ -412,7 +412,7 @@ def sub_process_path(base_source, head_source, name, base_branch_name, head_bran
                 hash_path[value] = path['pathId']
             sink_data[j['id']] = hash_path
         if process_source_head_data.__contains__(source_id):
-            process_source_head_data[source_id][j['id']] = sink_data
+            process_source_head_data[source_id][j['id']] = hash_path
         else:
             process_source_head_data[source_id] = sink_data
     
@@ -420,7 +420,7 @@ def sub_process_path(base_source, head_source, name, base_branch_name, head_bran
     delta[0] = len(process_source_head_data.keys()) # total source count in Head
     delta[1] = len(process_source_base_data.keys())
 
-    final_result_list.append([f'Flow ({name})', head_branch_name, base_branch_name, f'Additional in {head_branch_name}', f'Missing in {base_branch_name}', "Delta in %", "Additional Path ID", "Missing Path Id"])
+    final_result_list.append([f'Flow ({name})', head_branch_name, base_branch_name, f'Additional in {head_branch_name}', f'Missing in {head_branch_name}', "Delta in %", "Additional Path ID", "Missing Path Id"])
 
     for i in source_union:
 
@@ -433,7 +433,7 @@ def sub_process_path(base_source, head_source, name, base_branch_name, head_bran
                 for id in process_source_head_data[i][sink].keys():
                     additional_ids.append(process_source_head_data[i][sink][id])
                 total_flow_head += len(process_source_head_data[i][sink])
-                final_result_list.append([f'{name}: {i} -> {sink}', len(process_source_head_data[i][sink]), 0, len(process_source_head_data[i][sink]), 0, "100%", '\n'.join(additional_ids), 0])
+                final_result_list.append([f'{name}: {i} -> {sink}', len(process_source_head_data[i][sink].keys()), 0, len(process_source_head_data[i][sink].keys()), 0, "100%", '\n'.join(additional_ids), 0])
             continue
 
         if not process_source_head_data.__contains__(i):
@@ -445,7 +445,7 @@ def sub_process_path(base_source, head_source, name, base_branch_name, head_bran
                 for id in process_source_base_data[i][sink].keys():
                     missing_ids.append(process_source_base_data[i][sink][id])
                 total_flow_base += len(process_source_base_data[i][sink])
-                final_result_list.append([f'{name}: {i} -> {sink}', 0, len(process_source_base_data[i][sink]), 0, len(process_source_base_data[i][sink]), "-100%", 0,'\n'.join(missing_ids)])
+                final_result_list.append([f'{name}: {i} -> {sink}', 0, len(process_source_base_data[i][sink].keys()), 0, len(process_source_base_data[i][sink].keys()), "-100%", 0,'\n'.join(missing_ids)])
             continue
 
         base_sink_data = process_source_base_data[i]
@@ -462,7 +462,7 @@ def sub_process_path(base_source, head_source, name, base_branch_name, head_bran
                 for id in head_sink_data[j].keys():
                     additional_ids.append(head_sink_data[j][id])
                 total_flow_head += len(head_sink_data[j])
-                final_result_list.append([f'{name}: {i} -> {j}', len(head_sink_data[j]), 0, len(head_sink_data[j]), 0, "100%", '\n'.join(additional_ids),0])
+                final_result_list.append([f'{name}: {i} -> {j}', len(head_sink_data[j].keys()), 0, len(head_sink_data[j].keys()), 0, "100%", '\n'.join(additional_ids),0])
                 continue
             
             if not head_sink_data.__contains__(j):
@@ -471,7 +471,7 @@ def sub_process_path(base_source, head_source, name, base_branch_name, head_bran
                 for id in base_sink_data[j].keys():
                     missing_ids.append(base_sink_data[j][id])
                 total_flow_base += len(base_sink_data[j])
-                final_result_list.append([f'{name}: {i} -> {j}', 0, len(base_sink_data[j]), 0, len(base_sink_data[j]), "-100%", 0 ,'\n'.join(missing_ids)])
+                final_result_list.append([f'{name}: {i} -> {j}', 0, len(base_sink_data[j].keys()), 0, len(base_sink_data[j].keys()), "-100%", 0 ,'\n'.join(missing_ids)])
                 continue
 
             base_path_data = base_sink_data[j]
