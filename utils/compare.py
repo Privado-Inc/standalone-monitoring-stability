@@ -167,7 +167,7 @@ def process_performance_data(base_branch_name, head_branch_name, repo_name, head
         result.append(["Repo", "Branch", "Language detection", "CPG Generation time", "Property file pass",
                         "Run oss data flow", "LiteralTagger", "IdentifierTagger", "IdentifierTagger Non Member", "DBConfigTagger",
                         "RegularSinkTagger", "APITagger", "CustomInheritTagger", "CollectionTagger", "Tagging source code",
-                        "no of source nodes", "Finding flows", "Finding flows (time)", "Filtering flows 1",
+                        "no of source nodes", "no of sinks nodes" ,"Finding flows", "Finding flows (time)", "Filtering flows 1",
                         "Filtering flows 1 (time)", "Filtering flows 2", "Filtering flows 2 (time)", "Deduplicating flows",
                         "Deduplicating flows (time)", "Finding source to sink flow", "Finding source to sink flow (time)",
                         "Code scanning", "Binary file size"])
