@@ -76,9 +76,7 @@ def workflow():
             dev_time = f'{cwd}/temp/result/{args.second}/{repo_name}_time.txt'
             compare_and_generate_report(stable_file, dev_file, cpu_usage, stable_time, dev_time, args.first,
                                         args.second, header_flag)
-
-            if header_flag:
-                header_flag = False
+            header_flag = False
 
         if args.upload:
             post_report_to_slack()

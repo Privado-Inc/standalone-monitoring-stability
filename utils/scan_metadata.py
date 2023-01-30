@@ -1,6 +1,5 @@
 import os
 import re
-import write_to_file
 
 def get_metadata_pair(filepath):
     # Match all lines which contain WWh:XXm:YYs:ZZZms

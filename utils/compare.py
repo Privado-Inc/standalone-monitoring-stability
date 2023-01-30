@@ -3,6 +3,7 @@ import json
 import os
 import hashlib
 from utils.write_to_file import write_to_csv
+from utils.scan_metadata import get_subscan_metadata
 
 
 def main(base_file, head_file, cpu_usage, base_time, head_time, base_branch_name, head_branch_name, header_flag):
@@ -101,6 +102,8 @@ def main(base_file, head_file, cpu_usage, base_time, head_time, base_branch_name
     for i in process_cpu_data(cpu_utilization_data.readlines()):
         report.append(i)
 
+    process_performance_data(base_branch_name, head_branch_name, repo_name)
+
     report.append([])
     report.append(['---------', '---------', 'END', '---------', '---------'])
     report.append([])
@@ -156,6 +159,20 @@ def compare_files(base_file_uri, head_file_uri):
 
     base_file.close()
     head_file.close()
+
+
+def process_performance_data(base_branch_name, head_branch_name, repo_name):
+    result = [["Repo", "Branch", "Language detection", "CPG Generation time", "Property file pass", "Run oss data flow",
+               "LiteralTagger", "IdentifierTagger", "IdentifierTagger Non Member", "DBConfigTagger",
+               "RegularSinkTagger", "APITagger", "CustomInheritTagger", "CollectionTagger", "Tagging source code",
+               "no of source nodes", "Finding flows", "Finding flows (time)", "Filtering flows 1",
+               "Filtering flows 1 (time)", "Filtering flows 2", "Filtering flows 2 (time)", "Deduplicating flows",
+               "Deduplicating flows (time)", "Finding source to sink flow", "Finding source to sink flow (time)",
+               "Code scanning", "Binary file size"],
+              list(get_subscan_metadata(repo_name, head_branch_name).values()),
+              list(get_subscan_metadata(repo_name, base_branch_name).values())]
+
+    write_to_csv(f'{head_branch_name}-{base_branch_name}-performance-report', result)
 
 
 def top_level_collection_processor(collections_base, collections_head, repo_name):
@@ -224,7 +241,7 @@ def process_source_sink_and_collection_data(base_data, head_data, base_branch_na
         result.append(row)
 
     # Export the separate csv file
-    write_to_csv(f'{head_branch_name}-{base_branch_name}-source-&-sink-report', "", result)
+    write_to_csv(f'{head_branch_name}-{base_branch_name}-source-&-sink-report', result)
 
     return result
 
@@ -321,7 +338,7 @@ def process_path_analysis(base_source, head_source, repo_name, base_branch_name,
                       total_missing_flow, '----'])
 
     # export the separate csv file
-    write_to_csv(f'{head_branch_name}-{base_branch_name}-flow-report', "", result)
+    write_to_csv(f'{head_branch_name}-{base_branch_name}-flow-report', result)
 
     return result
 
