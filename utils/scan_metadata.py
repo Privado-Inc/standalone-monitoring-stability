@@ -6,7 +6,7 @@ def get_metadata_pair(filepath):
     time_filter_regex = r".*(\d{1,2}h:\d{1,2}m:\d{1,2}s:\d{1,3}ms).*"
 
     # Match number of source and sink nodes
-    source_sink_regex = r".*(no of source nodes|no of sink nodes).*"
+    source_sink_regex = r".*(no of source nodes|no of sinks nodes).*"
 
     # Match line which contains binary file size 
     binary_filesize_regex = r".*(Binary file size).*"
@@ -16,11 +16,11 @@ def get_metadata_pair(filepath):
             separate_by_tag = line.split('-')
 
             if (re.search(binary_filesize_regex, line)):
-                yield ["Binary file size", separate_by_tag[-1]]
+                yield ("Binary file size", separate_by_tag[-1])
                 continue
 
             if (re.search(source_sink_regex, line)):
-                yield [separate_by_tag[-2], separate_by_tag[-1]]
+                yield (separate_by_tag[-2], separate_by_tag[-1])
                 continue
                 
             if (re.search(time_filter_regex, line)):
