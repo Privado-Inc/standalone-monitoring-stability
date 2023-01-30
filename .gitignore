@@ -1,5 +1,6 @@
 /temp
 /utils/__pycache__
+/.idea
 # Local environment
 /env
 # Environment variables 

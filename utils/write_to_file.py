@@ -6,7 +6,13 @@ def write_to_csv(filename, headers, values):
     # headers is an array containing the column names -
     # values is a 2D Array with each element signifying a particular row
     cwd = os.getcwd()
-    with open(f'{cwd}/{filename}.csv', "a") as value:
+    file_path = f'{cwd}/{filename}.csv'
+    
+    # check and delete the file if exist
+    if os.path.isfile(file_path):
+        os.remove(file_path)
+
+    with open(file_path, "a") as value:
         report = csv.writer(value)
         report.writerow(headers)
         for row in values:
