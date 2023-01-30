@@ -88,12 +88,12 @@ def main(base_file, head_file, cpu_usage, base_time, head_time, base_branch_name
 
     report.append(['Analysis for Sources/Sink/Collections'])
     for row in process_source_sink_and_collection_data(base_data, head_data, base_branch_name, head_branch_name,
-                                                       repo_name):
+                                                       repo_name, header_flag):
         report.append(row)
     report.append([])
 
     report.append(["Paths Analysis: Analysis for Missing and Additional Flows"])
-    for row in process_path_analysis(base_data, head_data, repo_name, base_branch_name, head_branch_name):
+    for row in process_path_analysis(base_data, head_data, repo_name, base_branch_name, head_branch_name, header_flag):
         report.append(row)
     report.append([])
 
@@ -102,7 +102,7 @@ def main(base_file, head_file, cpu_usage, base_time, head_time, base_branch_name
     for i in process_cpu_data(cpu_utilization_data.readlines()):
         report.append(i)
 
-    process_performance_data(base_branch_name, head_branch_name, repo_name)
+    process_performance_data(base_branch_name, head_branch_name, repo_name, header_flag)
 
     report.append([])
     report.append(['---------', '---------', 'END', '---------', '---------'])
@@ -144,12 +144,12 @@ def compare_files(base_file_uri, head_file_uri):
     report.append([])
 
     report.append(['Analysis for Sources/Sink/Collections'])
-    for row in process_source_sink_and_collection_data(base_data, head_data, "First", "Second", repo_name):
+    for row in process_source_sink_and_collection_data(base_data, head_data, "First", "Second", repo_name, True):
         report.append(row)
     report.append([])
 
     report.append(["Paths Analysis: Analysis for Missing and Additional Flows"])
-    for row in process_path_analysis(base_data, head_data, repo_name, "First", "Second"):
+    for row in process_path_analysis(base_data, head_data, repo_name, "First", "Second", True):
         report.append(row)
     report.append([])
 
@@ -161,16 +161,20 @@ def compare_files(base_file_uri, head_file_uri):
     head_file.close()
 
 
-def process_performance_data(base_branch_name, head_branch_name, repo_name):
-    result = [["Repo", "Branch", "Language detection", "CPG Generation time", "Property file pass", "Run oss data flow",
-               "LiteralTagger", "IdentifierTagger", "IdentifierTagger Non Member", "DBConfigTagger",
-               "RegularSinkTagger", "APITagger", "CustomInheritTagger", "CollectionTagger", "Tagging source code",
-               "no of source nodes", "Finding flows", "Finding flows (time)", "Filtering flows 1",
-               "Filtering flows 1 (time)", "Filtering flows 2", "Filtering flows 2 (time)", "Deduplicating flows",
-               "Deduplicating flows (time)", "Finding source to sink flow", "Finding source to sink flow (time)",
-               "Code scanning", "Binary file size"],
-              list(get_subscan_metadata(repo_name, head_branch_name).values()),
-              list(get_subscan_metadata(repo_name, base_branch_name).values())]
+def process_performance_data(base_branch_name, head_branch_name, repo_name, header_flag):
+    result = []
+    if header_flag:
+        result.append(["Repo", "Branch", "Language detection", "CPG Generation time", "Property file pass", "Run oss data flow",
+                       "LiteralTagger", "IdentifierTagger", "IdentifierTagger Non Member", "DBConfigTagger",
+                       "RegularSinkTagger", "APITagger", "CustomInheritTagger", "CollectionTagger", "Tagging source code",
+                       "no of source nodes", "Finding flows", "Finding flows (time)", "Filtering flows 1",
+                       "Filtering flows 1 (time)", "Filtering flows 2", "Filtering flows 2 (time)", "Deduplicating flows",
+                       "Deduplicating flows (time)", "Finding source to sink flow", "Finding source to sink flow (time)",
+                       "Code scanning", "Binary file size"],
+                       list(get_subscan_metadata(repo_name, head_branch_name).values()),
+                       list(get_subscan_metadata(repo_name, base_branch_name).values()))
+    else:
+        result.append([])
 
     write_to_csv(f'{head_branch_name}-{base_branch_name}-performance-report', result)
 
@@ -222,11 +226,14 @@ def create_csv(data):
     print(f'Report written and exported to: {cwd}/comparison_report.csv')
 
 
-def process_source_sink_and_collection_data(base_data, head_data, base_branch_name, head_branch_name, repo_name):
-    result = [['Repo', 'Category', 'Sub Category', f'Number of Node ( {head_branch_name} )',
-               f'Number of Node ( {base_branch_name} )', f'List of Node {head_branch_name}',
-               f'List of Node {base_branch_name}', '% Change', f'New Node added in {head_branch_name}',
-               f'List of Node Missing in {head_branch_name}']]
+def process_source_sink_and_collection_data(base_data, head_data, base_branch_name, head_branch_name, repo_name, header_flag):
+    result = []
+
+    if header_flag:
+        result.append(['Repo', 'Category', 'Sub Category', f'Number of Node ( {head_branch_name} )',
+                       f'Number of Node ( {base_branch_name} )', f'List of Node {head_branch_name}',
+                       f'List of Node {base_branch_name}', '% Change', f'New Node added in {head_branch_name}',
+                       f'List of Node Missing in {head_branch_name}'])
 
     # Analysis for the Source
     result.append(process_sources(base_data['sources'], head_data['sources'], repo_name))
@@ -241,7 +248,7 @@ def process_source_sink_and_collection_data(base_data, head_data, base_branch_na
         result.append(row)
 
     # Export the separate csv file
-    write_to_csv(f'{head_branch_name}-{base_branch_name}-source-&-sink-report', result)
+    write_to_csv(f"{head_branch_name}-{base_branch_name}-source-&-sink-report", result)
 
     return result
 
@@ -312,10 +319,12 @@ def process_sinks(base_dataflows, head_dataflows, repo_name, key='storages'):
     # return result
 
 
-def process_path_analysis(base_source, head_source, repo_name, base_branch_name, head_branch_name):
-    result = [['Repo Name', 'Sink Category', 'Source', 'Sink', head_branch_name, base_branch_name,
-               f'Additional in {head_branch_name}', f'Missing in {head_branch_name}', 'Delta in %',
-               f'Additional Path Id in {head_branch_name}', f'Missing Path ID in {head_branch_name}']]
+def process_path_analysis(base_source, head_source, repo_name, base_branch_name, head_branch_name, header_flag):
+    result = []
+    if header_flag:
+        result.append(['Repo Name', 'Sink Category', 'Source', 'Sink', head_branch_name, base_branch_name,
+                       f'Additional in {head_branch_name}', f'Missing in {head_branch_name}', 'Delta in %',
+                       f'Additional Path Id in {head_branch_name}', f'Missing Path ID in {head_branch_name}'])
 
     total_flow_head = 0
     total_flow_base = 0
