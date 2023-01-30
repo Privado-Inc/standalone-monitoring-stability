@@ -38,7 +38,7 @@ def get_metadata_pair(filepath):
 def get_subscan_metadata(repo_name, branch):
     subscan_map = dict()
     cwd = os.getcwd()
-    filepath = f"{cwd}/temp/result/{branch}/output.txt"
+    filepath = f"{cwd}/temp/result/{branch}/{repo_name}-output.txt"
 
     subscan_map["RepoName"] = repo_name
     subscan_map["branch"] = branch
