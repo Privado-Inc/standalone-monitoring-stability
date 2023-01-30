@@ -11,8 +11,15 @@ def get_metadata_pair(filepath):
     # Match line which contains binary file size 
     binary_filesize_regex = r".*(Binary file size).*"
 
+    # Lines which need to be excluded
+    exclusion_regex = r".*(Lombok).*"
+
+    
     with open(filepath) as scan_time_output:
         for line in scan_time_output.readlines():
+            if (re.search(exclusion_regex, line)):
+                continue
+
             separate_by_tag = line.split('-')
 
             if (re.search(binary_filesize_regex, line)):
