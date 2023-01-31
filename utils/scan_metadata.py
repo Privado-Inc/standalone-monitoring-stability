@@ -51,7 +51,6 @@ def get_subscan_metadata(repo_name, branch):
     subscan_map["branch"] = branch
 
     for metadata_pair in get_metadata_pair(filepath):
-        print(metadata_pair)
         tag = re.sub(pattern=r"(\t|done in|is done in)",repl="", string=metadata_pair[0]).strip()
         if ("Base processing" in tag): # base processing is the cpg generation time
             tag = "CPG Generation time"
