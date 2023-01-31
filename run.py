@@ -5,6 +5,7 @@ from utils.post_to_slack import post_report_to_slack
 from utils.build_binary import build
 from utils.delete import delete_action, clean_after_scan
 from utils.clone_repo import clone_repo_with_location
+from utils.write_to_file import create_new_excel
 import os
 import argparse
 import traceback
@@ -29,13 +30,22 @@ def workflow():
         print("Please provide flags '-f' and '-s' followed by branch name")
         return
 
+    cwd = os.getcwd()
+
+    # Delete previous scan Excel report if exist
+    excel_report_location = f'{cwd}/output.xlsx'
+    if os.path.isfile(excel_report_location):
+        os.remove(excel_report_location)
+
+    # Create empty Excel file
+    create_new_excel(excel_report_location)
+
     # When Privado.json files provided
     if args.m:
         compare_files(args.first, args.second)
         return
 
     valid_repositories = []
-    cwd = os.getcwd()
 
     delete_action(args.c, args.boost)
 

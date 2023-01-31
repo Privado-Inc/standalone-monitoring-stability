@@ -2,8 +2,9 @@ import csv
 import json
 import os
 import hashlib
-from utils.write_to_file import write_to_csv
+from utils.write_to_file import write_to_csv, write_source_sink_data, write_path_data, write_performance_data
 from utils.scan_metadata import get_subscan_metadata
+from openpyxl import workbook
 
 
 def main(base_file, head_file, cpu_usage, base_time, head_time, base_branch_name, head_branch_name, header_flag):
@@ -165,12 +166,13 @@ def process_performance_data(base_branch_name, head_branch_name, repo_name, head
     result = []
     if header_flag:
         result.append(["Repo", "Branch", "Language detection", "CPG Generation time", "Property file pass",
-                        "Run oss data flow", "LiteralTagger", "IdentifierTagger", "IdentifierTagger Non Member", "DBConfigTagger",
-                        "RegularSinkTagger", "APITagger", "CustomInheritTagger", "CollectionTagger", "Tagging source code",
-                        "no of source nodes", "no of sinks nodes" ,"Finding flows", "Finding flows (time)", "Filtering flows 1",
-                        "Filtering flows 1 (time)", "Filtering flows 2", "Filtering flows 2 (time)", "Deduplicating flows",
-                        "Deduplicating flows (time)", "Finding source to sink flow", "Finding source to sink flow (time)",
-                        "Code scanning", "Binary file size"])
+                       "Run oss data flow", "LiteralTagger", "IdentifierTagger", "IdentifierTagger Non Member",
+                       "DBConfigTagger", "RegularSinkTagger", "APITagger", "CustomInheritTagger", "CollectionTagger",
+                       "Tagging source code", "no of source nodes", "no of sinks nodes" ,"Finding flows",
+                       "Finding flows (time)", "Filtering flows 1", "Filtering flows 1 (time)", "Filtering flows 2",
+                       "Filtering flows 2 (time)", "Deduplicating flows", "Deduplicating flows (time)",
+                       "Finding source to sink flow", "Finding source to sink flow (time)", "Code scanning",
+                       "Binary file size"])
     else:
         result.append([])
 
@@ -178,6 +180,8 @@ def process_performance_data(base_branch_name, head_branch_name, repo_name, head
     result.append(list(get_subscan_metadata(repo_name, base_branch_name).values()))
 
     write_to_csv(f'{head_branch_name}-{base_branch_name}-performance-report', result)
+
+    write_performance_data(f'{head_branch_name}-{base_branch_name}-performance-report', result, head_branch_name, base_branch_name)
 
 
 def top_level_collection_processor(collections_base, collections_head, repo_name):
@@ -250,6 +254,11 @@ def process_source_sink_and_collection_data(base_data, head_data, base_branch_na
 
     # Export the separate csv file
     write_to_csv(f"{head_branch_name}-{base_branch_name}-source-&-sink-report", result)
+
+
+
+    # Export the result in new sheet Excel sheet
+    write_source_sink_data(f'{os.getcwd()}/output.xlsx', result, head_branch_name, base_branch_name)
 
     return result
 
@@ -349,6 +358,9 @@ def process_path_analysis(base_source, head_source, repo_name, base_branch_name,
 
     # export the separate csv file
     write_to_csv(f'{head_branch_name}-{base_branch_name}-flow-report', result)
+
+    # Export to the excel file
+    write_path_data(f'{os.getcwd()}/output.xlsx', result, head_branch_name, base_branch_name)
 
     return result
 
