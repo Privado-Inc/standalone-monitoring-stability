@@ -2,7 +2,7 @@ import csv
 import json
 import os
 import hashlib
-from utils.write_to_file import write_to_csv, write_source_sink_data, write_path_data, write_performance_data
+from utils.write_to_file import write_to_csv, write_source_sink_data, write_path_data, write_performance_data, create_new_excel
 from utils.scan_metadata import get_subscan_metadata
 from openpyxl import workbook
 
@@ -87,6 +87,10 @@ def main(base_file, head_file, cpu_usage, base_time, head_time, base_branch_name
     report.append([f'{head_branch_name} Branch run time', head_time_value])
     report.append([])
 
+    # Create empty Excel file
+    excel_report_location = f'{os.getcwd()}/output.xlsx'
+    create_new_excel(excel_report_location, base_branch_name, head_branch_name)
+
     report.append(['Analysis for Sources/Sink/Collections'])
     for row in process_source_sink_and_collection_data(base_data, head_data, base_branch_name, head_branch_name,
                                                        repo_name, header_flag):
@@ -144,6 +148,10 @@ def compare_files(base_file_uri, head_file_uri):
     report.append(["Second File", head_file_uri])
     report.append([])
 
+    # Create empty Excel file
+    excel_report_location = f'{os.getcwd()}/output.xlsx'
+    create_new_excel(excel_report_location, "First", "Second")
+
     report.append(['Analysis for Sources/Sink/Collections'])
     for row in process_source_sink_and_collection_data(base_data, head_data, "First", "Second", repo_name, True):
         report.append(row)
@@ -181,7 +189,7 @@ def process_performance_data(base_branch_name, head_branch_name, repo_name, head
 
     write_to_csv(f'{head_branch_name}-{base_branch_name}-performance-report', result)
 
-    write_performance_data(f'{head_branch_name}-{base_branch_name}-performance-report', result, head_branch_name, base_branch_name)
+    write_performance_data(f'{os.getcwd()}/output.xlsx', result, base_branch_name, head_branch_name)
 
 
 def top_level_collection_processor(collections_base, collections_head, repo_name):
@@ -255,10 +263,8 @@ def process_source_sink_and_collection_data(base_data, head_data, base_branch_na
     # Export the separate csv file
     write_to_csv(f"{head_branch_name}-{base_branch_name}-source-&-sink-report", result)
 
-
-
     # Export the result in new sheet Excel sheet
-    write_source_sink_data(f'{os.getcwd()}/output.xlsx', result, head_branch_name, base_branch_name)
+    write_source_sink_data(f'{os.getcwd()}/output.xlsx', result, base_branch_name, head_branch_name)
 
     return result
 
@@ -360,7 +366,7 @@ def process_path_analysis(base_source, head_source, repo_name, base_branch_name,
     write_to_csv(f'{head_branch_name}-{base_branch_name}-flow-report', result)
 
     # Export to the excel file
-    write_path_data(f'{os.getcwd()}/output.xlsx', result, head_branch_name, base_branch_name)
+    write_path_data(f'{os.getcwd()}/output.xlsx', result, base_branch_name, head_branch_name)
 
     return result
 

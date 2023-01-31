@@ -5,7 +5,6 @@ from utils.post_to_slack import post_report_to_slack
 from utils.build_binary import build
 from utils.delete import delete_action, clean_after_scan
 from utils.clone_repo import clone_repo_with_location
-from utils.write_to_file import create_new_excel
 import os
 import argparse
 import traceback
@@ -36,9 +35,6 @@ def workflow():
     excel_report_location = f'{cwd}/output.xlsx'
     if os.path.isfile(excel_report_location):
         os.remove(excel_report_location)
-
-    # Create empty Excel file
-    create_new_excel(excel_report_location)
 
     # When Privado.json files provided
     if args.m:

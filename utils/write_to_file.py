@@ -16,19 +16,23 @@ def write_to_csv(filename, values):
             report.writerow(row)
 
 
-def create_new_excel(location):
+def create_new_excel(location, base_branch_name, head_branch_name):
     wb = openpyxl.Workbook()
     # Delete the default sheet
     wb.remove(wb.active)
+    # Create new Sheet
+    wb.create_sheet(f'{head_branch_name}-{base_branch_name}-source-&-sink-report')
+    wb.create_sheet(f'{head_branch_name}-{base_branch_name}-flow-report')
+    wb.create_sheet(f'{head_branch_name}-{base_branch_name}-performance-report')
     wb.save(location)
 
 
-def write_source_sink_data(workbook_location, report, head_branch_name, base_branch_name):
+def write_source_sink_data(workbook_location, report, base_branch_name, head_branch_name):
     # load the workbook
     workbook = openpyxl.load_workbook(filename=workbook_location)
 
     # create new sheet for source-sink-collection sheet
-    worksheet = workbook.create_sheet(f'{head_branch_name}-{base_branch_name}-source-&-sink-report')
+    worksheet = workbook[f'{head_branch_name}-{base_branch_name}-source-&-sink-report']
 
     for row in report:
         worksheet.append(row)
@@ -36,11 +40,11 @@ def write_source_sink_data(workbook_location, report, head_branch_name, base_bra
     workbook.save(workbook_location)
 
 
-def write_path_data(workbook_location, report, head_branch_name, base_branch_name):
+def write_path_data(workbook_location, report, base_branch_name, head_branch_name):
     workbook = openpyxl.load_workbook(filename=workbook_location)
 
     # create new sheet for source-sink-collection sheet
-    worksheet = workbook.create_sheet(f'{head_branch_name}-{base_branch_name}-flow-report')
+    worksheet = workbook[f'{head_branch_name}-{base_branch_name}-flow-report']
 
     for row in report:
         worksheet.append(row)
@@ -48,11 +52,11 @@ def write_path_data(workbook_location, report, head_branch_name, base_branch_nam
     workbook.save(workbook_location)
 
 
-def write_performance_data(workbook_location, report, head_branch_name, base_branch_name):
+def write_performance_data(workbook_location, report, base_branch_name, head_branch_name):
     workbook = openpyxl.load_workbook(filename=workbook_location)
 
     # create new sheet for source-sink-collection sheet
-    worksheet = workbook.create_sheet(f'{head_branch_name}-{base_branch_name}-performance-report')
+    worksheet = workbook[f'{head_branch_name}-{base_branch_name}-performance-report']
 
     for row in report:
         worksheet.append(row)
