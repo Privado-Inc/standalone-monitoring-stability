@@ -7,3 +7,4 @@
 .env
 *.csv
 .DS_Store
+*.xlsx
