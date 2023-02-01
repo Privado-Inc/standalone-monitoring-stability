@@ -360,6 +360,8 @@ def process_path_analysis(base_source, head_source, repo_name, base_branch_name,
         total_additional_flow += value[1][2]
         total_missing_flow += value[1][3]
 
+        
+
     result.insert(1, [repo_name, 'Total', 'All', 'All', total_flow_head, total_flow_base, total_additional_flow,
                       total_missing_flow, '----'])
 

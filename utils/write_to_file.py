@@ -35,6 +35,7 @@ def write_source_sink_data(workbook_location, report, base_branch_name, head_bra
     worksheet = workbook[f'{head_branch_name}-{base_branch_name}-source-&-sink-report']
 
     for row in report:
+        print(row)
         worksheet.append(row)
 
     workbook.save(workbook_location)
