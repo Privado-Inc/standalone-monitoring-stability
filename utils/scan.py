@@ -37,7 +37,7 @@ def scan_repo_report(first_branch, second_branch):
             dest_path = f'{cwd}/temp/result/{first_branch}/{repo}.json'
             shutil.move(src_path,dest_path)
 
-            # Scan the cloned repo with second branch and push output to a file
+            # Scan the cloned repo with second branch and push output to a file with debug logs
             second_command = f'cd {cwd}/temp/binary/{second_branch}/bin && ({{ time ./privado-core scan {scan_dir} -ic {cwd}/temp/privado --skip-upload -Dlog4j.configurationFile=log4j2.xml ; }} 2> {cwd}/temp/result/{second_branch}/{repo}_time.txt | tee {cwd}/temp/result/{second_branch}/{repo}-output.txt)'
             # Execute the command to generate the binary file for seconf branch
             os.system(second_command)
