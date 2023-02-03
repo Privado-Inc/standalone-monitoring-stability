@@ -63,3 +63,15 @@ def write_performance_data(workbook_location, report, base_branch_name, head_bra
         worksheet.append(row)
 
     workbook.save(workbook_location)
+
+
+def write_scan_status_report(workbook_location, report, base_branch_name, head_branch_name):
+    workbook = openpyxl.load_workbook(filename=workbook_location)
+
+    # create new sheet for source-sink-collection sheet
+    worksheet = workbook['scan-status']
+
+    for row in report:
+        worksheet.append(row)
+
+    workbook.save(workbook_location)
