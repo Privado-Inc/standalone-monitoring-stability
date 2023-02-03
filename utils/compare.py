@@ -362,7 +362,7 @@ def process_path_analysis(base_source, head_source, repo_name, base_branch_name,
         total_missing_flow += value[1][3]
 
     result.insert(1, [repo_name, 'Total', 'All', 'All', total_flow_head, total_flow_base, total_additional_flow,
-                      total_missing_flow, round(
+                      total_missing_flow, 0 if total_flow_head + total_missing_flow == 0 else round(
             (((total_additional_flow + total_missing_flow) / (total_flow_head + total_missing_flow)) * 100), 2)])
 
     # export the separate csv file
@@ -530,7 +530,7 @@ def sub_process_path(base_source, head_source, sink_type, base_branch_name, head
 
     final_result_list.insert(0, [repo_name, sink_type, 'All', 'All', total_flow_head, total_flow_base,
                                  total_additional_flow, total_missing_flow,
-                                 round((((total_additional_flow + total_missing_flow) / (total_flow_head + total_missing_flow)) * 100), 2)])
+                                 0 if total_flow_head + total_missing_flow == 0 else round((((total_additional_flow + total_missing_flow) / (total_flow_head + total_missing_flow)) * 100), 2)])
 
     return [final_result_list, [total_flow_head, total_flow_base, total_additional_flow, total_missing_flow]]
 
