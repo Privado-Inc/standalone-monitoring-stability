@@ -109,12 +109,12 @@ def generate_scan_status_data(scan_status, first_branch, second_branch):
         with open(f"{cwd}/temp/result/{first_branch}/{repo}-output.txt") as scan_time_output:
             for line in scan_time_output.readlines():
                 if (re.search(scan_metadata_regex, line)):
-                    scan_metadata_values.push(line)
+                    scan_metadata_values.append(line)
 
         with open(f"{cwd}/temp/result/{second_branch}/{repo}-output.txt") as scan_time_output:
             for line in scan_time_output.readlines():
                 if (re.search(scan_metadata_regex, line)):
-                    scan_metadata_values.push(line)
+                    scan_metadata_values.append(line)
 
         unique_flows = ""
         code_scan_time = ""
