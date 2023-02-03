@@ -50,9 +50,9 @@ def scan_repo_report(first_branch, second_branch):
             dest_path = f'{cwd}/temp/result/{first_branch}/{repo}.json'
             try:
                 shutil.move(src_path,dest_path)
-                scan_status[f"{repo}-{first_branch}"] = "done"
+                scan_status[f"{repo},{first_branch}"] = "done"
             except:
-                scan_status[f"{repo}-{first_branch}"] = "failed"
+                scan_status[f"{repo},{first_branch}"] = "failed"
 
 
             # Scan the cloned repo with second branch and push output to a file with debug logs
@@ -68,9 +68,9 @@ def scan_repo_report(first_branch, second_branch):
             dest_path = f'{cwd}/temp/result/{second_branch}/{repo}.json'   
             try:
                 shutil.move(src_path,dest_path)
-                scan_status[f"{repo}-{second_branch}"] = "done"
+                scan_status[f"{repo},{second_branch}"] = "done"
             except Exception(e):
-                scan_status[f"{repo}-{second_branch}"] = f"failed,{str(e)}"
+                scan_status[f"{repo},{second_branch}"] = f"failed,{str(e)}"
 
         finally:
             scan_status_report_data = generate_scan_status_data(scan_status)
@@ -98,7 +98,7 @@ def generate_scan_status_data(scan_status):
     for repo_branch, status in scan_status.items():
         print(repo_branch)
         print(status)
-        repo, branch = repo_branch.split('-')
+        repo, branch = repo_branch.split(',')
         status_breakdown = status.split(',')
         error_message = "--"
 
