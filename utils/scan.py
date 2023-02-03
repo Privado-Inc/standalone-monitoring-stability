@@ -3,7 +3,7 @@ import shutil
 import subprocess
 import platform
 from utils.write_to_file import write_scan_status_report
-
+import re
 
 def scan_repo_report(first_branch, second_branch):
     repos = get_list_repos()
