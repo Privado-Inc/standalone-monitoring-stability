@@ -38,14 +38,8 @@ def scan_repo_report(first_branch, second_branch):
             os.system(first_command)
 
 
-
             # Move the privado.json file to the result folder
             src_path = f'{scan_dir}/.privado/privado.json'
-
-            # if (os.path.exists(scan_dir)): # If privado.json is generated, the scan is successful
-            #     scan_status[f"{repo}-{first_branch}"] = "done"
-            # else:
-            #     scan_status[f"{repo}-{first_branch}"] = "failed"
 
             dest_path = f'{cwd}/temp/result/{first_branch}/{repo}.json'
             try:
@@ -59,12 +53,7 @@ def scan_repo_report(first_branch, second_branch):
             second_command = f'cd {cwd}/temp/binary/{second_branch}/bin && ({{ time ./privado-core scan {scan_dir} -ic {cwd}/temp/privado --skip-upload -Dlog4j.configurationFile=log4j2.xml ; }} 2> {cwd}/temp/result/{second_branch}/{repo}_time.txt | tee {cwd}/temp/result/{second_branch}/{repo}-output.txt)'
             # Execute the command to generate the binary file for second branch
             os.system(second_command)
-            
-            # if (os.path.exists(scan_dir)): # If privado.json is generated, the scan is successful
-            #     scan_status[f"{repo}-{first_branch}"] = "done"
-            # else:
-            #     scan_status[f"{repo}-{first_branch}"] = "failed"
-            # Move the privado.json file to the result folder
+
             dest_path = f'{cwd}/temp/result/{second_branch}/{repo}.json'   
             try:
                 shutil.move(src_path,dest_path)
