@@ -105,7 +105,7 @@ def generate_scan_status_data(scan_status, first_branch, second_branch):
         status_breakdown = status.split(',')
         error_message = "--"
 
-        scan_metadata_regex = r".*(code scanning|binary file size|Deduplicating flows is done in).*"
+        scan_metadata_regex = r".*(Code scanning|Binary file size|Deduplicating flows is done in).*"
         scan_metadata_values = []
 
         with open(f"{cwd}/temp/result/{first_branch}/{repo}-output.txt") as scan_time_output:
