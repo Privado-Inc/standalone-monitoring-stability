@@ -124,5 +124,6 @@ def generate_scan_status_data(scan_status, first_branch, second_branch):
         comparison_status = "failed" if len(status_breakdown) > 1 else "done"
         scan_status_report_data.append([repo, branch, status_breakdown[0], error_message, comparison_status, "--", unique_flows, code_scan_time, binary_file_size])
     
+    scan_status_report_data.append([])
     return scan_status_report_data
 
