@@ -228,7 +228,8 @@ def process_collection(collections_base, collections_head, collection_name, repo
     collections_sources_head = '\n'.join(collections_sources_head)
 
     return [repo_name, 'Collection', collection_name, head_collections, base_collections, collections_sources_head,
-         collections_sources_base, '0', latest, removed]
+            collections_sources_base, '0', latest, removed]
+
 
 def create_csv(data):
     cwd = os.getcwd()
@@ -360,10 +361,9 @@ def process_path_analysis(base_source, head_source, repo_name, base_branch_name,
         total_additional_flow += value[1][2]
         total_missing_flow += value[1][3]
 
-        
-
     result.insert(1, [repo_name, 'Total', 'All', 'All', total_flow_head, total_flow_base, total_additional_flow,
-                      total_missing_flow, '----'])
+                      total_missing_flow, round(
+            (((total_additional_flow + total_missing_flow) / (total_flow_head + total_missing_flow)) * 100), 2)])
 
     # export the separate csv file
     write_to_csv(f'{head_branch_name}-{base_branch_name}-flow-report', result)
@@ -529,7 +529,9 @@ def sub_process_path(base_source, head_source, sink_type, base_branch_name, head
                  '\n'.join(missing_path)])
 
     final_result_list.insert(0, [repo_name, sink_type, 'All', 'All', total_flow_head, total_flow_base,
-                                 total_additional_flow, total_missing_flow, "----"])
+                                 total_additional_flow, total_missing_flow,
+                                 round((((total_additional_flow + total_missing_flow) / (total_flow_head + total_missing_flow)) * 100), 2)])
+
     return [final_result_list, [total_flow_head, total_flow_base, total_additional_flow, total_missing_flow]]
 
 
