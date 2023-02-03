@@ -73,7 +73,7 @@ def scan_repo_report(first_branch, second_branch):
                 scan_status[f"{repo},{second_branch}"] = f"failed,{str(e)}"
 
         finally:
-            scan_status_report_data = generate_scan_status_data(scan_status)
+            scan_status_report_data = generate_scan_status_data(scan_status, first_branch, second_branch)
             write_scan_status_report(f'{cwd}/output.xlsx', scan_status_report_data, first_branch, second_branch)
 
             # kill backgroud running process created for cpu monitoring
@@ -90,7 +90,7 @@ def get_list_repos():
 
 
 
-def generate_scan_status_data(scan_status):
+def generate_scan_status_data(scan_status, first_branch, second_branch):
     scan_status_report_data = [[
         "Repo", "Branch", "scan status", "scan error", "comparison status", "comparison error", "unique flow", "count", "scan time", "CPG size"
     ]]
@@ -105,7 +105,12 @@ def generate_scan_status_data(scan_status):
         scan_metadata_regex = r".*(code scanning|binary file size|Deduplicating flows is done in).*"
         scan_metadata_values = []
 
-        with open() as scan_time_output:
+        with open(f"{cwd}/temp/result/{first_branch}/output.txt") as scan_time_output:
+            for line in scan_time_output.readlines():
+                if (re.search(scan_metadata_regex, line)):
+                    scan_metadata_values.push(line)
+
+        with open(f"{cwd}/temp/result/{second_branch}output.txt") as scan_time_output:
             for line in scan_time_output.readlines():
                 if (re.search(scan_metadata_regex, line)):
                     scan_metadata_values.push(line)
