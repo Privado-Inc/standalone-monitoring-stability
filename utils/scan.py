@@ -69,7 +69,7 @@ def scan_repo_report(first_branch, second_branch):
             try:
                 shutil.move(src_path,dest_path)
                 scan_status[f"{repo},{second_branch}"] = "done"
-            except Exception(e):
+            except Exception as e:
                 scan_status[f"{repo},{second_branch}"] = f"failed,{str(e)}"
 
         finally:
