@@ -92,7 +92,7 @@ def get_list_repos():
 
 def generate_scan_status_data(scan_status, first_branch, second_branch):
     scan_status_report_data = [[
-        "Repo", "Branch", "scan status", "scan error", "comparison status", "comparison error", "unique flow", "count", "scan time", "CPG size"
+        "Repo", "Branch", "scan status", "scan error", "comparison status", "comparison error", "unique flow count", "scan time", "CPG size"
     ]]
     cwd = os.getcwd()
     
@@ -123,6 +123,7 @@ def generate_scan_status_data(scan_status, first_branch, second_branch):
         binary_file_size = ""
         
         try:
+            print(scan_metadata_values)
             unique_flows = scan_metadata_values[0].split('-')[-1] 
             code_scan_time = scan_metadata_values[1].split('-')[-2]
             binary_file_size = scan_metadata_values[2].split('-')[-1]
@@ -134,7 +135,7 @@ def generate_scan_status_data(scan_status, first_branch, second_branch):
         if (len(status_breakdown) > 1):
             error_message = status_breakdown[1]
 
-        comparison_status = "done" if len(status_breakdown) > 1 else "failed"
+        comparison_status = "failed" if len(status_breakdown) > 1 else "done"
         scan_status_report_data.append([repo, branch, status_breakdown[0], error_message, comparison_status, "--", unique_flows, code_scan_time, binary_file_size])
     
     return scan_status_report_data
