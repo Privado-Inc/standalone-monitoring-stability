@@ -88,8 +88,6 @@ def generate_scan_status_data(scan_status, first_branch, second_branch):
     create_new_excel(f"{cwd}/output.xlsx", first_branch, second_branch)
 
     for repo_branch, status in scan_status.items():
-        print(repo_branch)
-        print(status)
         repo, branch = repo_branch.split(',')
         status_breakdown = status.split(',')
         error_message = "--"
@@ -112,7 +110,6 @@ def generate_scan_status_data(scan_status, first_branch, second_branch):
         binary_file_size = ""
         
         try:
-            print(scan_metadata_values)
             unique_flows = scan_metadata_values[0].split('-')[-1] 
             code_scan_time = scan_metadata_values[1].split('-')[-2]
             binary_file_size = scan_metadata_values[2].split('-')[-1]
