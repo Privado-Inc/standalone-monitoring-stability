@@ -2,7 +2,7 @@ import os
 import shutil
 import subprocess
 import platform
-from utils.write_to_file import write_scan_status_report
+from utils.write_to_file import write_scan_status_report, create_new_excel
 import re
 
 def scan_repo_report(first_branch, second_branch):
@@ -96,6 +96,8 @@ def generate_scan_status_data(scan_status, first_branch, second_branch):
     ]]
     cwd = os.getcwd()
     
+    create_new_excel(f"{cwd}/output.xlsx", first_branch, second_branch)
+
     for repo_branch, status in scan_status.items():
         print(repo_branch)
         print(status)

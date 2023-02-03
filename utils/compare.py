@@ -88,9 +88,9 @@ def main(base_file, head_file, cpu_usage, base_time, head_time, base_branch_name
     report.append([])
 
     # Create empty Excel file
-    if header_flag:
-        excel_report_location = f'{os.getcwd()}/output.xlsx'
-        create_new_excel(excel_report_location, base_branch_name, head_branch_name)
+    # if header_flag:
+    #     excel_report_location = f'{os.getcwd()}/output.xlsx'
+    #     create_new_excel(excel_report_location, base_branch_name, head_branch_name)
 
     report.append(['Analysis for Sources/Sink/Collections'])
     for row in process_source_sink_and_collection_data(base_data, head_data, base_branch_name, head_branch_name,
@@ -151,7 +151,7 @@ def compare_files(base_file_uri, head_file_uri):
 
     # Create empty Excel file
     excel_report_location = f'{os.getcwd()}/output.xlsx'
-    create_new_excel(excel_report_location, "First", "Second")
+    # create_new_excel(excel_report_location, "First", "Second")
 
     report.append(['Analysis for Sources/Sink/Collections'])
     for row in process_source_sink_and_collection_data(base_data, head_data, "First", "Second", repo_name, True):

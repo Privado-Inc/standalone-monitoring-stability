@@ -24,6 +24,7 @@ def create_new_excel(location, base_branch_name, head_branch_name):
     wb.create_sheet(f'{head_branch_name}-{base_branch_name}-source-&-sink-report')
     wb.create_sheet(f'{head_branch_name}-{base_branch_name}-flow-report')
     wb.create_sheet(f'{head_branch_name}-{base_branch_name}-performance-report')
+    wb.create_sheet('scan-status')
     wb.save(location)
 
 
