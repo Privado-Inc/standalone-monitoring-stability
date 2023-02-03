@@ -361,10 +361,12 @@ def process_path_analysis(base_source, head_source, repo_name, base_branch_name,
         total_additional_flow += value[1][2]
         total_missing_flow += value[1][3]
 
-    percent_delta = f"{round((((total_additional_flow + total_missing_flow) / (total_flow_head + total_missing_flow)) * 100), 2)}%" 
+
 
     if total_flow_head + total_missing_flow == 0:
         percent_delta = "0%"
+    else:
+        percent_delta = f"{round((((total_additional_flow + total_missing_flow) / (total_flow_head + total_missing_flow)) * 100), 2)}%" 
 
     result.insert(1, [repo_name, 'Total', 'All', 'All', total_flow_head, total_flow_base, total_additional_flow,
                       total_missing_flow, percent_delta])
@@ -532,9 +534,12 @@ def sub_process_path(base_source, head_source, sink_type, base_branch_name, head
                  f'{round(((absolute_path_change / (2 * total_path_count)) * 100), 2)}%', '\n'.join(new_path),
                  '\n'.join(missing_path)])
 
-    percent_delta = f"{round((((total_additional_flow + total_missing_flow) / (total_flow_head + total_missing_flow)) * 100), 2)}%" 
+    
     if total_flow_head + total_missing_flow == 0:
         percent_delta = "0%"
+    else:
+        percent_delta = f"{round((((total_additional_flow + total_missing_flow) / (total_flow_head + total_missing_flow)) * 100), 2)}%" 
+
 
     final_result_list.insert(0, [repo_name, sink_type, 'All', 'All', total_flow_head, total_flow_base,
                                  total_additional_flow, total_missing_flow, percent_delta])
