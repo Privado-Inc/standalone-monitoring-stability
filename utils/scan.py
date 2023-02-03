@@ -94,6 +94,7 @@ def generate_scan_status_data(scan_status, first_branch, second_branch):
     scan_status_report_data = [[
         "Repo", "Branch", "scan status", "scan error", "comparison status", "comparison error", "unique flow", "count", "scan time", "CPG size"
     ]]
+    cwd = os.getcwd()
     
     for repo_branch, status in scan_status.items():
         print(repo_branch)
