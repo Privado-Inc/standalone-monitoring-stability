@@ -1,3 +1,5 @@
+https://github.com/ShiftLeftSecurity/shiftleft-java-demo.git
+https://github.com/sadatrafsanjani/JavaFX-Point-of-Sales.git
+https://github.com/jberkel/sms-backup-plus.git
+https://github.com/sazanrjb/InventoryManagementSystem.git
 https://github.com/afsalashyana/Library-Assistant.git
-https://github.com/saurabh-sudo/BankingSystem-Backend.git
-https://github.com/hiteshbedre/BookStoreApp-Distributed-Application.git

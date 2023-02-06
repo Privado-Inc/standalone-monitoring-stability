@@ -2,7 +2,7 @@ import os
 import shutil
 import subprocess
 import platform
-from utils.write_to_file import write_scan_status_report, create_new_excel
+from utils.write_to_file import write_scan_status_report, create_new_excel, create_new_excel_for_file
 import re
 
 def scan_repo_report(first_branch, second_branch):
@@ -10,7 +10,6 @@ def scan_repo_report(first_branch, second_branch):
     cwd = os.getcwd()
 
     scan_status = dict() # To store scan status - if it failed or completed, and for which branch 
-    
 
     # create dirs for results if not exist
     if not os.path.isdir(cwd + '/temp/result/' + first_branch): os.system('mkdir -p ' + cwd + '/temp/result/' + first_branch)
@@ -63,10 +62,11 @@ def scan_repo_report(first_branch, second_branch):
 
         finally:
             scan_status_report_data = generate_scan_status_data(scan_status, first_branch, second_branch)
-            write_scan_status_report(f'{cwd}/output.xlsx', scan_status_report_data, first_branch, second_branch)
+            write_scan_status_report(f'{cwd}/output.xlsx', scan_status_report_data)
 
             # kill backgroud running process created for cpu monitoring
             os.system(f"kill -9 {process.pid}")
+
 
 # Return list of cloned repo name stored in /temp/repos dir
 def get_list_repos():
@@ -77,6 +77,12 @@ def get_list_repos():
             result.append(repo)
     return result
 
+
+def generate_scan_status_data_for_file(repo_name, first_file, second_file):
+    scan_status_report_data = [['First File', first_file], ['Second File', second_file], ['Repo', repo_name]]
+    cwd = os.getcwd()
+    create_new_excel_for_file(f"{cwd}/output.xlsx", first_file, second_file)
+    return scan_status_report_data
 
 
 def generate_scan_status_data(scan_status, first_branch, second_branch):

@@ -2,8 +2,9 @@ import csv
 import json
 import os
 import hashlib
-from utils.write_to_file import write_to_csv, write_source_sink_data, write_path_data, write_performance_data, create_new_excel
+from utils.write_to_file import write_to_csv, write_source_sink_data, write_path_data, write_performance_data, write_scan_status_report
 from utils.scan_metadata import get_subscan_metadata
+from utils.scan import generate_scan_status_data_for_file
 from openpyxl import workbook
 
 
@@ -93,13 +94,15 @@ def main(base_file, head_file, cpu_usage, base_time, head_time, base_branch_name
     #     create_new_excel(excel_report_location, base_branch_name, head_branch_name)
 
     report.append(['Analysis for Sources/Sink/Collections'])
-    for row in process_source_sink_and_collection_data(base_data, head_data, base_branch_name, head_branch_name,
+    for row in process_source_sink_and_collection_data(f'{head_branch_name}-{base_branch_name}-source-&-sink-report',
+                                                       base_data, head_data, base_branch_name, head_branch_name,
                                                        repo_name, header_flag):
         report.append(row)
     report.append([])
 
     report.append(["Paths Analysis: Analysis for Missing and Additional Flows"])
-    for row in process_path_analysis(base_data, head_data, repo_name, base_branch_name, head_branch_name, header_flag):
+    for row in process_path_analysis(f'{head_branch_name}-{base_branch_name}-flow-report', base_data, head_data,
+                                     repo_name, base_branch_name, head_branch_name, header_flag):
         report.append(row)
     report.append([])
 
@@ -108,7 +111,8 @@ def main(base_file, head_file, cpu_usage, base_time, head_time, base_branch_name
     for i in process_cpu_data(cpu_utilization_data.readlines()):
         report.append(i)
 
-    process_performance_data(base_branch_name, head_branch_name, repo_name, header_flag)
+    process_performance_data(f'{head_branch_name}-{base_branch_name}-performance-report', base_branch_name,
+                             head_branch_name, repo_name, header_flag)
 
     report.append([])
     report.append(['---------', '---------', 'END', '---------', '---------'])
@@ -143,6 +147,10 @@ def compare_files(base_file_uri, head_file_uri):
     # initialize the repo name only when both name are same
     repo_name = first_repo_name if first_repo_name == second_repo_name else 'NA'
 
+    status_report_data = generate_scan_status_data_for_file(repo_name, base_file_uri, head_file_uri)
+    write_scan_status_report(f'{os.getcwd()}/output.xlsx', status_report_data)
+
+
     report.append(["Comparison Result"])
     report.append([])
     report.append(["First File", base_file_uri])
@@ -154,12 +162,13 @@ def compare_files(base_file_uri, head_file_uri):
     # create_new_excel(excel_report_location, "First", "Second")
 
     report.append(['Analysis for Sources/Sink/Collections'])
-    for row in process_source_sink_and_collection_data(base_data, head_data, "First", "Second", repo_name, True):
+    for row in process_source_sink_and_collection_data('source-&-sink-report', base_data, head_data, "First", "Second",
+                                                       repo_name, True):
         report.append(row)
     report.append([])
 
     report.append(["Paths Analysis: Analysis for Missing and Additional Flows"])
-    for row in process_path_analysis(base_data, head_data, repo_name, "First", "Second", True):
+    for row in process_path_analysis('flow-report', base_data, head_data, repo_name, "First", "Second", True):
         report.append(row)
     report.append([])
 
@@ -171,7 +180,7 @@ def compare_files(base_file_uri, head_file_uri):
     head_file.close()
 
 
-def process_performance_data(base_branch_name, head_branch_name, repo_name, header_flag):
+def process_performance_data(worksheet_name, base_branch_name, head_branch_name, repo_name, header_flag):
     result = []
     if header_flag:
         result.append(["Repo", "Branch", "Language detection", "CPG Generation time", "Property file pass",
@@ -190,7 +199,7 @@ def process_performance_data(base_branch_name, head_branch_name, repo_name, head
 
     write_to_csv(f'{head_branch_name}-{base_branch_name}-performance-report', result)
 
-    write_performance_data(f'{os.getcwd()}/output.xlsx', result, base_branch_name, head_branch_name)
+    write_performance_data(f'{os.getcwd()}/output.xlsx', worksheet_name, result)
 
 
 def top_level_collection_processor(collections_base, collections_head, repo_name):
@@ -241,7 +250,7 @@ def create_csv(data):
     print(f'Report written and exported to: {cwd}/comparison_report.csv')
 
 
-def process_source_sink_and_collection_data(base_data, head_data, base_branch_name, head_branch_name, repo_name, header_flag):
+def process_source_sink_and_collection_data(worksheet_name, base_data, head_data, base_branch_name, head_branch_name, repo_name, header_flag):
     result = []
 
     if header_flag:
@@ -266,7 +275,7 @@ def process_source_sink_and_collection_data(base_data, head_data, base_branch_na
     write_to_csv(f"{head_branch_name}-{base_branch_name}-source-&-sink-report", result)
 
     # Export the result in new sheet Excel sheet
-    write_source_sink_data(f'{os.getcwd()}/output.xlsx', result, base_branch_name, head_branch_name)
+    write_source_sink_data(f'{os.getcwd()}/output.xlsx', worksheet_name, result)
 
     return result
 
@@ -337,7 +346,7 @@ def process_sinks(base_dataflows, head_dataflows, repo_name, key='storages'):
     # return result
 
 
-def process_path_analysis(base_source, head_source, repo_name, base_branch_name, head_branch_name, header_flag):
+def process_path_analysis(worksheet_name, base_source, head_source, repo_name, base_branch_name, head_branch_name, header_flag):
     result = []
     if header_flag:
         result.append(['Repo Name', 'Sink Category', 'Source', 'Sink', head_branch_name, base_branch_name,
@@ -361,8 +370,6 @@ def process_path_analysis(base_source, head_source, repo_name, base_branch_name,
         total_additional_flow += value[1][2]
         total_missing_flow += value[1][3]
 
-
-
     if total_flow_head + total_missing_flow == 0:
         percent_delta = "0%"
     else:
@@ -375,7 +382,7 @@ def process_path_analysis(base_source, head_source, repo_name, base_branch_name,
     write_to_csv(f'{head_branch_name}-{base_branch_name}-flow-report', result)
 
     # Export to the excel file
-    write_path_data(f'{os.getcwd()}/output.xlsx', result, base_branch_name, head_branch_name)
+    write_path_data(f'{os.getcwd()}/output.xlsx', worksheet_name, result)
 
     return result
 
