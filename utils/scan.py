@@ -108,8 +108,8 @@ def generate_scan_status_data(scan_status, first_branch, second_branch):
                 if (re.search(scan_metadata_regex, line)):
                     scan_metadata_values.append(line)
 
-        with open(f"{cwd}/temp/result/{second_branch}/{repo}-output.txt") as scan_time_output:
-            for line in scan_time_output.readlines():
+        with open(f"{cwd}/temp/result/{second_branch}/{repo}-output.txt") as scan_time_output_second:
+            for line in scan_time_output_second.readlines():
                 if (re.search(scan_metadata_regex, line)):
                     scan_metadata_values.append(line)
 
