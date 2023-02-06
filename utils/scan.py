@@ -27,19 +27,7 @@ def scan_repo_report(first_branch, second_branch, use_docker):
 
     for repo in repos:         
         scan_dir = cwd + '/temp/repos/' + repo
-
-        # monitor cpu and memory usage
         try:
-            try:
-                # monitor cpu and memory usage
-                # For mac devices
-                if platform.system() == 'Darwin': 
-                    process = subprocess.Popen(["sh", f"{cwd}/utils/cpu_and_memory/cpu_and_memory_usage_mac.sh", repo, "stable"])
-                else:
-                    process = subprocess.Popen(["sh", f"{cwd}/utils/cpu_and_memory/cpu_and_memory_usage.sh", repo, "stable"])
-            except:
-                print("Unable to fetch CPU and memory Status")
-    
             # Scan the cloned repo with first branch and push output to a file
             if (use_docker):
                 first_command = f'{get_docker_commands(first_branch, scan_dir)} | tee {cwd}/temp/result/{first_branch}/{repo}-output.txt'
@@ -80,9 +68,6 @@ def scan_repo_report(first_branch, second_branch, use_docker):
         finally:
             scan_status_report_data = generate_scan_status_data(scan_status, first_branch, second_branch)
             write_scan_status_report(f'{cwd}/output.xlsx', scan_status_report_data)
-
-            # kill backgroud running process created for cpu monitoring
-            os.system(f"kill -9 {process.pid}")
 
 
 # Return list of cloned repo name stored in /temp/repos dir
