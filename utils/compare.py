@@ -5,7 +5,6 @@ import hashlib
 from utils.write_to_file import write_to_csv, write_source_sink_data, write_path_data, write_performance_data, write_scan_status_report
 from utils.scan_metadata import get_subscan_metadata
 from utils.scan import generate_scan_status_data_for_file
-from openpyxl import workbook
 
 
 def main(base_file, head_file, cpu_usage, base_time, head_time, base_branch_name, head_branch_name, header_flag):
@@ -17,115 +16,26 @@ def main(base_file, head_file, cpu_usage, base_time, head_time, base_branch_name
 
     base_file = open(base_file)
     head_file = open(head_file)
-    time_data_base = open(base_time)
-    time_data_head = open(head_time)
-
-    head_time_value = "NA"
-    base_time_value = "NA"
-
-    # Comes with a newline at the start, so the second element
-    try:
-        time_final_base = (time_data_base.read().split('\n'))
-        time_final_head = (time_data_head.read().split('\n'))
-    except Exception as e:
-        print("Error occurred during parsing time data", e)
-
-    try:
-        for time in time_final_base:
-            if "real" in time:
-                time_final_base = time
-                break
-
-        for time in time_final_head:
-            if "real" in time:
-                time_final_head = time
-                break
-
-        head_time_value = time_final_head.split('\t')[1]
-        base_time_value = time_final_base.split('\t')[1]
-
-        # split_minutes_seconds_dev = re.split('[a-zA-Z]+', time_final_dev[:-1]) 
-        # split_minutes_seconds_stable = re.split('[a-zA-Z]+', time_final_stable[:-1]) 
-
-        # time_stable_minutes = 0
-        # time_dev_minutes = 0
-        # minutes_multiplier = 1/60
-
-        # for i in range(len(split_minutes_seconds_dev) - 1, -1, -1):
-        #     time_dev_minutes += (minutes_multiplier * float(split_minutes_seconds_dev[i]))
-        #     minutes_multiplier *= 60
-
-        # minutes_multiplier = 1/60
-        # for i in range(len(split_minutes_seconds_stable) - 1, -1, -1):
-        #     time_stable_minutes += (minutes_multiplier * float(split_minutes_seconds_stable[i]))
-
-        # # Percent change on the latest branch wrt base branch
-        # percent_change_time = f'{round(((time_dev_minutes - time_stable_minutes) / time_stable_minutes), 2) * 100}%'
-
-    except Exception as e:
-        for time in time_final_base:
-            if "elapsed" in time:
-                time_value = time.split()[2]
-                base_time_value = time_value.split("e")[0]
-                break
-
-        for time in time_final_head:
-            if "elapsed" in time:
-                time_value = time.split()[2]
-                head_time_value = time_value.split("e")[0]
-                break
 
     base_data = json.load(base_file)
     head_data = json.load(head_file)
 
-    report = []
     repo_name = base_data['repoName']
 
-    report.append(["RepoName", repo_name])
-    report.append(["Base Branch Name", base_branch_name])
-    report.append(["Head Branch Name", head_branch_name])
-    report.append([f'{base_branch_name} Branch run time', base_time_value])
-    report.append([f'{head_branch_name} Branch run time', head_time_value])
-    report.append([])
+    process_source_sink_and_collection_data(f'{head_branch_name}-{base_branch_name}-source-&-sink-report', base_data,
+                                            head_data, base_branch_name, head_branch_name, repo_name, header_flag)
 
-    # Create empty Excel file
-    # if header_flag:
-    #     excel_report_location = f'{os.getcwd()}/output.xlsx'
-    #     create_new_excel(excel_report_location, base_branch_name, head_branch_name)
-
-    report.append(['Analysis for Sources/Sink/Collections'])
-    for row in process_source_sink_and_collection_data(f'{head_branch_name}-{base_branch_name}-source-&-sink-report',
-                                                       base_data, head_data, base_branch_name, head_branch_name,
-                                                       repo_name, header_flag):
-        report.append(row)
-    report.append([])
-
-    report.append(["Paths Analysis: Analysis for Missing and Additional Flows"])
-    for row in process_path_analysis(f'{head_branch_name}-{base_branch_name}-flow-report', base_data, head_data,
-                                     repo_name, base_branch_name, head_branch_name, header_flag):
-        report.append(row)
-    report.append([])
-
-    cpu_utilization_data = open(cpu_usage, "r+")
-    report.append(["CPU Utilization Report"])
-    for i in process_cpu_data(cpu_utilization_data.readlines()):
-        report.append(i)
+    process_path_analysis(f'{head_branch_name}-{base_branch_name}-flow-report', base_data, head_data, repo_name,
+                          base_branch_name, head_branch_name, header_flag)
 
     process_performance_data(f'{head_branch_name}-{base_branch_name}-performance-report', base_branch_name,
                              head_branch_name, repo_name, header_flag)
-
-    report.append([])
-    report.append(['---------', '---------', 'END', '---------', '---------'])
-    report.append([])
-    report.append([])
-
-    create_csv(report)
 
     base_file.close()
     head_file.close()
 
 
-# when only need to compare the privado.json file
+# when only need to compare the Privado.json file
 def compare_files(base_file_uri, head_file_uri):
     if not os.path.isfile(base_file_uri):
         print(f'Please provide complete valid base file: {base_file_uri}')
@@ -140,7 +50,6 @@ def compare_files(base_file_uri, head_file_uri):
     base_data = json.load(base_file)
     head_data = json.load(head_file)
 
-    report = []
     first_repo_name = base_data['repoName']
     second_repo_name = head_data['repoName']
 
@@ -150,31 +59,14 @@ def compare_files(base_file_uri, head_file_uri):
     status_report_data = generate_scan_status_data_for_file(repo_name, base_file_uri, head_file_uri)
     write_scan_status_report(f'{os.getcwd()}/output.xlsx', status_report_data)
 
-
-    report.append(["Comparison Result"])
-    report.append([])
-    report.append(["First File", base_file_uri])
-    report.append(["Second File", head_file_uri])
-    report.append([])
-
     # Create empty Excel file
     excel_report_location = f'{os.getcwd()}/output.xlsx'
     # create_new_excel(excel_report_location, "First", "Second")
 
-    report.append(['Analysis for Sources/Sink/Collections'])
-    for row in process_source_sink_and_collection_data('source-&-sink-report', base_data, head_data, "First", "Second",
-                                                       repo_name, True):
-        report.append(row)
-    report.append([])
+    process_source_sink_and_collection_data('source-&-sink-report', base_data, head_data, "First", "Second", repo_name,
+                                            True)
 
-    report.append(["Paths Analysis: Analysis for Missing and Additional Flows"])
-    for row in process_path_analysis('flow-report', base_data, head_data, repo_name, "First", "Second", True):
-        report.append(row)
-    report.append([])
-
-    report.append(['---------', '---------', 'END', '---------', '---------'])
-
-    create_csv(report)
+    process_path_analysis('flow-report', base_data, head_data, repo_name, "First", "Second", True)
 
     base_file.close()
     head_file.close()
@@ -196,8 +88,6 @@ def process_performance_data(worksheet_name, base_branch_name, head_branch_name,
 
     result.append(list(get_subscan_metadata(repo_name, head_branch_name).values()))
     result.append(list(get_subscan_metadata(repo_name, base_branch_name).values()))
-
-    write_to_csv(f'{head_branch_name}-{base_branch_name}-performance-report', result)
 
     write_performance_data(f'{os.getcwd()}/output.xlsx', worksheet_name, result)
 
@@ -270,9 +160,6 @@ def process_source_sink_and_collection_data(worksheet_name, base_data, head_data
     # Analysis for the collections
     for row in top_level_collection_processor(base_data['collections'], head_data['collections'], repo_name):
         result.append(row)
-
-    # Export the separate csv file
-    write_to_csv(f"{head_branch_name}-{base_branch_name}-source-&-sink-report", result)
 
     # Export the result in new sheet Excel sheet
     write_source_sink_data(f'{os.getcwd()}/output.xlsx', worksheet_name, result)
@@ -379,18 +266,13 @@ def process_path_analysis(worksheet_name, base_source, head_source, repo_name, b
     if total_flow_head + total_missing_flow == 0:
         percent_delta = "0%"
     else:
-        percent_delta = f"{round((((total_additional_flow + total_missing_flow) / (total_flow_head + total_missing_flow)) * 100), 2)}%" 
+        percent_delta = f"{round((((total_additional_flow + total_missing_flow) / (total_flow_head + total_missing_flow)) * 100), 2)}%"
 
     result.insert(1, [repo_name, 'Total', 'All', 'All', total_flow_head, total_flow_base, total_additional_flow,
                       total_missing_flow, percent_delta])
 
-    # export the separate csv file
-    write_to_csv(f'{head_branch_name}-{base_branch_name}-flow-report', result)
-
     # Export to the excel file
     write_path_data(f'{os.getcwd()}/output.xlsx', worksheet_name, result)
-
-    return result
 
 
 def sub_process_path(base_source, head_source, sink_type, base_branch_name, head_branch_name, repo_name):
@@ -547,12 +429,11 @@ def sub_process_path(base_source, head_source, sink_type, base_branch_name, head
                  f'{round(((absolute_path_change / (2 * total_path_count)) * 100), 2)}%', '\n'.join(new_path),
                  '\n'.join(missing_path)])
 
-    
+
     if total_flow_head + total_missing_flow == 0:
         percent_delta = "0%"
     else:
-        percent_delta = f"{round((((total_additional_flow + total_missing_flow) / (total_flow_head + total_missing_flow)) * 100), 2)}%" 
-
+        percent_delta = f"{round((((total_additional_flow + total_missing_flow) / (total_flow_head + total_missing_flow)) * 100), 2)}%"
 
     final_result_list.insert(0, [repo_name, sink_type, 'All', 'All', total_flow_head, total_flow_base,
                                  total_additional_flow, total_missing_flow, percent_delta])
@@ -567,26 +448,26 @@ def json_to_hash(json_obj):
     return hex_dig
 
 
-def process_cpu_data(cpu_utilization_data):
-    final_result_list = []
-
-    for i in range(0, len(cpu_utilization_data)):
-        cpu_data = cpu_utilization_data[i].split(',')
-        value = []
-        for j in range(0, len(cpu_data)):
-            if j == 0:
-                v = cpu_data[j].split(':')
-                value.append(v[0])
-                value.append(v[1])
-            else:
-                value.append(cpu_data[j])
-        final_result_list.append(value)
-
-        if i % 2 == 1:
-            final_result_list.append([])
-
-    return final_result_list
-
-
-if __name__ == "__main__":
-    main("/utils/privado.json", "/utils/privado1.json", 0, 0, 0, "ankit", "kk")
+# def process_cpu_data(cpu_utilization_data):
+#     final_result_list = []
+#
+#     for i in range(0, len(cpu_utilization_data)):
+#         cpu_data = cpu_utilization_data[i].split(',')
+#         value = []
+#         for j in range(0, len(cpu_data)):
+#             if j == 0:
+#                 v = cpu_data[j].split(':')
+#                 value.append(v[0])
+#                 value.append(v[1])
+#             else:
+#                 value.append(cpu_data[j])
+#         final_result_list.append(value)
+#
+#         if i % 2 == 1:
+#             final_result_list.append([])
+#
+#     return final_result_list
+#
+#
+# if __name__ == "__main__":
+#     main("/utils/privado.json", "/utils/privado1.json", 0, 0, 0, "ankit", "kk")
