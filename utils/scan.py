@@ -8,7 +8,7 @@ import re
 
 def get_docker_commands(tag, repo_path):
     if (tag == 'main'):
-        return f'privado scan {repo_path}'
+        return f'privado scan {repo_path} | tee {cwd}/temp/result/{second_branch}/{repo}-output.txt)'
     elif (tag == 'dev'):
         return f'PRIVADO_DEV=1 privado scan {repo_path}'
     else:
@@ -42,7 +42,7 @@ def scan_repo_report(first_branch, second_branch, use_docker):
     
             # Scan the cloned repo with first branch and push output to a file
             if (use_docker):
-                first_command = get_docker_commands(first_branch, scan_dir)
+                first_command = f'{get_docker_commands(first_branch, scan_dir)} | tee {cwd}/temp/result/{first_branch}/{repo}-output.txt'
             else:
                 first_command = f'cd {cwd}/temp/binary/{first_branch}/bin && ({{ time ./privado-core scan {scan_dir} -ic {cwd}/temp/privado --skip-upload -Dlog4j.configurationFile=log4j2.xml ; }} 2> {cwd}/temp/result/{first_branch}/{repo}_time.txt | tee {cwd}/temp/result/{first_branch}/{repo}-output.txt)'
             
@@ -62,7 +62,7 @@ def scan_repo_report(first_branch, second_branch, use_docker):
 
 
             if (use_docker):
-                second_command = get_docker_commands(second_branch, scan_dir)
+                second_command = f'{get_docker_commands(second_branch, scan_dir)} | tee {cwd}/temp/result/{second_branch}/{repo}-output.txt'
             else:
                 # Scan the cloned repo with second branch and push output to a file with debug logs
                 second_command = f'cd {cwd}/temp/binary/{second_branch}/bin && ({{ time ./privado-core scan {scan_dir} -ic {cwd}/temp/privado --skip-upload -Dlog4j.configurationFile=log4j2.xml ; }} 2> {cwd}/temp/result/{second_branch}/{repo}_time.txt | tee {cwd}/temp/result/{second_branch}/{repo}-output.txt)'
