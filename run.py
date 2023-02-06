@@ -18,6 +18,7 @@ parser.add_argument('-s', "--second", default=None)
 parser.add_argument('-c', action='store_true')
 parser.add_argument('-b', "--boost", default=False)
 parser.add_argument('-m', action='store_true')
+parser.add_argument('-d', '--use-docker' ,action='store_true')
 parser.set_defaults(feature=True)
 
 args: argparse.Namespace = parser.parse_args()
@@ -45,8 +46,10 @@ def workflow():
 
     delete_action(args.c, args.boost)
 
-    # build the Privado binary for both branches
-    build(args.first, args.second, args.boost)
+    if (not args.d):
+        # build the Privado binary for both branches
+        build(args.first, args.second, args.boost)
+        
 
     # Delete previous scan report if exist
     path = f'{cwd}/comparison_report.csv'
@@ -69,7 +72,7 @@ def workflow():
             clone_repo_with_location(repo_link, location, is_git_url)
             valid_repositories.append(repo_name)
 
-        scan_repo_report(args.first, args.second)
+        scan_repo_report(args.first, args.second, use_docker=args.d)
 
         # Used to add header for only one time in report
         header_flag = True

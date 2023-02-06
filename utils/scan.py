@@ -5,7 +5,16 @@ import platform
 from utils.write_to_file import write_scan_status_report, create_new_excel, create_new_excel_for_file
 import re
 
-def scan_repo_report(first_branch, second_branch):
+
+def get_docker_commands(tag, repo_path):
+    if (tag == 'main'):
+        return f'privado scan {repo_path}'
+    elif (tag == 'dev'):
+        return f'PRIVADO_DEV=1 privado scan {repo_path}'
+    else:
+        return f'PRIVADO_DEV=1 PRIVADO_TAG={tag} scan {repo_path}'
+
+def scan_repo_report(first_branch, second_branch, use_docker):
     repos = get_list_repos()
     cwd = os.getcwd()
 
@@ -32,7 +41,11 @@ def scan_repo_report(first_branch, second_branch):
                 print("Unable to fetch CPU and memory Status")
     
             # Scan the cloned repo with first branch and push output to a file
-            first_command = f'cd {cwd}/temp/binary/{first_branch}/bin && ({{ time ./privado-core scan {scan_dir} -ic {cwd}/temp/privado --skip-upload -Dlog4j.configurationFile=log4j2.xml ; }} 2> {cwd}/temp/result/{first_branch}/{repo}_time.txt | tee {cwd}/temp/result/{first_branch}/{repo}-output.txt)'
+            if (use_docker):
+                first_command = get_docker_commands(first_branch, repo)
+            else:
+                first_command = f'cd {cwd}/temp/binary/{first_branch}/bin && ({{ time ./privado-core scan {scan_dir} -ic {cwd}/temp/privado --skip-upload -Dlog4j.configurationFile=log4j2.xml ; }} 2> {cwd}/temp/result/{first_branch}/{repo}_time.txt | tee {cwd}/temp/result/{first_branch}/{repo}-output.txt)'
+            
             # Execute the command to generate the binary file for first branch
             os.system(first_command)
 
@@ -48,8 +61,12 @@ def scan_repo_report(first_branch, second_branch):
                 scan_status[f"{repo},{first_branch}"] = "failed"
 
 
-            # Scan the cloned repo with second branch and push output to a file with debug logs
-            second_command = f'cd {cwd}/temp/binary/{second_branch}/bin && ({{ time ./privado-core scan {scan_dir} -ic {cwd}/temp/privado --skip-upload -Dlog4j.configurationFile=log4j2.xml ; }} 2> {cwd}/temp/result/{second_branch}/{repo}_time.txt | tee {cwd}/temp/result/{second_branch}/{repo}-output.txt)'
+            if (use_docker):
+                second_command = get_docker_commands(second_branch, repo)
+            else:
+                # Scan the cloned repo with second branch and push output to a file with debug logs
+                second_command = f'cd {cwd}/temp/binary/{second_branch}/bin && ({{ time ./privado-core scan {scan_dir} -ic {cwd}/temp/privado --skip-upload -Dlog4j.configurationFile=log4j2.xml ; }} 2> {cwd}/temp/result/{second_branch}/{repo}_time.txt | tee {cwd}/temp/result/{second_branch}/{repo}-output.txt)'
+            
             # Execute the command to generate the binary file for second branch
             os.system(second_command)
 
@@ -61,8 +78,9 @@ def scan_repo_report(first_branch, second_branch):
                 scan_status[f"{repo},{second_branch}"] = f"failed,{str(e)}"
 
         finally:
-            scan_status_report_data = generate_scan_status_data(scan_status, first_branch, second_branch)
-            write_scan_status_report(f'{cwd}/output.xlsx', scan_status_report_data)
+            if (not use_docker):
+                scan_status_report_data = generate_scan_status_data(scan_status, first_branch, second_branch)
+                write_scan_status_report(f'{cwd}/output.xlsx', scan_status_report_data)
 
             # kill backgroud running process created for cpu monitoring
             os.system(f"kill -9 {process.pid}")
