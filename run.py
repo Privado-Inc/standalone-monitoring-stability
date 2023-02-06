@@ -22,7 +22,6 @@ parser.add_argument('-d', '--use-docker', action='store_true')
 parser.set_defaults(feature=True)
 
 args: argparse.Namespace = parser.parse_args()
-print(args)
 
 
 def workflow():

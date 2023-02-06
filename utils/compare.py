@@ -133,10 +133,6 @@ def process_collection(collections_base, collections_head, collection_name, repo
     # No of nodes in base, but not in head
     missing_head = len(collection_set_base.union(collection_set_head).difference(collection_set_head))
 
-    # Percent change in number of nodes wrt base branch
-    percent_change = round(((len(collection_set_base) - len(collection_set_head)) / len(collection_set_base)) * 100, 2) 
-
-
     return [repo_name, 'Collection', collection_name, head_collections, base_collections, collections_sources_head,
             collections_sources_base, '0', latest, removed, missing_head]
 
@@ -197,8 +193,6 @@ def process_sources(source_base, source_head, repo_name):
     # Nodes present in base, but not in head
     missing_in_head = len(source_set_base.union(source_set_head).difference(source_set_head))
 
-    # Percent change in number of nodes wrt base branch
-    percent_change = round(((len(collection_set_base) - len(collection_set_head)) / len(collection_set_base)) * 100, 2) 
 
     return [repo_name, 'Source', '--', head_sources_count, base_sources_count, source_name_head,
             source_name_base, '0', added, removed, missing_in_head]

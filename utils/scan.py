@@ -78,9 +78,8 @@ def scan_repo_report(first_branch, second_branch, use_docker):
                 scan_status[f"{repo},{second_branch}"] = f"failed,{str(e)}"
 
         finally:
-            if (not use_docker):
-                scan_status_report_data = generate_scan_status_data(scan_status, first_branch, second_branch)
-                write_scan_status_report(f'{cwd}/output.xlsx', scan_status_report_data)
+            scan_status_report_data = generate_scan_status_data(scan_status, first_branch, second_branch)
+            write_scan_status_report(f'{cwd}/output.xlsx', scan_status_report_data)
 
             # kill backgroud running process created for cpu monitoring
             os.system(f"kill -9 {process.pid}")
