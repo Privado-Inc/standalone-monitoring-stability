@@ -8,7 +8,7 @@ import re
 
 def get_docker_commands(tag, repo_path):
     if (tag == 'main'):
-        return f'privado scan {repo_path} | tee {cwd}/temp/result/{second_branch}/{repo}-output.txt)'
+        return f'privado scan {repo_path}'
     elif (tag == 'dev'):
         return f'PRIVADO_DEV=1 privado scan {repo_path}'
     else:
