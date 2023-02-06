@@ -12,7 +12,7 @@ def get_docker_commands(tag, repo_path):
     elif (tag == 'dev'):
         return f'PRIVADO_DEV=1 privado scan {repo_path}'
     else:
-        return f'PRIVADO_DEV=1 PRIVADO_TAG={tag} scan {repo_path}'
+        return f'PRIVADO_DEV=1 PRIVADO_TAG={tag} privado scan {repo_path}'
 
 def scan_repo_report(first_branch, second_branch, use_docker):
     repos = get_list_repos()
