@@ -7,7 +7,7 @@ from utils.scan_metadata import get_subscan_metadata
 from utils.scan import generate_scan_status_data_for_file
 
 
-def main(base_file, head_file, cpu_usage, base_time, head_time, base_branch_name, head_branch_name, header_flag):
+def main(base_file, head_file, base_time, head_time, base_branch_name, head_branch_name, header_flag):
     try:
         base_file.split('/')[-1].split('.')[0]
     except Exception as e:

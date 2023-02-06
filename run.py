@@ -80,10 +80,9 @@ def workflow():
         for repo_name in valid_repositories:
             stable_file = f'{cwd}/temp/result/{args.first}/{repo_name}.json'
             dev_file = f'{cwd}/temp/result/{args.second}/{repo_name}.json'
-            cpu_usage = f'{cwd}/temp/cpu_mem/{repo_name}_cpu_mem.txt'
             stable_time = f'{cwd}/temp/result/{args.first}/{repo_name}_time.txt'
             dev_time = f'{cwd}/temp/result/{args.second}/{repo_name}_time.txt'
-            compare_and_generate_report(stable_file, dev_file, cpu_usage, stable_time, dev_time, args.first,
+            compare_and_generate_report(stable_file, dev_file, stable_time, dev_time, args.first,
                                         args.second, header_flag)
             header_flag = False
 
