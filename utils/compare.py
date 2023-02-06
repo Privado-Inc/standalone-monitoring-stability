@@ -231,7 +231,7 @@ def process_sinks(base_dataflows, head_dataflows, repo_name, key='storages'):
     removed = '\n'.join(list(sink_set_base.difference(sink_set_head)))
 
     # Nodes present in base, but not in head
-    missing_in_head = source_set_base.union(source_set_head).difference(source_set_head)
+    missing_in_head = sink_names_base.union(sink_set_head).difference(sink_set_head)
 
     return [repo_name, 'Sink', key, head_sink_count, base_sink_count, sink_names_head, sink_names_base, '0',
             added, removed, missing_in_head]
