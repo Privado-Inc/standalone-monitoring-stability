@@ -257,7 +257,7 @@ def process_source_sink_and_collection_data(worksheet_name, base_data, head_data
         result.append(['Repo', 'Category', 'Sub Category', f'Number of Node ( {head_branch_name} )',
                        f'Number of Node ( {base_branch_name} )', f'List of Node {head_branch_name}',
                        f'List of Node {base_branch_name}', '% Change', f'New Node added in {head_branch_name}',
-                       f'List of Node Missing in {head_branch_name}'])
+                       f'List of Node Missing in {head_branch_name}', f'Number of missing nodes in {head_branch_name}'])
 
     # Analysis for the Source
     result.append(process_sources(base_data['sources'], head_data['sources'], repo_name))
@@ -296,8 +296,11 @@ def process_sources(source_base, source_head, repo_name):
     added = '\n'.join(list(source_set_head.difference(source_set_base)))
     removed = '\n'.join(list(source_set_base.difference(source_set_head)))
 
+    # Nodes present in base, but not in head
+    missing_in_head = source_set_base.union(source_set_head).difference(source_set_head)
+
     return [repo_name, 'Source', '--', head_sources_count, base_sources_count, source_name_head,
-            source_name_base, '0', added, removed]
+            source_name_base, '0', added, removed, missing_in_head]
 
     # percent change in the latest sources wrt stable release
     # try:
@@ -340,8 +343,11 @@ def process_sinks(base_dataflows, head_dataflows, repo_name, key='storages'):
     added = '\n'.join(list(sink_set_head.difference(sink_set_base)))
     removed = '\n'.join(list(sink_set_base.difference(sink_set_head)))
 
+    # Nodes present in base, but not in head
+    missing_in_head = source_set_base.union(source_set_head).difference(source_set_head)
+
     return [repo_name, 'Sink', key, head_sink_count, base_sink_count, sink_names_head, sink_names_base, '0',
-            added, removed]
+            added, removed, missing_in_head]
 
     # return result
 
