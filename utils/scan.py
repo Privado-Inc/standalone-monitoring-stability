@@ -103,6 +103,12 @@ def generate_scan_status_data(scan_status, first_branch, second_branch):
         status_breakdown = status.split(',')
         error_message = "--"
 
+        if status_breakdown[0] == 'failed':
+            scan_status_report_data.append(
+                [repo, branch, status_breakdown[0], 'Privado.json is missing', '--', "--", '--',
+                 '--', '--'])
+            continue
+
         scan_metadata_regex = r".*(Code scanning|Binary file size|Deduplicating flows is done in).*"
         scan_metadata_values = []
 
@@ -122,8 +128,6 @@ def generate_scan_status_data(scan_status, first_branch, second_branch):
             
         except:
             print("Something went wrong")
-            
-
 
         if (len(status_breakdown) > 1):
             error_message = status_breakdown[1]
