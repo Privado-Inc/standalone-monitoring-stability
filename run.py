@@ -80,13 +80,15 @@ def workflow():
         header_flag = True
 
         for repo_name in valid_repositories:
-            if (scan_status[f'{repo_name},{args.first}'] == 'failed' or scan_status[f'{repo_name},{args.second}'] == 'failed'): continue
-            stable_file = f'{cwd}/temp/result/{args.first}/{repo_name}.json'
-            dev_file = f'{cwd}/temp/result/{args.second}/{repo_name}.json'
-            stable_time = f'{cwd}/temp/result/{args.first}/{repo_name}_time.txt'
-            dev_time = f'{cwd}/temp/result/{args.second}/{repo_name}_time.txt'
-            compare_and_generate_report(stable_file, dev_file, stable_time, dev_time, args.first,
+            try:
+                stable_file = f'{cwd}/temp/result/{args.first}/{repo_name}.json'
+                dev_file = f'{cwd}/temp/result/{args.second}/{repo_name}.json'
+                stable_time = f'{cwd}/temp/result/{args.first}/{repo_name}_time.txt'
+                dev_time = f'{cwd}/temp/result/{args.second}/{repo_name}_time.txt'
+                compare_and_generate_report(stable_file, dev_file, stable_time, dev_time, args.first,
                                         args.second, header_flag)
+            except:
+                print(f'{repo_name} privado.json not found')
             header_flag = False
 
         if args.upload:
