@@ -49,6 +49,7 @@ def scan_repo_report(first_branch, second_branch, use_docker):
                 scan_status[f"{repo},{first_branch}"] = "failed"
 
 
+
             if (use_docker):
                 second_command = f'{get_docker_commands(second_branch, scan_dir)} | tee {cwd}/temp/result/{second_branch}/{repo}-output.txt'
             else:
@@ -63,11 +64,13 @@ def scan_repo_report(first_branch, second_branch, use_docker):
                 shutil.move(src_path,dest_path)
                 scan_status[f"{repo},{second_branch}"] = "done"
             except Exception as e:
-                scan_status[f"{repo},{second_branch}"] = f"failed,{str(e)}"
+                scan_status[f"{repo},{second_branch}"] = f"failed,{str(e)}"                
 
         finally:
             scan_status_report_data = generate_scan_status_data(scan_status, first_branch, second_branch)
             write_scan_status_report(f'{cwd}/output.xlsx', scan_status_report_data)
+
+    return scan_status
 
 
 # Return list of cloned repo name stored in /temp/repos dir

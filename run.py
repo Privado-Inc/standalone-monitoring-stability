@@ -72,12 +72,15 @@ def workflow():
             clone_repo_with_location(repo_link, location, is_git_url)
             valid_repositories.append(repo_name)
 
-        scan_repo_report(args.first, args.second, use_docker=args.use_docker)
+        scan_status = scan_repo_report(args.first, args.second, use_docker=args.use_docker)
+
+
 
         # Used to add header for only one time in report
         header_flag = True
 
         for repo_name in valid_repositories:
+            if (scan_status[f'{repo_name},{args.first}'] == 'failed' or scan_status[f'{repo_name},{args.second}'] == 'failed'): continue
             stable_file = f'{cwd}/temp/result/{args.first}/{repo_name}.json'
             dev_file = f'{cwd}/temp/result/{args.second}/{repo_name}.json'
             stable_time = f'{cwd}/temp/result/{args.first}/{repo_name}_time.txt'
