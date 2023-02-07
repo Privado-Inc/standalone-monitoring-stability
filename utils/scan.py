@@ -37,18 +37,16 @@ def scan_repo_report(first_branch, second_branch, use_docker):
             # Execute the command to generate the binary file for first branch
             os.system(first_command)
 
-
             # Move the privado.json file to the result folder
             src_path = f'{scan_dir}/.privado/privado.json'
 
             dest_path = f'{cwd}/temp/result/{first_branch}/{repo}.json'
             try:
-                shutil.move(src_path,dest_path)
+                raise "Not found"
+                shutil.move(src_path, dest_path)
                 scan_status[f"{repo},{first_branch}"] = "done"
-            except:
-                scan_status[f"{repo},{first_branch}"] = "failed"
-
-
+            except Exception as e:
+                scan_status[f"{repo},{first_branch}"] = f'failed,str{e}'
 
             if (use_docker):
                 second_command = f'{get_docker_commands(second_branch, scan_dir)} | tee {cwd}/temp/result/{second_branch}/{repo}-output.txt'
@@ -128,6 +126,7 @@ def generate_scan_status_data(scan_status, first_branch, second_branch):
             
         except:
             print("Something went wrong")
+
 
         if (len(status_breakdown) > 1):
             error_message = status_breakdown[1]
