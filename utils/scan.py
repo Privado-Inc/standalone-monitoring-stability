@@ -42,11 +42,10 @@ def scan_repo_report(first_branch, second_branch, use_docker):
 
             dest_path = f'{cwd}/temp/result/{first_branch}/{repo}.json'
             try:
-                raise "Not found"
                 shutil.move(src_path, dest_path)
                 scan_status[f"{repo},{first_branch}"] = "done"
             except Exception as e:
-                scan_status[f"{repo},{first_branch}"] = f'failed,str{e}'
+                scan_status[f"{repo},{first_branch}"] = f'failed,{str(e)}'
 
             if (use_docker):
                 second_command = f'{get_docker_commands(second_branch, scan_dir)} | tee {cwd}/temp/result/{second_branch}/{repo}-output.txt'
@@ -100,12 +99,6 @@ def generate_scan_status_data(scan_status, first_branch, second_branch):
         repo, branch = repo_branch.split(',')
         status_breakdown = status.split(',')
         error_message = "--"
-
-        if status_breakdown[0] == 'failed':
-            scan_status_report_data.append(
-                [repo, branch, status_breakdown[0], 'Privado.json is missing', '--', "--", '--',
-                 '--', '--'])
-            continue
 
         scan_metadata_regex = r".*(Code scanning|Binary file size|Deduplicating flows is done in).*"
         scan_metadata_values = []
