@@ -1,6 +1,7 @@
 import csv
 import os
 import openpyxl
+from openpyxl.styles import PatternFill, Font
 
 
 def write_to_csv(filename, values):
@@ -135,4 +136,17 @@ def write_summary_data(workbook_location, base_branch_name, head_branch_name, re
                           report[repo]['missing_sink'],
                          "---"])
 
+    highlight_summary_cell(worksheet)
     workbook.save(workbook_location)
+
+
+def highlight_summary_cell(worksheet):
+
+    for col in ['E', 'F', 'I', 'L', 'M']:
+        for row in range(2, len(worksheet[col]) + 1):
+            if int(worksheet[f'{col}{row}'].value) < 0:
+                worksheet[f'{col}{row}'].fill = PatternFill(start_color="FF0000", end_color="FF0000", fill_type = "solid")
+                worksheet[f'{col}{row}'].font = Font(color='FFFFFF')
+            else:
+                worksheet[f'{col}{row}'].fill = PatternFill(start_color="", end_color="90EE90", fill_type="solid")
+                worksheet[f'{col}{row}'].font = Font(color='FFFFFF')
