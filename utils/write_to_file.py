@@ -121,9 +121,9 @@ def write_summary_data(workbook_location, base_branch_name, head_branch_name, re
         head_scan_time = report[repo][head_branch_name]['code_scan_time'].split()[0]
         base_scan_time = report[repo][base_branch_name]['code_scan_time'].split()[0]
 
-        scan_time_diff = 'NA' if base_scan_time != '--' and head_scan_time != '--' else int(base_scan_time) - int(head_scan_time)
-        unique_flow_diff = 'NA' if report[repo][base_branch_name]['unique_flows'] != '--' and report[repo][head_branch_name]['unique_flows'] != '--' else int(report[repo][base_branch_name]['unique_flows']) - int(report[repo][head_branch_name]['unique_flows'])
-        unique_source_diff = 'NA' if report[repo][base_branch_name]['unique_source'] != '--' and report[repo][head_branch_name]['unique_source'] != '--' else int(report[repo][base_branch_name]['unique_source']) - int(report[repo][head_branch_name]['unique_source'])
+        scan_time_diff = 'NA' if base_scan_time == '--' or head_scan_time == '--' else int(base_scan_time) - int(head_scan_time)
+        unique_flow_diff = 'NA' if report[repo][base_branch_name]['unique_flows'] == '--' or report[repo][head_branch_name]['unique_flows'] == '--' else int(report[repo][base_branch_name]['unique_flows']) - int(report[repo][head_branch_name]['unique_flows'])
+        unique_source_diff = 'NA' if report[repo][base_branch_name]['unique_source'] == '--' or report[repo][head_branch_name]['unique_source'] == '--' else int(report[repo][base_branch_name]['unique_source']) - int(report[repo][head_branch_name]['unique_source'])
 
         worksheet.append([repo, scan_status, base_scan_time, head_scan_time, scan_time_diff,
                           len(report[repo][base_branch_name]['reachable_flow_time']) - len(report[repo][head_branch_name]['reachable_flow_time']),
