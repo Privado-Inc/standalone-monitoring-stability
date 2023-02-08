@@ -3,9 +3,9 @@ import sys
 
 
 def main():
-    if not os.path.isfile(f'{os.getcwd()}/output.xlsx'):
-        print('output.xlsx is not present')
-        return
+    # if not os.path.isfile(f'{os.getcwd()}/output.xlsx'):
+    #     print('output.xlsx is not present')
+    #     return
     if not os.path.isdir(f'{os.getcwd()}/temp/result'):
         print('result folder is not present')
         return
