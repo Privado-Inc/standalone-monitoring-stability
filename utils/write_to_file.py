@@ -148,5 +148,5 @@ def highlight_summary_cell(worksheet):
                 worksheet[f'{col}{row}'].fill = PatternFill(start_color="FF0000", end_color="FF0000", fill_type = "solid")
                 worksheet[f'{col}{row}'].font = Font(color='FFFFFF')
             else:
-                worksheet[f'{col}{row}'].fill = PatternFill(start_color="", end_color="90EE90", fill_type="solid")
+                worksheet[f'{col}{row}'].fill = PatternFill(start_color="90EE90", end_color="90EE90", fill_type="solid")
                 worksheet[f'{col}{row}'].font = Font(color='FFFFFF')
