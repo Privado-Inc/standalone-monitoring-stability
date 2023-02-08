@@ -42,7 +42,7 @@ def scan_repo_report(first_branch, second_branch, valid_repos, use_docker):
             src_path = f'{scan_dir}/.privado/privado.json'
             dest_path = f'{cwd}/temp/result/{first_branch}/{repo}.json'
 
-            report = []
+            report = {}
 
             # Move the privado.json file to the result folder
             try:
