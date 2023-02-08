@@ -162,9 +162,9 @@ def process_source_sink_and_collection_data(worksheet_name, base_data, head_data
     # Analysis for the storages sink
     result.append(process_sinks(base_data['dataFlow'], head_data['dataFlow'], repo_name, scan_status, key='storages'))
     # Analysis for the third party sink
-    result.append(process_sinks(base_data['dataFlow'], head_data['dataFlow'], repo_name, key='third_parties'))
+    result.append(process_sinks(base_data['dataFlow'], head_data['dataFlow'], repo_name, scan_status, key='third_parties'))
     # Analysis for the leakage sink
-    result.append(process_sinks(base_data['dataFlow'], head_data['dataFlow'], repo_name, key='leakages'))
+    result.append(process_sinks(base_data['dataFlow'], head_data['dataFlow'], repo_name, scan_status, key='leakages'))
     # Analysis for the collections
     for row in top_level_collection_processor(base_data['collections'], head_data['collections'], repo_name):
         result.append(row)
@@ -232,7 +232,10 @@ def process_sinks(base_dataflows, head_dataflows, repo_name, scan_status, key='s
     # Nodes present in base, but not in head
     missing_in_head = len(sink_set_base.union(sink_set_head).difference(sink_set_head))
     if scan_status is not None:
-        scan_status[repo_name]['missing_sink'] = missing_in_head
+        if not scan_status[repo_name].__contains__('missing_sink'):
+            scan_status[repo_name]['missing_sink'] = missing_in_head
+        else:
+            scan_status[repo_name]['missing_sink'] += missing_in_head
 
     return [repo_name, 'Sink', key, head_sink_count, base_sink_count, sink_names_head, sink_names_base, '0',
             added, removed, missing_in_head]

@@ -121,17 +121,17 @@ def write_summary_data(workbook_location, base_branch_name, head_branch_name, re
         head_scan_time = report[repo][head_branch_name]['code_scan_time'].split()[0]
         base_scan_time = report[repo][base_branch_name]['code_scan_time'].split()[0]
 
-        scan_time_diff = int(base_scan_time) - int(head_scan_time)
+        scan_time_diff = 'NA' if base_scan_time is not '--' and head_scan_time is not '--' else int(base_scan_time) - int(head_scan_time)
+        unique_flow_diff = 'NA' if report[repo][base_branch_name]['unique_flows'] is not '--' and report[repo][head_branch_name]['unique_flows'] is not '--' else int(report[repo][base_branch_name]['unique_flows']) - int(report[repo][head_branch_name]['unique_flows'])
+        unique_source_diff = 'NA' if report[repo][base_branch_name]['unique_source'] is not '--' and report[repo][head_branch_name]['unique_source'] is not '--' else int(report[repo][base_branch_name]['unique_source']) - int(report[repo][head_branch_name]['unique_source'])
 
-        unique_flow_diff = int(report[repo][base_branch_name]['unique_flows']) - int(report[repo][head_branch_name]['unique_flows'])
-        unique_source_diff = int(report[repo][base_branch_name]['unique_source']) - int(report[repo][head_branch_name]['unique_source'])
-
-        worksheet.append([repo, scan_status, base_scan_time, head_scan_time, scan_time_diff, "---",
+        worksheet.append([repo, scan_status, base_scan_time, head_scan_time, scan_time_diff,
+                          len(report[repo][base_branch_name]['reachable_flow_time']) - len(report[repo][head_branch_name]['reachable_flow_time']),
                           report[repo][base_branch_name]['unique_flows'],
                           report[repo][head_branch_name]['unique_flows'], unique_flow_diff,
                           report[repo][base_branch_name]['unique_source'],
                           report[repo][head_branch_name]['unique_source'], unique_source_diff,
                           report[repo]['missing_sink'],
-                         ""])
+                         "---"])
 
     workbook.save(workbook_location)
