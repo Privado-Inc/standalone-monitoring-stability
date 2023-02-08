@@ -11,7 +11,7 @@ def check_git_url(path) -> bool:
     parsed_url = urlparse(path)
     # Check if the URL has a scheme (http, https, git, etc.)
     if parsed_url.scheme:
-       return True
+        return True
     elif os.path.isdir(path):
         return False
     else:
