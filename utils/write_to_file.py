@@ -118,8 +118,20 @@ def write_summary_data(workbook_location, base_branch_name, head_branch_name, re
 
     for repo in report.keys():
         scan_status = 'done' if report[repo][head_branch_name]['comparison_error_message'] == '--' and report[repo][base_branch_name]['comparison_error_message'] == '--' else 'failed'
+        head_scan_time = report[repo][head_branch_name]['code_scan_time'].split()[0]
+        base_scan_time = report[repo][base_branch_name]['code_scan_time'].split()[0]
 
-        worksheet.append([repo, scan_status, report[repo][base_branch_name]['code_scan_time'],
-                      report[repo][head_branch_name]['code_scan_time']])
+        scan_time_diff = int(base_scan_time) - int(head_scan_time)
+
+        unique_flow_diff = int(report[repo][base_branch_name]['unique_flows']) - int(report[repo][head_branch_name]['unique_flows'])
+        unique_source_diff = int(report[repo][base_branch_name]['unique_source']) - int(report[repo][head_branch_name]['unique_source'])
+
+        worksheet.append([repo, scan_status, base_scan_time, head_scan_time, scan_time_diff, "---",
+                          report[repo][base_branch_name]['unique_flows'],
+                          report[repo][head_branch_name]['unique_flows'], unique_flow_diff,
+                          report[repo][base_branch_name]['unique_source'],
+                          report[repo][head_branch_name]['unique_source'], unique_source_diff,
+                          report[repo]['missing_sink'],
+                         ""])
 
     workbook.save(workbook_location)

@@ -109,12 +109,16 @@ def parse_flows_data(repo_name, branch_name, scan_report):
     cwd = os.getcwd()
 
     scan_metadata_regex = r".*(Code scanning|Binary file size|Deduplicating flows is done in).*"
+    source_regex = r".*(no of source nodes).*"
     scan_metadata_values = []
+    source_metadata_values = []
 
     with open(f"{cwd}/temp/result/{branch_name}/{repo_name}-output.txt") as scan_time_output:
         for line in scan_time_output.readlines():
             if re.search(scan_metadata_regex, line):
                 scan_metadata_values.append(line)
+            if re.search(source_regex, line):
+                source_metadata_values.append(line)
 
     try:
         unique_flows = scan_metadata_values[0].split('-')[-1]
@@ -136,3 +140,17 @@ def parse_flows_data(repo_name, branch_name, scan_report):
     except Exception as e:
         print(f'Error while parsing binary file size data: {e}')
         scan_report[repo_name][branch_name]['binary_file_size'] = '--'
+
+    try:
+        source_count = source_metadata_values[0].split()[-1]
+        scan_report[repo_name][branch_name]['unique_source'] = source_count
+    except Exception as e:
+        print(f'Error while parsing unique source data: {e}')
+        scan_report[repo_name][branch_name]['unique_source'] = '--'
+
+    try:
+        reachable_by_flow_time = '-'
+        scan_report[repo_name][branch_name]['reachable_flow_time'] = reachable_by_flow_time
+    except Exception as e:
+        print(f'Error while parsing reachable flow time data: {e}')
+        scan_report[repo_name][branch_name]['reachable_flow_time'] = 0

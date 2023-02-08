@@ -7,7 +7,7 @@ from utils.scan_metadata import get_subscan_metadata
 from utils.scan import generate_scan_status_data_for_file
 
 
-def main(base_file, head_file, base_branch_name, head_branch_name, header_flag):
+def main(base_file, head_file, base_branch_name, head_branch_name, header_flag, scan_status):
     try:
         base_file.split('/')[-1].split('.')[0]
     except Exception as e:
@@ -23,7 +23,8 @@ def main(base_file, head_file, base_branch_name, head_branch_name, header_flag):
     repo_name = base_data['repoName']
 
     process_source_sink_and_collection_data(f'{head_branch_name}-{base_branch_name}-source-&-sink-report', base_data,
-                                            head_data, base_branch_name, head_branch_name, repo_name, header_flag)
+                                            head_data, base_branch_name, head_branch_name, repo_name, header_flag,
+                                            scan_status)
 
     process_path_analysis(f'{head_branch_name}-{base_branch_name}-flow-report', base_data, head_data, repo_name,
                           base_branch_name, head_branch_name, header_flag)
@@ -64,7 +65,7 @@ def compare_files(base_file_uri, head_file_uri):
     # create_new_excel(excel_report_location, "First", "Second")
 
     process_source_sink_and_collection_data('source-&-sink-report', base_data, head_data, "First", "Second", repo_name,
-                                            True)
+                                            True, None)
 
     process_path_analysis('flow-report', base_data, head_data, repo_name, "First", "Second", True)
 
@@ -147,7 +148,7 @@ def create_csv(data):
     print(f'Report written and exported to: {cwd}/comparison_report.csv')
 
 
-def process_source_sink_and_collection_data(worksheet_name, base_data, head_data, base_branch_name, head_branch_name, repo_name, header_flag):
+def process_source_sink_and_collection_data(worksheet_name, base_data, head_data, base_branch_name, head_branch_name, repo_name, header_flag, scan_status):
     result = []
 
     if header_flag:
@@ -159,7 +160,7 @@ def process_source_sink_and_collection_data(worksheet_name, base_data, head_data
     # Analysis for the Source
     result.append(process_sources(base_data['sources'], head_data['sources'], repo_name))
     # Analysis for the storages sink
-    result.append(process_sinks(base_data['dataFlow'], head_data['dataFlow'], repo_name, key='storages'))
+    result.append(process_sinks(base_data['dataFlow'], head_data['dataFlow'], repo_name, scan_status, key='storages'))
     # Analysis for the third party sink
     result.append(process_sinks(base_data['dataFlow'], head_data['dataFlow'], repo_name, key='third_parties'))
     # Analysis for the leakage sink
@@ -198,7 +199,7 @@ def process_sources(source_base, source_head, repo_name):
             source_name_base, '0', added, removed, missing_in_head]
 
 
-def process_sinks(base_dataflows, head_dataflows, repo_name, key='storages'):
+def process_sinks(base_dataflows, head_dataflows, repo_name, scan_status, key='storages'):
     base_sink = base_dataflows[key]
     head_sink = head_dataflows[key]
 
@@ -230,6 +231,8 @@ def process_sinks(base_dataflows, head_dataflows, repo_name, key='storages'):
 
     # Nodes present in base, but not in head
     missing_in_head = len(sink_set_base.union(sink_set_head).difference(sink_set_head))
+    if scan_status is not None:
+        scan_status[repo_name]['missing_sink'] = missing_in_head
 
     return [repo_name, 'Sink', key, head_sink_count, base_sink_count, sink_names_head, sink_names_base, '0',
             added, removed, missing_in_head]
