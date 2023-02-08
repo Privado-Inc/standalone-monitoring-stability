@@ -46,6 +46,7 @@ def scan_repo_report(first_branch, second_branch, valid_repos, use_docker):
 
             # Move the privado.json file to the result folder
             try:
+                raise 'error missing'
                 shutil.move(src_path, dest_path)
                 report[first_branch] = {'scan_status': 'done', 'scan_error_message': '--'}
                 # scan_status[f"{repo},{first_branch}"] = "done"
