@@ -33,6 +33,7 @@ def create_new_excel(location, base_branch_name, head_branch_name):
     wb.remove(wb.active)
     # Create new Sheet
     wb.create_sheet('scan-status')
+    wb.create_sheet('summary')
     wb.create_sheet(f'{head_branch_name}-{base_branch_name}-source-&-sink-report')
     wb.create_sheet(f'{head_branch_name}-{base_branch_name}-flow-report')
     wb.create_sheet(f'{head_branch_name}-{base_branch_name}-performance-report')
@@ -40,10 +41,8 @@ def create_new_excel(location, base_branch_name, head_branch_name):
 
 
 def write_source_sink_data(workbook_location, worksheet_name, report):
-    # load the workbook
     workbook = openpyxl.load_workbook(filename=workbook_location)
 
-    # use source-sink-collection sheet
     worksheet = workbook[worksheet_name]
 
     for row in report:
@@ -55,7 +54,6 @@ def write_source_sink_data(workbook_location, worksheet_name, report):
 def write_path_data(workbook_location, worksheet_name, report):
     workbook = openpyxl.load_workbook(filename=workbook_location)
 
-    # create new sheet for source-sink-collection sheet
     worksheet = workbook[worksheet_name]
 
     for row in report:
@@ -67,7 +65,6 @@ def write_path_data(workbook_location, worksheet_name, report):
 def write_performance_data(workbook_location, worksheet_name, report):
     workbook = openpyxl.load_workbook(filename=workbook_location)
 
-    # create new sheet for source-sink-collection sheet
     worksheet = workbook[worksheet_name]
 
     for row in report:
@@ -79,10 +76,11 @@ def write_performance_data(workbook_location, worksheet_name, report):
 def write_scan_status_report(workbook_location, base_branch_name, head_branch_name, report):
     workbook = openpyxl.load_workbook(filename=workbook_location)
 
-    # create new sheet for source-sink-collection sheet
     worksheet = workbook['scan-status']
 
-    worksheet.append(["Repo", "Branch", "scan status", "scan error", "comparison status", "comparison error", "unique flow count", "scan time", "CPG size"])
+    worksheet.append(
+        ["Repo", "Branch", "scan status", "scan error", "comparison status", "comparison error", "unique flow count",
+         "scan time", "CPG size"])
 
     for repo in report.keys():
         repo_info = report[repo]
@@ -101,5 +99,27 @@ def write_scan_status_report(workbook_location, base_branch_name, head_branch_na
                           repo_info[head_branch_name]['unique_flows'],
                           repo_info[head_branch_name]['code_scan_time'],
                           repo_info[head_branch_name]['binary_file_size']])
+
+    workbook.save(workbook_location)
+
+
+def write_summary_data(workbook_location, base_branch_name, head_branch_name, report):
+    workbook = openpyxl.load_workbook(filename=workbook_location)
+
+    worksheet = workbook['summary']
+
+    worksheet.append(["Repo", "scan status", f"{base_branch_name} Scan status (ms)", f"{head_branch_name} scan time (ms)",
+                      "scan time diff (ms)", "Reachable by flow diff (ms)", f"{base_branch_name} unique flows",
+                      f"{head_branch_name} unique flows", "unique flows diff",
+                      f"{base_branch_name} No of data elements",
+                      f"{head_branch_name} No of data elements", "Data element diff",
+                      f"Missing sinks in {head_branch_name}",
+                      "No of 100% missing source to sink combinations"])
+
+    for repo in report.keys():
+        scan_status = 'done' if report[repo][head_branch_name]['comparison_error_message'] == '--' and report[repo][base_branch_name]['comparison_error_message'] == '--' else 'failed'
+
+        worksheet.append([repo, scan_status, report[repo][base_branch_name]['code_scan_time'],
+                      report[repo][head_branch_name]['code_scan_time']])
 
     workbook.save(workbook_location)
