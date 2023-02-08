@@ -83,7 +83,7 @@ def workflow():
             except Exception as e:
                 print(f'{repo_name}: comparison report not generating: {e}')
                 scan_status[repo_name][args.first]['comparison_status'] = 'failed'
-                scan_status[repo_name][args.first]['comparison_error_message'] = e
+                scan_status[repo_name][args.first]['comparison_error_message'] = str(e)
             header_flag = False
 
         if args.upload:

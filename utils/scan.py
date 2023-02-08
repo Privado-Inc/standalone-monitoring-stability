@@ -50,7 +50,7 @@ def scan_repo_report(first_branch, second_branch, valid_repos, use_docker):
                 report[first_branch] = {'scan_status': 'done', 'scan_error_message': '--'}
                 # scan_status[f"{repo},{first_branch}"] = "done"
             except Exception as e:
-                report[first_branch] = {'scan_status': 'failed', 'scan_error_message': e}
+                report[first_branch] = {'scan_status': 'failed', 'scan_error_message': str(e)}
                 # scan_status[f"{repo},{first_branch}"] = f'failed,{str(e)}'
 
             # Scan the cloned repo with second branch and push output to a file with debug logs
@@ -68,7 +68,7 @@ def scan_repo_report(first_branch, second_branch, valid_repos, use_docker):
                 report[second_branch] = {'scan_status': 'done', 'scan_error_message': '--'}
                 # scan_status[f"{repo},{second_branch}"] = "done"
             except Exception as e:
-                report[second_branch] = {'scan_status': 'failed', 'scan_error_message': e}
+                report[second_branch] = {'scan_status': 'failed', 'scan_error_message': str(e)}
                 # scan_status[f"{repo},{second_branch}"] = f"failed,{str(e)}"
 
             scan_report[repo] = report
