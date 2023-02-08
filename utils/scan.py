@@ -153,8 +153,8 @@ def parse_flows_data(repo_name, branch_name, scan_report):
         scan_report[repo_name][branch_name]['unique_source'] = '--'
 
     try:
-        reachable_by_flow_time = reachable_by_flow_values.split('ms')[0].split('-')[-1]
+        reachable_by_flow_time = reachable_by_flow_values[0].split('ms')[0].split('-')[-1]
         scan_report[repo_name][branch_name]['reachable_flow_time'] = reachable_by_flow_time
     except Exception as e:
         print(f'Error while parsing reachable flow time data: {e}')
-        scan_report[repo_name][branch_name]['reachable_flow_time'] = 0
+        scan_report[repo_name][branch_name]['reachable_flow_time'] = '--'
