@@ -46,13 +46,10 @@ def scan_repo_report(first_branch, second_branch, valid_repos, use_docker):
 
             # Move the privado.json file to the result folder
             try:
-                raise 'error missing'
                 shutil.move(src_path, dest_path)
                 report[first_branch] = {'scan_status': 'done', 'scan_error_message': '--'}
-                # scan_status[f"{repo},{first_branch}"] = "done"
             except Exception as e:
                 report[first_branch] = {'scan_status': 'failed', 'scan_error_message': str(e)}
-                # scan_status[f"{repo},{first_branch}"] = f'failed,{str(e)}'
 
             # Scan the cloned repo with second branch and push output to a file with debug logs
             if use_docker:
@@ -67,17 +64,14 @@ def scan_repo_report(first_branch, second_branch, valid_repos, use_docker):
             try:
                 shutil.move(src_path, dest_path)
                 report[second_branch] = {'scan_status': 'done', 'scan_error_message': '--'}
-                # scan_status[f"{repo},{second_branch}"] = "done"
             except Exception as e:
                 report[second_branch] = {'scan_status': 'failed', 'scan_error_message': str(e)}
-                # scan_status[f"{repo},{second_branch}"] = f"failed,{str(e)}"
 
             scan_report[repo] = report
 
         finally:
             # Generate and status and export into result
             generate_scan_status_data(scan_report, first_branch, second_branch)
-            # write_scan_status_report(f'{cwd}/output.xlsx', scan_status_report_data)
 
     return scan_report
 
@@ -100,9 +94,6 @@ def generate_scan_status_data_for_file(repo_name, first_file, second_file):
 
 
 def generate_scan_status_data(scan_report, first_branch, second_branch):
-    scan_status_report_data = [[
-        "Repo", "Branch", "scan status", "scan error", "comparison status", "comparison error", "unique flow count", "scan time", "CPG size"
-    ]]
     cwd = os.getcwd()
 
     # create the empty excel file
@@ -112,38 +103,6 @@ def generate_scan_status_data(scan_report, first_branch, second_branch):
         parse_flows_data(repo, first_branch, scan_report)
         parse_flows_data(repo, second_branch, scan_report)
 
-    # for repo_branch, status in scan_status.items():
-    #     repo, branch = repo_branch.split(',')
-    #     status_breakdown = status.split(',')
-    #     error_message = "--"
-    #
-    #     scan_metadata_regex = r".*(Code scanning|Binary file size|Deduplicating flows is done in).*"
-    #     scan_metadata_values = []
-    #
-    #     with open(f"{cwd}/temp/result/{branch.strip()}/{repo}-output.txt") as scan_time_output:
-    #         for line in scan_time_output.readlines():
-    #             if re.search(scan_metadata_regex, line):
-    #                 scan_metadata_values.append(line)
-    #
-    #     unique_flows = ""
-    #     code_scan_time = ""
-    #     binary_file_size = ""
-    #
-    #     try:
-    #         unique_flows = scan_metadata_values[0].split('-')[-1]
-    #         code_scan_time = scan_metadata_values[1].split('-')[-2]
-    #         binary_file_size = scan_metadata_values[2].split('-')[-1]
-    #     except Exception as e:
-    #         print(f'Error during parsing the status data: {e}')
-    #
-    #     if len(status_breakdown) > 1:
-    #         error_message = status_breakdown[1]
-    #
-    #     comparison_status = "failed" if len(status_breakdown) > 1 else "done"
-    #     scan_status_report_data.append([repo, branch, status_breakdown[0], error_message, comparison_status, "--", unique_flows, code_scan_time, binary_file_size])
-    #
-    # scan_status_report_data.append([])
-    # return scan_status_report_data
 
 def parse_flows_data(repo_name, branch_name, scan_report):
 
