@@ -10,7 +10,7 @@ def main():
         print('result folder is not present')
         return
 
-    append_name = sys.argv[0]
+    append_name = sys.argv[1]
 
     os.system(f"mv output.xlsx output{append_name}.xlsx")
     os.system(f"aws s3 cp output{append_name}.xlsx s3://privado-testing")
