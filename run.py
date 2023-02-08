@@ -80,10 +80,14 @@ def workflow():
                 compare_and_generate_report(base_file, head_file, args.first, args.second, header_flag)
                 scan_status[repo_name][args.first]['comparison_status'] = 'done'
                 scan_status[repo_name][args.first]['comparison_error_message'] = '--'
+                scan_status[repo_name][args.second]['comparison_status'] = 'done'
+                scan_status[repo_name][args.second]['comparison_error_message'] = '--'
             except Exception as e:
                 print(f'{repo_name}: comparison report not generating: {e}')
                 scan_status[repo_name][args.first]['comparison_status'] = 'failed'
                 scan_status[repo_name][args.first]['comparison_error_message'] = str(e)
+                scan_status[repo_name][args.second]['comparison_status'] = 'failed'
+                scan_status[repo_name][args.second]['comparison_error_message'] = str(e)
             header_flag = False
 
         write_scan_status_report(f'{cwd}/output.xlsx', args.first, args.second, scan_status)
