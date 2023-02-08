@@ -5,7 +5,7 @@ from utils.post_to_slack import post_report_to_slack
 from utils.build_binary import build
 from utils.delete import delete_action, clean_after_scan
 from utils.clone_repo import clone_repo_with_location
-from utils.write_to_file import create_new_excel
+from utils.write_to_file import create_new_excel, write_scan_status_report
 import os
 import argparse
 import traceback
@@ -85,6 +85,8 @@ def workflow():
                 scan_status[repo_name][args.first]['comparison_status'] = 'failed'
                 scan_status[repo_name][args.first]['comparison_error_message'] = str(e)
             header_flag = False
+
+        write_scan_status_report(f'{cwd}/output.xlsx', args.first, args.second, scan_status)
 
         if args.upload:
             post_report_to_slack()
