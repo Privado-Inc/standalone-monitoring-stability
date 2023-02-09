@@ -74,6 +74,17 @@ def write_performance_data(workbook_location, worksheet_name, report):
     workbook.save(workbook_location)
 
 
+def write_scan_status_report_for_file(workbook_location, base_branch_name, head_branch_name, report):
+    workbook = openpyxl.load_workbook(filename=workbook_location)
+
+    worksheet = workbook['scan-status']
+
+    for line in report:
+        worksheet.append(line)
+
+    workbook.save(workbook_location)
+
+
 def write_scan_status_report(workbook_location, base_branch_name, head_branch_name, report):
     workbook = openpyxl.load_workbook(filename=workbook_location)
 

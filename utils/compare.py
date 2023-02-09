@@ -2,7 +2,7 @@ import csv
 import json
 import os
 import hashlib
-from utils.write_to_file import write_to_csv, write_source_sink_data, write_path_data, write_performance_data, write_scan_status_report
+from utils.write_to_file import write_to_csv, write_source_sink_data, write_path_data, write_performance_data, write_scan_status_report_for_file
 from utils.scan_metadata import get_subscan_metadata
 from utils.scan import generate_scan_status_data_for_file
 
@@ -58,7 +58,7 @@ def compare_files(base_file_uri, head_file_uri):
     repo_name = first_repo_name if first_repo_name == second_repo_name else 'NA'
 
     status_report_data = generate_scan_status_data_for_file(repo_name, base_file_uri, head_file_uri)
-    write_scan_status_report(f'{os.getcwd()}/output.xlsx', status_report_data)
+    write_scan_status_report_for_file(f'{os.getcwd()}/output.xlsx', "First", "Second", status_report_data)
 
     # Create empty Excel file
     excel_report_location = f'{os.getcwd()}/output.xlsx'
