@@ -1,6 +1,7 @@
 # Standalone-monitoring-stability
 
 Steps to use the standalone-comparison-tool
+
 * Setup
 	1. Navigate to the directory
 	2. Run `python3 -m pip install --user virtualenv`
@@ -25,7 +26,7 @@ Steps to use the standalone-comparison-tool
 		* Run `python3 ./run.py --use-docker -f [base_docker_tag] -s [head_docker_tag]`
 
 
-### Folder structure for storing the results.
+#### Folder structure for storing the results.
 ```
 - temp
 	- privado
