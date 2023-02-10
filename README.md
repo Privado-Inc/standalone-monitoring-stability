@@ -25,16 +25,16 @@ Steps to use the standalone-comparison-tool
 		* Run `python3 ./run.py --use-docker -f [base_docker_tag] -s [head_docker_tag]`
 
 
+### Folder structure for storing the results.
 ```
-Results are stored in the ./temp folder.
-	- temp
-		- privado
-		- privado-core
-		- result
-			- base_branch
-				- repo-output.txt --- Contains the scan results
-				- repo.json --- privado.json for the repository
-			- head_branch
-				- repo-output.txt --- Contains the scan results
-				- repo.json --- privado.json for the repository
+- temp
+	- privado
+	- privado-core
+	- result
+		- base_branch
+			- repo-output.txt --- Contains the scan results
+			- repo.json --- privado.json for the repository
+		- head_branch
+			- repo-output.txt --- Contains the scan results
+			- repo.json --- privado.json for the repository
 ```		
