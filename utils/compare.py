@@ -245,10 +245,6 @@ def process_sinks(base_dataflows, head_dataflows, repo_name, scan_status, key='s
 
 def process_path_analysis(worksheet_name, base_source, head_source, repo_name, base_branch_name, head_branch_name, header_flag):
     result = []
-    if header_flag:
-        result.append(['Repo Name', 'Sink Category', 'Source', 'Sink', head_branch_name, base_branch_name,
-                       f'Additional in {head_branch_name}', f'Missing in {head_branch_name}', 'Delta in %',
-                       f'Additional Path Id in {head_branch_name}', f'Missing Path ID in {head_branch_name}'])
 
     total_flow_head = 0
     total_flow_base = 0
@@ -274,6 +270,11 @@ def process_path_analysis(worksheet_name, base_source, head_source, repo_name, b
 
     result.insert(0, [repo_name, 'Total', 'All', 'All', total_flow_head, total_flow_base, total_additional_flow,
                       total_missing_flow, percent_delta])
+
+    if header_flag:
+        result.insert(0, ['Repo Name', 'Sink Category', 'Source', 'Sink', head_branch_name, base_branch_name,
+                       f'Additional in {head_branch_name}', f'Missing in {head_branch_name}', 'Delta in %',
+                       f'Additional Path Id in {head_branch_name}', f'Missing Path ID in {head_branch_name}'])
 
     # Export to the excel file
     write_path_data(f'{os.getcwd()}/output.xlsx', worksheet_name, result)
