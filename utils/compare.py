@@ -272,7 +272,7 @@ def process_path_analysis(worksheet_name, base_source, head_source, repo_name, b
     else:
         percent_delta = f"{round((((total_additional_flow + total_missing_flow) / (total_flow_head + total_missing_flow)) * 100), 2)}%"
 
-    result.insert(1, [repo_name, 'Total', 'All', 'All', total_flow_head, total_flow_base, total_additional_flow,
+    result.insert(0, [repo_name, 'Total', 'All', 'All', total_flow_head, total_flow_base, total_additional_flow,
                       total_missing_flow, percent_delta])
 
     # Export to the excel file
