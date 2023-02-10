@@ -26,15 +26,15 @@ Steps to use the standalone-comparison-tool
 
 
 ```
-	Results are stored in the ./temp folder.
-		./temp
-			privado
-			privado-core
-			result
-				base_branch
-					repo-output.txt --- Contains the scan results
-					repo.json --- privado.json for the repository
-				head_branch
-					repo-output.txt --- Contains the scan results
-					repo.json --- privado.json for the repository
+Results are stored in the ./temp folder.
+	- temp
+		- privado
+		- privado-core
+		- result
+			- base_branch
+				- repo-output.txt --- Contains the scan results
+				- repo.json --- privado.json for the repository
+			- head_branch
+				- repo-output.txt --- Contains the scan results
+				- repo.json --- privado.json for the repository
 ```		
