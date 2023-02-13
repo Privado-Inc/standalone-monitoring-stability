@@ -76,7 +76,7 @@ def compare_files(base_file_uri, head_file_uri):
 def process_performance_data(worksheet_name, base_branch_name, head_branch_name, repo_name, header_flag):
     result = []
     if header_flag:
-        result.append(["Repo", 'language' ,"Branch", "Language detection (ms)", "CPG Generation time(ms)", "Property file pass(ms)",
+        result.append(["Repo" ,"Branch", "Language detection (ms)", "Detected language" ,"CPG Generation time(ms)", "Property file pass(ms)",
                        "Run oss data flow (ms)", "LiteralTagger(ms)", "IdentifierTagger(ms)", "IdentifierTagger Non Member(ms)",
                        "DBConfigTagger(ms)", "RegularSinkTagger(ms)", "APITagger(ms)", "CustomInheritTagger(ms)", "CollectionTagger(ms)",
                        "Tagging source code(ms)", "no of source nodes", "no of sinks nodes" ,"Finding flows(ms)",
