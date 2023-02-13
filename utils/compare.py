@@ -97,7 +97,7 @@ def top_level_collection_processor(collections_base, collections_head, repo_name
     report = []
     for collection in list(zip(collections_base, collections_head)):
         report.append(
-            process_collection(collection[0], collection[1], collection[0]['name'], repo_name))
+            process_collection(collection[0], collection[1], collection[0]['name'], repo_name, language))
 
     return report
 
@@ -148,7 +148,7 @@ def create_csv(data):
     print(f'Report written and exported to: {cwd}/comparison_report.csv')
 
 
-def process_source_sink_and_collection_data(worksheet_name, base_data, head_data, base_branch_name, head_branch_name, repo_name, header_flag, scan_status):
+def process_source_sink_and_collection_data(worksheet_name, base_data, head_data, base_branch_name, head_branch_name, repo_name, header_flag, scan_status, language):
     result = []
 
     if header_flag:
