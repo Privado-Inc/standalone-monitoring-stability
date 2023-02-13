@@ -7,7 +7,7 @@ from utils.scan_metadata import get_subscan_metadata
 from utils.scan import generate_scan_status_data_for_file
 
 
-def main(base_file, head_file, base_branch_name, head_branch_name, header_flag, scan_status):
+def main(base_file, head_file, base_branch_name, head_branch_name, header_flag, scan_status, language):
     try:
         base_file.split('/')[-1].split('.')[0]
     except Exception as e:
@@ -93,7 +93,7 @@ def process_performance_data(worksheet_name, base_branch_name, head_branch_name,
     write_performance_data(f'{os.getcwd()}/output.xlsx', worksheet_name, result)
 
 
-def top_level_collection_processor(collections_base, collections_head, repo_name):
+def top_level_collection_processor(collections_base, collections_head, repo_name, language):
     report = []
     for collection in list(zip(collections_base, collections_head)):
         report.append(
@@ -102,7 +102,7 @@ def top_level_collection_processor(collections_base, collections_head, repo_name
     return report
 
 
-def process_collection(collections_base, collections_head, collection_name, repo_name):
+def process_collection(collections_base, collections_head, collection_name, repo_name, language):
     result = []
     base_collections = len(collections_base['collections'])
     head_collections = len(collections_head['collections'])
@@ -134,7 +134,7 @@ def process_collection(collections_base, collections_head, collection_name, repo
     # No of nodes in base, but not in head
     missing_head = len(collection_set_base.union(collection_set_head).difference(collection_set_head))
 
-    return [repo_name, 'Collection', collection_name, head_collections, base_collections, collections_sources_head,
+    return [repo_name, language ,'Collection', collection_name, head_collections, base_collections, collections_sources_head,
             collections_sources_base, '0', latest, removed, missing_head]
 
 
@@ -158,15 +158,15 @@ def process_source_sink_and_collection_data(worksheet_name, base_data, head_data
                        f'List of Node Missing in {head_branch_name}', f'Number of missing nodes in {head_branch_name}'])
 
     # Analysis for the Source
-    result.append(process_sources(base_data['sources'], head_data['sources'], repo_name))
+    result.append(process_sources(base_data['sources'], head_data['sources'], repo_name, language))
     # Analysis for the storages sink
-    result.append(process_sinks(base_data['dataFlow'], head_data['dataFlow'], repo_name, scan_status, key='storages'))
+    result.append(process_sinks(base_data['dataFlow'], head_data['dataFlow'], repo_name, scan_status,language ,key='storages'))
     # Analysis for the third party sink
-    result.append(process_sinks(base_data['dataFlow'], head_data['dataFlow'], repo_name, scan_status, key='third_parties'))
+    result.append(process_sinks(base_data['dataFlow'], head_data['dataFlow'], repo_name, scan_status,language ,key='third_parties'))
     # Analysis for the leakage sink
-    result.append(process_sinks(base_data['dataFlow'], head_data['dataFlow'], repo_name, scan_status, key='leakages'))
+    result.append(process_sinks(base_data['dataFlow'], head_data['dataFlow'], repo_name, scan_status,language ,key='leakages'))
     # Analysis for the collections
-    for row in top_level_collection_processor(base_data['collections'], head_data['collections'], repo_name):
+    for row in top_level_collection_processor(base_data['collections'], head_data['collections'],repo_name, language):
         result.append(row)
 
     # Export the result in new sheet Excel sheet
@@ -175,7 +175,7 @@ def process_source_sink_and_collection_data(worksheet_name, base_data, head_data
     return result
 
 
-def process_sources(source_base, source_head, repo_name):
+def process_sources(source_base, source_head, repo_name, language):
     base_sources_count = len(source_base)
     head_sources_count = len(source_head)
 
@@ -195,11 +195,11 @@ def process_sources(source_base, source_head, repo_name):
     missing_in_head = len(source_set_base.union(source_set_head).difference(source_set_head))
 
 
-    return [repo_name, 'Source', '--', head_sources_count, base_sources_count, source_name_head,
-            source_name_base, '0', added, removed, missing_in_head]
+    return [repo_name, language ,'Source','--', head_sources_count, base_sources_count, source_name_head,
+            source_name_base, '0 ', added, removed, missing_in_head]
 
 
-def process_sinks(base_dataflows, head_dataflows, repo_name, scan_status, key='storages'):
+def process_sinks(base_dataflows, head_dataflows, repo_name, scan_status, language ,key='storages'):
     base_sink = base_dataflows[key]
     head_sink = head_dataflows[key]
 
@@ -237,13 +237,13 @@ def process_sinks(base_dataflows, head_dataflows, repo_name, scan_status, key='s
         else:
             scan_status[repo_name]['missing_sink'] += missing_in_head
 
-    return [repo_name, 'Sink', key, head_sink_count, base_sink_count, sink_names_head, sink_names_base, '0',
+    return [repo_name, language ,'Sink', key, head_sink_count, base_sink_count, sink_names_head, sink_names_base, '0',
             added, removed, missing_in_head]
 
     # return result
 
 
-def process_path_analysis(worksheet_name, base_source, head_source, repo_name, base_branch_name, head_branch_name, header_flag):
+def process_path_analysis(worksheet_name, base_source, head_source, repo_name, base_branch_name, head_branch_name, language ,header_flag):
     result = []
 
     total_flow_head = 0
@@ -268,7 +268,7 @@ def process_path_analysis(worksheet_name, base_source, head_source, repo_name, b
     else:
         percent_delta = f"{round((((total_additional_flow + total_missing_flow) / (total_flow_head + total_missing_flow)) * 100), 2)}%"
 
-    result.insert(0, [repo_name, 'language' ,'Total', 'All', 'All', total_flow_head, total_flow_base, total_additional_flow,
+    result.insert(0, [repo_name, language ,'Total', 'All', 'All', total_flow_head, total_flow_base, total_additional_flow,
                       total_missing_flow, percent_delta])
 
     if header_flag:

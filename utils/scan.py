@@ -5,6 +5,13 @@ import platform
 from utils.write_to_file import write_scan_status_report, create_new_excel, create_new_excel_for_file
 import re
 
+def get_detected_language(repo, branch):
+    cwd = os.getcwd()
+    with open(f'{cwd}/temp/result/{branch}/{repo}-output.txt') as scan_time_output:
+        for line in scan_time_output.readlines():
+            if re.search(r".*(Detected language).*", line):
+                detected_language = line.split(' ')[-1].replace("'", "")
+                return detected_language
 
 def get_docker_commands(tag, repo_path):
     if tag == 'main':
