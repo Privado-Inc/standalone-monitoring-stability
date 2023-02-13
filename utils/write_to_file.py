@@ -120,9 +120,9 @@ def write_summary_data(workbook_location, base_branch_name, head_branch_name, re
 
     worksheet = workbook['summary']
 
-    worksheet.append(["Repo", "scan status", f"{base_branch_name} Scan status (ms)", f"{head_branch_name} scan time (ms)",
+    worksheet.append(["Repo", "scan status", f"{base_branch_name} Scan status <Base - head> (ms)", f"{head_branch_name} scan time (ms)",
                       "scan time diff (ms)", "Reachable by flow diff (ms)", f"{base_branch_name} unique flows",
-                      f"{head_branch_name} unique flows", "unique flows diff",
+                      f"{head_branch_name} unique flows", "unique flows diff",  
                       f"{base_branch_name} No of data elements",
                       f"{head_branch_name} No of data elements", "Data element diff",
                       f"Missing sinks in {head_branch_name}",
@@ -134,8 +134,11 @@ def write_summary_data(workbook_location, base_branch_name, head_branch_name, re
         base_scan_time = report[repo][base_branch_name]['code_scan_time'].split()[0]
 
         scan_time_diff = '--' if base_scan_time == '--' or head_scan_time == '--' else int(base_scan_time) - int(head_scan_time)
+        
         unique_flow_diff = '--' if report[repo][base_branch_name]['unique_flows'] == '--' or report[repo][head_branch_name]['unique_flows'] == '--' else int(report[repo][base_branch_name]['unique_flows']) - int(report[repo][head_branch_name]['unique_flows'])
+
         unique_source_diff = '--' if report[repo][base_branch_name]['unique_source'] == '--' or report[repo][head_branch_name]['unique_source'] == '--' else int(report[repo][base_branch_name]['unique_source']) - int(report[repo][head_branch_name]['unique_source'])
+        
         reachable_flow_time_diff = '--' if report[repo][base_branch_name]['reachable_flow_time'] == '--' or report[repo][head_branch_name]['reachable_flow_time'] == '--' else len(report[repo][base_branch_name]['reachable_flow_time']) - len(report[repo][head_branch_name]['reachable_flow_time'])
 
         worksheet.append([repo, scan_status, base_scan_time, head_scan_time, scan_time_diff,
