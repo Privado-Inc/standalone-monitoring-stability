@@ -33,7 +33,7 @@ def get_metadata_pair(filepath):
 
             if (re.search(language_regex, line)):
                 detected_language = line.split(' ')[-1].replace("'", "")
-                print(detected_language)    
+                yield ("language", detected_language)    
             
             if (re.search(time_filter_regex, line)):
 
