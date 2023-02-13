@@ -257,7 +257,7 @@ def process_path_analysis(worksheet_name, base_source, head_source, repo_name, b
 
     for i in ['storages', 'leakages', 'third_parties']:
         value = sub_process_path(base_source['dataFlow'][i], head_source['dataFlow'][i], i, base_branch_name,
-                                 head_branch_name, repo_name)
+                                 head_branch_name, repo_name, language)
         for j in value[0]:
             result.append(j)
 
@@ -272,7 +272,7 @@ def process_path_analysis(worksheet_name, base_source, head_source, repo_name, b
     else:
         percent_delta = f"{round((((total_additional_flow + total_missing_flow) / (total_flow_head + total_missing_flow)) * 100), 2)}%"
 
-    result.insert(0, [repo_name, language ,'Total', 'All', 'All', total_flow_head, total_flow_base, total_additional_flow,
+    result.insert(0, [repo_name, language , 'Total', 'All', 'All', total_flow_head, total_flow_base, total_additional_flow,
                       total_missing_flow, percent_delta])
 
     if header_flag:
@@ -284,7 +284,7 @@ def process_path_analysis(worksheet_name, base_source, head_source, repo_name, b
     write_path_data(f'{os.getcwd()}/output.xlsx', worksheet_name, result)
 
 
-def sub_process_path(base_source, head_source, sink_type, base_branch_name, head_branch_name, repo_name):
+def sub_process_path(base_source, head_source, sink_type, base_branch_name, head_branch_name, repo_name, language):
     final_result_list = []
 
     # variable used to store the dataflow data
@@ -444,7 +444,7 @@ def sub_process_path(base_source, head_source, sink_type, base_branch_name, head
     else:
         percent_delta = f"{round((((total_additional_flow + total_missing_flow) / (total_flow_head + total_missing_flow)) * 100), 2)}%"
 
-    final_result_list.insert(0, [repo_name, sink_type, 'All', 'All', total_flow_head, total_flow_base,
+    final_result_list.insert(0, [repo_name, language ,sink_type, 'All', 'All', total_flow_head, total_flow_base,
                                  total_additional_flow, total_missing_flow, percent_delta])
 
     return [final_result_list, [total_flow_head, total_flow_base, total_additional_flow, total_missing_flow]]
