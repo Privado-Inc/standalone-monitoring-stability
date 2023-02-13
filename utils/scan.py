@@ -76,7 +76,7 @@ def scan_repo_report(first_branch, second_branch, valid_repos, use_docker):
                 report[second_branch] = {'scan_status': 'done', 'scan_error_message': '--'}
             except Exception as e:
                 report[second_branch] = {'scan_status': 'failed', 'scan_error_message': str(e)}
-
+            print(repo)
             language = get_detected_language(repo, first_branch)
             report["language"] = language
             scan_report[repo] = report
