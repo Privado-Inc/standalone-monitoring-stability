@@ -246,6 +246,8 @@ def process_sinks(base_dataflows, head_dataflows, repo_name, scan_status, langua
 def process_path_analysis(worksheet_name, base_source, head_source, repo_name, base_branch_name, head_branch_name, language ,header_flag):
     result = []
 
+    print("Detected language: " + language)
+
     total_flow_head = 0
     total_flow_base = 0
     total_additional_flow = 0
