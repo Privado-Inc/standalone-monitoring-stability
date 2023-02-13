@@ -78,6 +78,7 @@ def compare_files(base_file_uri, head_file_uri):
 
 
 def get_headers_wrt_language(language):
+    print(language)
     if (language == 'Python'):
         return ["Repo" ,"Branch" ,"Language detection (ms)", "Detected language" ,"CPG Generation time(ms)",
                        "Run oss data flow (ms)", "LiteralTagger(ms)", "IdentifierTagger(ms)", "IdentifierTagger Non Member(ms)",
@@ -100,6 +101,7 @@ def get_headers_wrt_language(language):
 def process_performance_data(worksheet_name, base_branch_name, head_branch_name, repo_name, language ,header_flag):
     result = []
     if header_flag:
+        print(get_headers_wrt_language(language))
         result.append(get_headers_wrt_language(language))
     else:
         result.append([])

@@ -75,6 +75,7 @@ def write_scan_status_report_for_file(workbook_location, base_branch_name, head_
 
 def write_scan_status_report(workbook_location, base_branch_name, head_branch_name, report):
     workbook = openpyxl.load_workbook(filename=workbook_location)
+    print(report)
 
     worksheet = workbook['scan-status']
 
@@ -84,7 +85,7 @@ def write_scan_status_report(workbook_location, base_branch_name, head_branch_na
 
     for repo in report.keys():
         repo_info = report[repo]
-        worksheet.append([repo, base_branch_name, repo_info[base_branch_name]['language'] or None ,repo_info[base_branch_name]['scan_status'],
+        worksheet.append([repo, base_branch_name ,repo_info[base_branch_name]['scan_status'],
                           repo_info[base_branch_name]['scan_error_message'],
                           repo_info[base_branch_name]['comparison_status'],
                           repo_info[base_branch_name]['comparison_error_message'],
@@ -92,7 +93,7 @@ def write_scan_status_report(workbook_location, base_branch_name, head_branch_na
                           repo_info[base_branch_name]['code_scan_time'],
                           repo_info[base_branch_name]['binary_file_size']])
 
-        worksheet.append([repo, head_branch_name, repo_info[head_branch_name]['language'] or None,repo_info[head_branch_name]['scan_status'],
+        worksheet.append([repo, head_branch_name,repo_info[head_branch_name]['scan_status'],
                           repo_info[head_branch_name]['scan_error_message'],
                           repo_info[head_branch_name]['comparison_status'],
                           repo_info[head_branch_name]['comparison_error_message'],
@@ -105,7 +106,8 @@ def write_scan_status_report(workbook_location, base_branch_name, head_branch_na
 
 def write_summary_data(workbook_location, base_branch_name, head_branch_name, report):
     workbook = openpyxl.load_workbook(filename=workbook_location)
-
+    
+    print(report)
     worksheet = workbook['summary']
 
     worksheet.append(["Repo", "language" ,"scan status", f"{base_branch_name} Scan status <Base - head> (ms)", f"{head_branch_name} scan time (ms)",
@@ -120,7 +122,7 @@ def write_summary_data(workbook_location, base_branch_name, head_branch_name, re
         scan_status = 'done' if report[repo][head_branch_name]['comparison_error_message'] == '--' and report[repo][base_branch_name]['comparison_error_message'] == '--' else 'failed'
         head_scan_time = report[repo][head_branch_name]['code_scan_time'].split()[0]
         base_scan_time = report[repo][base_branch_name]['code_scan_time'].split()[0]
-        language = report[repo][head_branch_name]['language'] or None
+        # language = report[repo][head_branch_name]['language'] or None
 
         scan_time_diff = '--' if base_scan_time == '--' or head_scan_time == '--' else int(base_scan_time) - int(head_scan_time)
         
