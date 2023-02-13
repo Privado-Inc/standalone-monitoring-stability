@@ -75,7 +75,6 @@ def write_scan_status_report_for_file(workbook_location, base_branch_name, head_
 
 def write_scan_status_report(workbook_location, base_branch_name, head_branch_name, report):
     workbook = openpyxl.load_workbook(filename=workbook_location)
-    print(report)
 
     worksheet = workbook['scan-status']
 
@@ -107,8 +106,6 @@ def write_scan_status_report(workbook_location, base_branch_name, head_branch_na
 
 def write_summary_data(workbook_location, base_branch_name, head_branch_name, report):
     workbook = openpyxl.load_workbook(filename=workbook_location)
-    
-    print(report)
     worksheet = workbook['summary']
 
     worksheet.append(["Repo", "language" ,"scan status", f"{base_branch_name} Scan status <Base - head> (ms)", f"{head_branch_name} scan time (ms)",
