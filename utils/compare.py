@@ -26,6 +26,8 @@ def main(base_file, head_file, base_branch_name, head_branch_name, header_flag, 
                                             head_data, base_branch_name, head_branch_name, repo_name, header_flag,
                                             scan_status, language)
 
+    print("In main language: ", language)
+
     process_path_analysis(f'{head_branch_name}-{base_branch_name}-flow-report', base_data, head_data, repo_name,
                           base_branch_name, head_branch_name, header_flag, language)
 
@@ -246,7 +248,7 @@ def process_sinks(base_dataflows, head_dataflows, repo_name, scan_status, langua
 def process_path_analysis(worksheet_name, base_source, head_source, repo_name, base_branch_name, head_branch_name, language ,header_flag):
     result = []
 
-    print("Detected language: " + language)
+    print("Detected language: ", language)
 
     total_flow_head = 0
     total_flow_base = 0
