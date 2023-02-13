@@ -123,8 +123,7 @@ def write_summary_data(workbook_location, base_branch_name, head_branch_name, re
         scan_status = 'done' if report[repo][head_branch_name]['comparison_error_message'] == '--' and report[repo][base_branch_name]['comparison_error_message'] == '--' else 'failed'
         head_scan_time = report[repo][head_branch_name]['code_scan_time'].split()[0]
         base_scan_time = report[repo][base_branch_name]['code_scan_time'].split()[0]
-        # language = report[repo][head_branch_name]['language'] or None
-
+        language = report[repo]['language']
         scan_time_diff = '--' if base_scan_time == '--' or head_scan_time == '--' else int(base_scan_time) - int(head_scan_time)
         
         unique_flow_diff = '--' if report[repo][base_branch_name]['unique_flows'] == '--' or report[repo][head_branch_name]['unique_flows'] == '--' else int(report[repo][base_branch_name]['unique_flows']) - int(report[repo][head_branch_name]['unique_flows'])
@@ -133,7 +132,7 @@ def write_summary_data(workbook_location, base_branch_name, head_branch_name, re
         
         reachable_flow_time_diff = '--' if report[repo][base_branch_name]['reachable_flow_time'] == '--' or report[repo][head_branch_name]['reachable_flow_time'] == '--' else len(report[repo][base_branch_name]['reachable_flow_time']) - len(report[repo][head_branch_name]['reachable_flow_time'])
 
-        worksheet.append([repo ,scan_status, base_scan_time, head_scan_time, scan_time_diff,
+        worksheet.append([repo ,language , scan_status, base_scan_time, head_scan_time, scan_time_diff,
                           reachable_flow_time_diff,
                           report[repo][base_branch_name]['unique_flows'],
                           report[repo][head_branch_name]['unique_flows'], unique_flow_diff,
