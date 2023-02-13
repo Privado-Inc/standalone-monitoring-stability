@@ -80,6 +80,7 @@ def compare_files(base_file_uri, head_file_uri):
 def get_headers_wrt_language(language):
     print("In header detection: ", language)
     if (language == 'Python'):
+        print("Python detected")
         return ["Repo" ,"Branch" ,"Language detection (ms)", "Detected language" ,"CPG Generation time(ms)",
                        "Run oss data flow (ms)", "LiteralTagger(ms)", "IdentifierTagger(ms)", "IdentifierTagger Non Member(ms)",
                         "RegularSinkTagger(ms)", "APITagger(ms)", "CustomInheritTagger(ms)", "CollectionTagger(ms)",
@@ -89,6 +90,7 @@ def get_headers_wrt_language(language):
                        "Finding source to sink flow", "Finding source to sink flow (time) (ms)", "Code scanning (ms)",
                        "Binary file size"]
     elif (language == 'Java'):
+        print("java detected detected")
         return ["Repo" ,"Branch", "Language detection (ms)", "Detected language" ,"CPG Generation time(ms)", "Property file pass(ms)",
                        "Run oss data flow (ms)", "LiteralTagger(ms)", "IdentifierTagger(ms)", "IdentifierTagger Non Member(ms)",
                        "DBConfigTagger(ms)", "RegularSinkTagger(ms)", "APITagger(ms)", "CustomInheritTagger(ms)", "CollectionTagger(ms)",
