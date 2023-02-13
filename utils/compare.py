@@ -348,7 +348,7 @@ def sub_process_path(base_source, head_source, sink_type, base_branch_name, head
                 total_flow_head += len(process_source_head_data[i][sink])
                 total_additional_flow += len(process_source_head_data[i][sink])
                 # Add the flow details in result
-                final_result_list.append([repo_name, sink_type, i, sink, len(process_source_head_data[i][sink]), 0,
+                final_result_list.append([repo_name, language ,sink_type, i, sink, len(process_source_head_data[i][sink]), 0,
                                           len(process_source_head_data[i][sink]), 0, '100%', '\n'.join(additional_ids),
                                           0])
             continue
@@ -364,7 +364,7 @@ def sub_process_path(base_source, head_source, sink_type, base_branch_name, head
                 total_flow_base += len(process_source_base_data[i][sink])
                 total_missing_flow += len(process_source_base_data[i][sink])
                 # Add the flow details in result
-                final_result_list.append([repo_name, sink_type, i, sink, 0, len(process_source_base_data[i][sink]), 0,
+                final_result_list.append([repo_name, language ,sink_type, i, sink, 0, len(process_source_base_data[i][sink]), 0,
                                           len(process_source_base_data[i][sink]), '-100%', 0, '\n'.join(missing_ids)])
             continue
 
@@ -385,7 +385,7 @@ def sub_process_path(base_source, head_source, sink_type, base_branch_name, head
                 total_additional_flow += len(head_sink_data[j])
                 # Add the flow details in result 
                 final_result_list.append(
-                    [repo_name, sink_type, i, j, len(head_sink_data[j]), 0, len(head_sink_data[j]), 0, '100%',
+                    [repo_name, language ,sink_type, i, j, len(head_sink_data[j]), 0, len(head_sink_data[j]), 0, '100%',
                      '\n'.join(additional_ids), 0])
                 continue
 
@@ -399,7 +399,7 @@ def sub_process_path(base_source, head_source, sink_type, base_branch_name, head
                 total_missing_flow += len(base_sink_data[j])
                 # Add the flow details in result
                 final_result_list.append(
-                    [repo_name, sink_type, i, j, 0, len(base_sink_data[j]), 0, len(base_sink_data[j]), '-100%', 0,
+                    [repo_name, language ,sink_type, i, j, 0, len(base_sink_data[j]), 0, len(base_sink_data[j]), '-100%', 0,
                      '\n'.join(missing_ids)])
                 continue
 
@@ -434,7 +434,7 @@ def sub_process_path(base_source, head_source, sink_type, base_branch_name, head
             # Add flow details in result,
             # Here we are calculating the absolute delta w.r.t. total flow found 
             final_result_list.append(
-                [repo_name, sink_type, i, j, len(head_path_data), len(base_path_data), len(new_path), len(missing_path),
+                [repo_name, language ,sink_type, i, j, len(head_path_data), len(base_path_data), len(new_path), len(missing_path),
                  f'{round(((absolute_path_change / (2 * total_path_count)) * 100), 2)}%', '\n'.join(new_path),
                  '\n'.join(missing_path)])
 
