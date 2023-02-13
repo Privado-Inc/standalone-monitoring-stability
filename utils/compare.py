@@ -2,7 +2,7 @@ import csv
 import json
 import os
 import hashlib
-from utils.write_to_file import write_to_csv, write_source_sink_data, write_path_data, write_performance_data, write_scan_status_report_for_file
+from utils.write_to_file import write_source_sink_data, write_path_data, write_performance_data, write_scan_status_report_for_file
 from utils.scan_metadata import get_subscan_metadata
 from utils.scan import generate_scan_status_data_for_file
 
@@ -76,13 +76,13 @@ def compare_files(base_file_uri, head_file_uri):
 def process_performance_data(worksheet_name, base_branch_name, head_branch_name, repo_name, header_flag):
     result = []
     if header_flag:
-        result.append(["Repo", "Branch", "Language detection", "CPG Generation time", "Property file pass",
-                       "Run oss data flow", "LiteralTagger", "IdentifierTagger", "IdentifierTagger Non Member",
-                       "DBConfigTagger", "RegularSinkTagger", "APITagger", "CustomInheritTagger", "CollectionTagger",
-                       "Tagging source code", "no of source nodes", "no of sinks nodes" ,"Finding flows",
-                       "Finding flows (time)", "Filtering flows 1", "Filtering flows 1 (time)", "Filtering flows 2",
-                       "Filtering flows 2 (time)", "Deduplicating flows", "Deduplicating flows (time)",
-                       "Finding source to sink flow", "Finding source to sink flow (time)", "Code scanning",
+        result.append(["Repo", 'language' ,"Branch", "Language detection (ms)", "CPG Generation time(ms)", "Property file pass(ms)",
+                       "Run oss data flow (ms)", "LiteralTagger(ms)", "IdentifierTagger(ms)", "IdentifierTagger Non Member(ms)",
+                       "DBConfigTagger(ms)", "RegularSinkTagger(ms)", "APITagger(ms)", "CustomInheritTagger(ms)", "CollectionTagger(ms)",
+                       "Tagging source code(ms)", "no of source nodes", "no of sinks nodes" ,"Finding flows(ms)",
+                       "Finding flows (time) (ms)", "Filtering flows 1", "Filtering flows 1 (time) (ms)", "Filtering flows 2",
+                       "Filtering flows 2 (time) (ms)", "Deduplicating flows", "Deduplicating flows (time) (ms)",
+                       "Finding source to sink flow", "Finding source to sink flow (time) (ms)", "Code scanning (ms)",
                        "Binary file size"])
     else:
         result.append([])
@@ -152,7 +152,7 @@ def process_source_sink_and_collection_data(worksheet_name, base_data, head_data
     result = []
 
     if header_flag:
-        result.append(['Repo', 'Category', 'Sub Category', f'Number of Node ( {head_branch_name} )',
+        result.append(['Repo', 'language' ,'Category', 'Sub Category', f'Number of Node ( {head_branch_name} )',
                        f'Number of Node ( {base_branch_name} )', f'List of Node {head_branch_name}',
                        f'List of Node {base_branch_name}', '% Change', f'New Node added in {head_branch_name}',
                        f'List of Node Missing in {head_branch_name}', f'Number of missing nodes in {head_branch_name}'])
@@ -268,11 +268,11 @@ def process_path_analysis(worksheet_name, base_source, head_source, repo_name, b
     else:
         percent_delta = f"{round((((total_additional_flow + total_missing_flow) / (total_flow_head + total_missing_flow)) * 100), 2)}%"
 
-    result.insert(0, [repo_name, 'Total', 'All', 'All', total_flow_head, total_flow_base, total_additional_flow,
+    result.insert(0, [repo_name, 'language' ,'Total', 'All', 'All', total_flow_head, total_flow_base, total_additional_flow,
                       total_missing_flow, percent_delta])
 
     if header_flag:
-        result.insert(0, ['Repo Name', 'Sink Category', 'Source', 'Sink', head_branch_name, base_branch_name,
+        result.insert(0, ['Repo Name', 'language' ,'Sink Category', 'Source', 'Sink', head_branch_name, base_branch_name,
                        f'Additional in {head_branch_name}', f'Missing in {head_branch_name}', 'Delta in %',
                        f'Additional Path Id in {head_branch_name}', f'Missing Path ID in {head_branch_name}'])
 

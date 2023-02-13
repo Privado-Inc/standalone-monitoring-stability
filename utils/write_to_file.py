@@ -4,18 +4,6 @@ import openpyxl
 from openpyxl.styles import PatternFill, Font
 
 
-def write_to_csv(filename, values):
-    # filename is the name of the granular report
-    # headers is an array containing the column names -
-    # values is a 2D Array with each element signifying a particular row
-    cwd = os.getcwd()
-    file_path = f'{cwd}/{filename}.csv'
-
-    with open(file_path, "a") as value:
-        report = csv.writer(value)
-        for row in values:
-            report.writerow(row)
-
 
 def create_new_excel_for_file(location, first_file, second_file):
     wb = openpyxl.Workbook()
@@ -91,8 +79,8 @@ def write_scan_status_report(workbook_location, base_branch_name, head_branch_na
     worksheet = workbook['scan-status']
 
     worksheet.append(
-        ["Repo", "Branch", "scan status", "scan error", "comparison status", "comparison error", "unique flow count",
-         "scan time", "CPG size"])
+        ["Repo", "Branch", "language" ,"scan status", "scan error", "comparison status", "comparison error", "unique flow count",
+         "scan time (ms)", "CPG size"])
 
     for repo in report.keys():
         repo_info = report[repo]
@@ -120,7 +108,7 @@ def write_summary_data(workbook_location, base_branch_name, head_branch_name, re
 
     worksheet = workbook['summary']
 
-    worksheet.append(["Repo", "scan status", f"{base_branch_name} Scan status <Base - head> (ms)", f"{head_branch_name} scan time (ms)",
+    worksheet.append(["Repo", "language" ,"scan status", f"{base_branch_name} Scan status <Base - head> (ms)", f"{head_branch_name} scan time (ms)",
                       "scan time diff (ms)", "Reachable by flow diff (ms)", f"{base_branch_name} unique flows",
                       f"{head_branch_name} unique flows", "unique flows diff",  
                       f"{base_branch_name} No of data elements",
