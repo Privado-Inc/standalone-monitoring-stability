@@ -91,20 +91,20 @@ def get_headers_wrt_language(language):
                        "Binary file size"]
     elif (language.trim() == 'Java'):
         print("java detected detected")
-        return ["Repo" ,"Branch", "Language detection (ms)", "Detected language" ,"CPG Generation time(ms)", "Property file pass(ms)",
+        return []
+
+def process_performance_data(worksheet_name, base_branch_name, head_branch_name, repo_name, language ,header_flag):
+    result = []
+    if header_flag:
+        print(get_headers_wrt_language(language))
+        result.append(["Repo" ,"Branch", "Language detection (ms)", "Detected language" ,"CPG Generation time(ms)", "Property file pass(ms)",
                        "Run oss data flow (ms)", "LiteralTagger(ms)", "IdentifierTagger(ms)", "IdentifierTagger Non Member(ms)",
                        "DBConfigTagger(ms)", "RegularSinkTagger(ms)", "APITagger(ms)", "CustomInheritTagger(ms)", "CollectionTagger(ms)",
                        "Tagging source code(ms)", "no of source nodes", "no of sinks nodes" ,"Finding flows(ms)",
                        "Finding flows (time) (ms)", "Filtering flows 1", "Filtering flows 1 (time) (ms)", "Filtering flows 2",
                        "Filtering flows 2 (time) (ms)", "Deduplicating flows", "Deduplicating flows (time) (ms)",
                        "Finding source to sink flow", "Finding source to sink flow (time) (ms)", "Code scanning (ms)",
-                       "Binary file size"]
-
-def process_performance_data(worksheet_name, base_branch_name, head_branch_name, repo_name, language ,header_flag):
-    result = []
-    if header_flag:
-        print(get_headers_wrt_language(language))
-        result.append([get_headers_wrt_language(language)])
+                       "Binary file size"])
     else:
         result.append([])
 
