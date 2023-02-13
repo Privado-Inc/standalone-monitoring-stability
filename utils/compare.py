@@ -27,7 +27,7 @@ def main(base_file, head_file, base_branch_name, head_branch_name, header_flag, 
                                             scan_status, language)
 
     process_path_analysis(f'{head_branch_name}-{base_branch_name}-flow-report', base_data, head_data, repo_name,
-                          base_branch_name, head_branch_name, header_flag)
+                          base_branch_name, head_branch_name, header_flag, language)
 
     process_performance_data(f'{head_branch_name}-{base_branch_name}-performance-report', base_branch_name,
                              head_branch_name, repo_name, header_flag)
@@ -67,7 +67,7 @@ def compare_files(base_file_uri, head_file_uri):
     process_source_sink_and_collection_data('source-&-sink-report', base_data, head_data, "First", "Second", repo_name,
                                             True, None, None)
 
-    process_path_analysis('flow-report', base_data, head_data, repo_name, "First", "Second", True)
+    process_path_analysis('flow-report', base_data, head_data, repo_name, "First", "Second", True, None)
 
     base_file.close()
     head_file.close()
