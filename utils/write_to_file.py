@@ -83,10 +83,10 @@ def write_scan_status_report(workbook_location, base_branch_name, head_branch_na
         ["Repo", "Branch", "language" ,"scan status", "scan error", "comparison status", "comparison error", "unique flow count",
          "scan time (ms)", "CPG size"])
 
-    print(repo_info[base_branch_name].keys())
 
     for repo in report.keys():
         repo_info = report[repo]
+        print(repo_info[base_branch_name].keys())
         worksheet.append([repo, base_branch_name ,repo_info[base_branch_name]['scan_status'],
                           repo_info[base_branch_name]['scan_error_message'],
                           repo_info[base_branch_name]['comparison_status'],
