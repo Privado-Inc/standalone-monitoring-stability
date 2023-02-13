@@ -15,17 +15,17 @@ def get_detected_language(repo, branch):
 
 def get_docker_commands(tag, repo_path):
     if tag == 'main':
-        return f'privado scan {repo_path}'
+        return f'privado  {repo_path}'
     elif tag == 'dev':
-        return f'PRIVADO_DEV=1 privado scan {repo_path}'
+        return f'PRIVADO_DEV=1 privado  {repo_path}'
     else:
-        return f'PRIVADO_DEV=1 PRIVADO_TAG={tag} privado scan {repo_path}'
+        return f'PRIVADO_DEV=1 PRIVADO_TAG={tag} privado  {repo_path}'
 
 
 def scan_repo_report(first_branch, second_branch, valid_repos, use_docker):
     cwd = os.getcwd()
 
-    # To store scan status - if it failed or completed, and for which branch
+    # To store  status - if it failed or completed, and for which branch
     scan_report = dict()
 
     # create dirs for results if not exist
@@ -41,7 +41,7 @@ def scan_repo_report(first_branch, second_branch, valid_repos, use_docker):
             if use_docker:
                 first_command = f'{get_docker_commands(first_branch, scan_dir)} | tee {cwd}/temp/result/{first_branch}/{repo}-output.txt'
             else:
-                first_command = f'cd {cwd}/temp/binary/{first_branch}/bin && ./privado-core scan {scan_dir} -ic {cwd}/temp/privado --skip-upload -Dlog4j.configurationFile=log4j2.xml | tee {cwd}/temp/result/{first_branch}/{repo}-output.txt'
+                first_command = f'cd {cwd}/temp/binary/{first_branch}/bin && ./privado-core  {scan_dir} -ic {cwd}/temp/privado --skip-upload -Dlog4j.configurationFile=log4j2.xml | tee {cwd}/temp/result/{first_branch}/{repo}-output.txt'
             
             # Execute the command to generate the binary file for first branch
             os.system(first_command)
@@ -62,7 +62,7 @@ def scan_repo_report(first_branch, second_branch, valid_repos, use_docker):
             if use_docker:
                 second_command = f'{get_docker_commands(second_branch, scan_dir)} | tee {cwd}/temp/result/{second_branch}/{repo}-output.txt'
             else:
-                second_command = f'cd {cwd}/temp/binary/{second_branch}/bin && ./privado-core scan {scan_dir} -ic {cwd}/temp/privado --skip-upload -Dlog4j.configurationFile=log4j2.xml | tee {cwd}/temp/result/{second_branch}/{repo}-output.txt'
+                second_command = f'cd {cwd}/temp/binary/{second_branch}/bin && ./privado-core  {scan_dir} -ic {cwd}/temp/privado --skip-upload -Dlog4j.configurationFile=log4j2.xml | tee {cwd}/temp/result/{second_branch}/{repo}-output.txt'
             
             # Execute the command to generate the binary file for second branch
             os.system(second_command)
@@ -74,6 +74,8 @@ def scan_repo_report(first_branch, second_branch, valid_repos, use_docker):
             except Exception as e:
                 report[second_branch] = {'scan_status': 'failed', 'scan_error_message': str(e)}
 
+            language = get_detected_language(repo, first_branch)
+            report["language"] = language
             scan_report[repo] = report
 
         finally:
@@ -142,7 +144,7 @@ def parse_flows_data(repo_name, branch_name, scan_report):
         code_scan_time = scan_metadata_values[1].split('-')[-2]
         scan_report[repo_name][branch_name]['code_scan_time'] = code_scan_time
     except Exception as e:
-        print(f'Error while parsing code scan time data: {e}')
+        print(f'Error while parsing code  time data: {e}')
         scan_report[repo_name][branch_name]['code_scan_time'] = '--'
 
     try:
