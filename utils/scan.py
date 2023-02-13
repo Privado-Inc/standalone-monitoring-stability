@@ -10,7 +10,7 @@ def get_detected_language(repo, branch):
     with open(f'{cwd}/temp/result/{branch}/{repo}-output.txt') as scan_time_output:
         for line in scan_time_output.readlines():
             if re.search(r".*(Detected language).*", line):
-                print("Language detected")
+                print("Language")
                 detected_language = line.split(' ')[-1].replace("'", "")
                 return detected_language
 
@@ -42,8 +42,9 @@ def scan_repo_report(first_branch, second_branch, valid_repos, use_docker):
             if use_docker:
                 first_command = f'{get_docker_commands(first_branch, scan_dir)} | tee {cwd}/temp/result/{first_branch}/{repo}-output.txt'
             else:
-                first_command = f'cd {cwd}/temp/binary/{first_branch}/bin && ./privado-core  {scan_dir} -ic {cwd}/temp/privado --skip-upload | tee {cwd}/temp/result/{first_branch}/{repo}-output.txt'
+                first_command = f'cd {cwd}/temp/binary/{first_branch}/bin && ./privado-core  {scan_dir} -ic {cwd}/temp/privado --skip-upload -Dlog4j.configurationFile=log4j2.xml | tee {cwd}/temp/result/{first_branch}/{repo}-output.txt'
             
+            print(first_command)
             # Execute the command to generate the binary file for first branch
             os.system(first_command)
 
@@ -63,8 +64,9 @@ def scan_repo_report(first_branch, second_branch, valid_repos, use_docker):
             if use_docker:
                 second_command = f'{get_docker_commands(second_branch, scan_dir)} | tee {cwd}/temp/result/{second_branch}/{repo}-output.txt'
             else:
-                second_command = f'cd {cwd}/temp/binary/{second_branch}/bin && ./privado-core  {scan_dir} -ic {cwd}/temp/privado --skip-upload | tee {cwd}/temp/result/{second_branch}/{repo}-output.txt'
+                second_command = f'cd {cwd}/temp/binary/{second_branch}/bin && ./privado-core  {scan_dir} -ic {cwd}/temp/privado --skip-upload -Dlog4j.configurationFile=log4j2.xml | tee {cwd}/temp/result/{second_branch}/{repo}-output.txt'
             
+            print(second_command)
             # Execute the command to generate the binary file for second branch
             os.system(second_command)
 
