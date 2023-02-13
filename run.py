@@ -92,8 +92,8 @@ def workflow():
                 scan_status[repo_name][args.second]['comparison_error_message'] = str(e)
             header_flag = False
 
-        # write_scan_status_report(f'{cwd}/output.xlsx', args.first, args.second, scan_status)
-        # write_summary_data(f'{cwd}/output.xlsx', args.first, args.second, scan_status)
+        write_scan_status_report(f'{cwd}/output.xlsx', args.first, args.second, scan_status)
+        write_summary_data(f'{cwd}/output.xlsx', args.first, args.second, scan_status)
 
         if args.upload:
             post_report_to_slack()

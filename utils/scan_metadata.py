@@ -1,6 +1,20 @@
 import os
 import re
 
+def get_headers_wrt_language(language):
+    if (language == 'Python'):
+        return []
+    elif (language == 'Java'):
+        return ["Repo" ,"Branch", "Language detection (ms)", "Detected language" ,"CPG Generation time(ms)", "Property file pass(ms)",
+                       "Run oss data flow (ms)", "LiteralTagger(ms)", "IdentifierTagger(ms)", "IdentifierTagger Non Member(ms)",
+                       "DBConfigTagger(ms)", "RegularSinkTagger(ms)", "APITagger(ms)", "CustomInheritTagger(ms)", "CollectionTagger(ms)",
+                       "Tagging source code(ms)", "no of source nodes", "no of sinks nodes" ,"Finding flows(ms)",
+                       "Finding flows (time) (ms)", "Filtering flows 1", "Filtering flows 1 (time) (ms)", "Filtering flows 2",
+                       "Filtering flows 2 (time) (ms)", "Deduplicating flows", "Deduplicating flows (time) (ms)",
+                       "Finding source to sink flow", "Finding source to sink flow (time) (ms)", "Code scanning (ms)",
+                       "Binary file size"]
+
+
 def get_metadata_pair(filepath):
     # Match all lines which contain WWh:XXm:YYs:ZZZms
     time_filter_regex = r".*(\d{1,2}h:\d{1,2}m:\d{1,2}s:\d{1,3}ms).*"
@@ -56,6 +70,7 @@ def get_subscan_metadata(repo_name, branch):
     subscan_map["branch"] = branch
 
     for metadata_pair in get_metadata_pair(filepath):
+        print(metadata_pair)
         tag = re.sub(pattern=r"(\t|done in|is done in)",repl="", string=metadata_pair[0]).strip()
         if ("Base processing" in tag): # base processing is the cpg generation time
             tag = "CPG Generation time"
