@@ -101,7 +101,8 @@ def get_headers_wrt_language(language):
 def process_performance_data(worksheet_name, base_branch_name, head_branch_name, repo_name, language ,header_flag):
     result = []
     if header_flag:
-        result.append(get_headers_wrt_language(language))
+        print(get_headers_wrt_language(language))
+        result.append([get_headers_wrt_language(language)])
     else:
         result.append([])
 
