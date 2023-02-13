@@ -1,25 +1,7 @@
 import os
 import re
 
-def get_headers_wrt_language(language):
-    if (language == 'Python'):
-        return ["Repo" ,"Branch" ,"Language detection (ms)", "Detected language" ,"CPG Generation time(ms)",
-                       "Run oss data flow (ms)", "LiteralTagger(ms)", "IdentifierTagger(ms)", "IdentifierTagger Non Member(ms)",
-                        "RegularSinkTagger(ms)", "APITagger(ms)", "CustomInheritTagger(ms)", "CollectionTagger(ms)",
-                       "Tagging source code(ms)", "no of source nodes", "no of sinks nodes" ,"Finding flows(ms)",
-                       "Finding flows (time) (ms)", "Filtering flows 1", "Filtering flows 1 (time) (ms)", "Filtering flows 2",
-                       "Filtering flows 2 (time) (ms)", "Deduplicating flows", "Deduplicating flows (time) (ms)",
-                       "Finding source to sink flow", "Finding source to sink flow (time) (ms)", "Code scanning (ms)",
-                       "Binary file size"]
-    elif (language == 'Java'):
-        return ["Repo" ,"Branch", "Language detection (ms)", "Detected language" ,"CPG Generation time(ms)", "Property file pass(ms)",
-                       "Run oss data flow (ms)", "LiteralTagger(ms)", "IdentifierTagger(ms)", "IdentifierTagger Non Member(ms)",
-                       "DBConfigTagger(ms)", "RegularSinkTagger(ms)", "APITagger(ms)", "CustomInheritTagger(ms)", "CollectionTagger(ms)",
-                       "Tagging source code(ms)", "no of source nodes", "no of sinks nodes" ,"Finding flows(ms)",
-                       "Finding flows (time) (ms)", "Filtering flows 1", "Filtering flows 1 (time) (ms)", "Filtering flows 2",
-                       "Filtering flows 2 (time) (ms)", "Deduplicating flows", "Deduplicating flows (time) (ms)",
-                       "Finding source to sink flow", "Finding source to sink flow (time) (ms)", "Code scanning (ms)",
-                       "Binary file size"]
+
 
 
 def get_metadata_pair(filepath):
@@ -68,12 +50,13 @@ def get_metadata_pair(filepath):
                 yield tuple(tag_time_pair) # Generate output for each line
 
 
-def get_subscan_metadata(repo_name, branch):
+def get_subscan_metadata(repo_name, branch, language):
     subscan_map = dict()
     cwd = os.getcwd()
     filepath = f"{cwd}/temp/result/{branch}/{repo_name}-output.txt"
 
     subscan_map["RepoName"] = repo_name
+    subscan_map["language"] = language
     subscan_map["branch"] = branch
 
     for metadata_pair in get_metadata_pair(filepath):
