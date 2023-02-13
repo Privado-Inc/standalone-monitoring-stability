@@ -7,6 +7,7 @@ import re
 
 def get_detected_language(repo, branch):
     cwd = os.getcwd()
+    print("In detected: ", repo)
     with open(f'{cwd}/temp/result/{branch}/{repo}-output.txt') as scan_time_output:
         for line in scan_time_output.readlines():
             if re.search(r".*(Detected language).*", line):
@@ -66,6 +67,9 @@ def scan_repo_report(first_branch, second_branch, valid_repos, use_docker):
             else:
                 second_command = f'cd {cwd}/temp/binary/{second_branch}/bin && ./privado-core scan {scan_dir} -ic {cwd}/temp/privado --skip-upload -Dlog4j.configurationFile=log4j2.xml | tee {cwd}/temp/result/{second_branch}/{repo}-output.txt'
             
+            print(repo)
+            language = get_detected_language(repo, first_branch)
+            report["language"] = language
             print(second_command)
             # Execute the command to generate the binary file for second branch
             os.system(second_command)
@@ -76,9 +80,7 @@ def scan_repo_report(first_branch, second_branch, valid_repos, use_docker):
                 report[second_branch] = {'scan_status': 'done', 'scan_error_message': '--'}
             except Exception as e:
                 report[second_branch] = {'scan_status': 'failed', 'scan_error_message': str(e)}
-            print(repo)
-            language = get_detected_language(repo, first_branch)
-            report["language"] = language
+            
             scan_report[repo] = report
 
         finally:

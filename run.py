@@ -70,7 +70,6 @@ def workflow():
             valid_repositories.append(repo_name)
 
         scan_status = scan_repo_report(args.first, args.second, valid_repositories, use_docker=args.use_docker)
-        detected_language = get_detected_language(repo_name, args.first)
 
         # Used to add header for only one time in report
         header_flag = True
@@ -79,6 +78,7 @@ def workflow():
             try:
                 base_file = f'{cwd}/temp/result/{args.first}/{repo_name}.json'
                 head_file = f'{cwd}/temp/result/{args.second}/{repo_name}.json'
+                detected_language = get_detected_language(repo_name, args.first)
                 compare_and_generate_report(base_file, head_file, args.first, args.second, header_flag, scan_status, detected_language)
                 scan_status[repo_name][args.first]['comparison_status'] = 'done'
                 scan_status[repo_name][args.first]['comparison_error_message'] = '--'
