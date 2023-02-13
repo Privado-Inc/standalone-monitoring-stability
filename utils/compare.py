@@ -104,8 +104,8 @@ def process_performance_data(worksheet_name, base_branch_name, head_branch_name,
     else:
         result.append([])
 
-    result.append(list(get_subscan_metadata(repo_name, head_branch_name).values(), language))
-    result.append(list(get_subscan_metadata(repo_name, base_branch_name).values(), language))
+    result.append(list(get_subscan_metadata(repo_name, head_branch_name, language).values()))
+    result.append(list(get_subscan_metadata(repo_name, base_branch_name, language).values()))
 
     write_performance_data(f'{os.getcwd()}/output.xlsx', worksheet_name, result)
 
