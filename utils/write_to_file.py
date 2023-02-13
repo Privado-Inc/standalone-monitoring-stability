@@ -86,7 +86,7 @@ def write_scan_status_report(workbook_location, base_branch_name, head_branch_na
 
     for repo in report.keys():
         repo_info = report[repo]
-        worksheet.append([repo, base_branch_name,repo['language'] ,repo_info[base_branch_name]['scan_status'],
+        worksheet.append([repo, base_branch_name, report[repo]['language'] ,repo_info[base_branch_name]['scan_status'],
                           repo_info[base_branch_name]['scan_error_message'],
                           repo_info[base_branch_name]['comparison_status'],
                           repo_info[base_branch_name]['comparison_error_message'],
@@ -94,7 +94,7 @@ def write_scan_status_report(workbook_location, base_branch_name, head_branch_na
                           repo_info[base_branch_name]['code_scan_time'],
                           repo_info[base_branch_name]['binary_file_size']])
 
-        worksheet.append([repo, head_branch_name, repo['language'],repo_info[head_branch_name]['scan_status'],
+        worksheet.append([repo, head_branch_name, report[repo]['language'],repo_info[head_branch_name]['scan_status'],
                           repo_info[head_branch_name]['scan_error_message'],
                           repo_info[head_branch_name]['comparison_status'],
                           repo_info[head_branch_name]['comparison_error_message'],
