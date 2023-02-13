@@ -14,7 +14,7 @@ def get_metadata_pair(filepath):
     # Lines which need to be excluded
     exclusion_regex = r".*(Lombok).*"
 
-    language_regex = r".*(Detected lanugage).*"
+    language_regex = r".*(Detected language).*"
 
     with open(filepath) as scan_time_output:
         for line in scan_time_output.readlines():
