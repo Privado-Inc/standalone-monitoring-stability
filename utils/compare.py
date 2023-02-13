@@ -7,6 +7,8 @@ from utils.scan_metadata import get_subscan_metadata
 from utils.scan import generate_scan_status_data_for_file
 
 
+
+
 def main(base_file, head_file, base_branch_name, head_branch_name, header_flag, scan_status, language):
     try:
         base_file.split('/')[-1].split('.')[0]
@@ -32,7 +34,7 @@ def main(base_file, head_file, base_branch_name, head_branch_name, header_flag, 
                           base_branch_name, head_branch_name, language, header_flag)
 
     process_performance_data(f'{head_branch_name}-{base_branch_name}-performance-report', base_branch_name,
-                             head_branch_name, repo_name, header_flag)
+                             head_branch_name, repo_name, language ,header_flag)
 
     base_file.close()
     head_file.close()
@@ -75,17 +77,30 @@ def compare_files(base_file_uri, head_file_uri):
     head_file.close()
 
 
-def process_performance_data(worksheet_name, base_branch_name, head_branch_name, repo_name, header_flag):
-    result = []
-    if header_flag:
-        result.append(["Repo" ,"Branch", "Language detection (ms)", "Detected language" ,"CPG Generation time(ms)", "Property file pass(ms)",
+def get_headers_wrt_language(language):
+    if (language == 'Python'):
+        return ["Repo" ,"Branch" ,"Language detection (ms)", "Detected language" ,"CPG Generation time(ms)",
+                       "Run oss data flow (ms)", "LiteralTagger(ms)", "IdentifierTagger(ms)", "IdentifierTagger Non Member(ms)",
+                        "RegularSinkTagger(ms)", "APITagger(ms)", "CustomInheritTagger(ms)", "CollectionTagger(ms)",
+                       "Tagging source code(ms)", "no of source nodes", "no of sinks nodes" ,"Finding flows(ms)",
+                       "Finding flows (time) (ms)", "Filtering flows 1", "Filtering flows 1 (time) (ms)", "Filtering flows 2",
+                       "Filtering flows 2 (time) (ms)", "Deduplicating flows", "Deduplicating flows (time) (ms)",
+                       "Finding source to sink flow", "Finding source to sink flow (time) (ms)", "Code scanning (ms)",
+                       "Binary file size"]
+    elif (language == 'Java'):
+        return ["Repo" ,"Branch", "Language detection (ms)", "Detected language" ,"CPG Generation time(ms)", "Property file pass(ms)",
                        "Run oss data flow (ms)", "LiteralTagger(ms)", "IdentifierTagger(ms)", "IdentifierTagger Non Member(ms)",
                        "DBConfigTagger(ms)", "RegularSinkTagger(ms)", "APITagger(ms)", "CustomInheritTagger(ms)", "CollectionTagger(ms)",
                        "Tagging source code(ms)", "no of source nodes", "no of sinks nodes" ,"Finding flows(ms)",
                        "Finding flows (time) (ms)", "Filtering flows 1", "Filtering flows 1 (time) (ms)", "Filtering flows 2",
                        "Filtering flows 2 (time) (ms)", "Deduplicating flows", "Deduplicating flows (time) (ms)",
                        "Finding source to sink flow", "Finding source to sink flow (time) (ms)", "Code scanning (ms)",
-                       "Binary file size"])
+                       "Binary file size"]
+
+def process_performance_data(worksheet_name, base_branch_name, head_branch_name, repo_name, language ,header_flag):
+    result = []
+    if header_flag:
+        result.append(get_headers_wrt_language(language))
     else:
         result.append([])
 
@@ -117,11 +132,6 @@ def process_collection(collections_base, collections_head, collection_name, repo
 
     for ci in collections_head['collections']:
         collections_sources_head.append(ci['sourceId'])
-
-    # try:
-    #     percent_change = f'{((head_collections - base_collections) / head_collections) * 100}%'
-    # except Exception as e:
-    #     percent_change = '0.00%'
 
     collection_set_base = set(collections_sources_base)
     collection_set_head = set(collections_sources_head)

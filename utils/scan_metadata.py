@@ -3,7 +3,14 @@ import re
 
 def get_headers_wrt_language(language):
     if (language == 'Python'):
-        return []
+        return ["Repo" ,"Branch" ,"Language detection (ms)", "Detected language" ,"CPG Generation time(ms)",
+                       "Run oss data flow (ms)", "LiteralTagger(ms)", "IdentifierTagger(ms)", "IdentifierTagger Non Member(ms)",
+                        "RegularSinkTagger(ms)", "APITagger(ms)", "CustomInheritTagger(ms)", "CollectionTagger(ms)",
+                       "Tagging source code(ms)", "no of source nodes", "no of sinks nodes" ,"Finding flows(ms)",
+                       "Finding flows (time) (ms)", "Filtering flows 1", "Filtering flows 1 (time) (ms)", "Filtering flows 2",
+                       "Filtering flows 2 (time) (ms)", "Deduplicating flows", "Deduplicating flows (time) (ms)",
+                       "Finding source to sink flow", "Finding source to sink flow (time) (ms)", "Code scanning (ms)",
+                       "Binary file size"]
     elif (language == 'Java'):
         return ["Repo" ,"Branch", "Language detection (ms)", "Detected language" ,"CPG Generation time(ms)", "Property file pass(ms)",
                        "Run oss data flow (ms)", "LiteralTagger(ms)", "IdentifierTagger(ms)", "IdentifierTagger Non Member(ms)",
@@ -86,3 +93,26 @@ def get_subscan_metadata(repo_name, branch):
             subscan_map[tag] = flow_count
     
     return subscan_map
+
+
+# (' Language detection done in \t\t\t', ' 17 ms ', ' 00h:00m:00s:17ms\n')
+# ('language', 'Python\n')
+# (' Base processing done in \t\t\t\t', ' 2712 ms ', ' 00h:00m:02s:712ms\n')
+# (' Run oss data flow is done in \t\t\t', ' 1 ms ', ' 00h:00m:00s:01ms\n')
+# ('LiteralTagger is done in \t\t\t', ' 283 ms ', ' 00h:00m:00s:283ms\n')
+# ('IdentifierTagger is done in \t\t\t', ' 1436 ms ', ' 00h:00m:01s:436ms\n')
+# ('APITagger is done in \t\t\t', ' 237 ms ', ' 00h:00m:00s:237ms\n')
+# ('RegularSinkTagger is done in \t\t\t', ' 2938 ms ', ' 00h:00m:02s:938ms\n')
+# ('CollectionTagger is done in \t\t\t', ' 17 ms ', ' 00h:00m:00s:17ms\n')
+# (' Tagging source code is done in \t\t\t', ' 10905 ms ', ' 00h:00m:10s:905ms\n')
+# ('no of source nodes ', ' 151\n')
+# ('no of sinks nodes ', ' 2140\n')
+# ('Finding flows is done in \t\t\t', ' 497 ms ', ' 00h:00m:00s:497ms ', ' Unique flows ', ' 203\n')
+# ('Filtering flows 1 is done in \t\t\t', ' 16 ms ', ' 00h:00m:00s:16ms ', ' Unique flows ', ' 203\n')
+# ('Filtering flows 2 is done in \t\t\t', ' 46 ms ', ' 00h:00m:00s:46ms ', ' Final flows ', ' 197\n')
+# ('Deduplicating flows is done in \t\t', ' 19 ms ', ' 00h:00m:00s:19ms ', ' Unique flows ', ' 89\n')
+# (' Finding source to sink flow is done in \t\t', ' 997 ms ', ' 00h:00m:00s:997ms ', ' Processed final flows ', ' 89\n')
+# (' Code scanning is done in \t\t\t', ' 14633 ms ', ' 00h:00m:14s:633ms\n')
+# ('Binary file size', ' 0.004096 MB\n')
+
+
