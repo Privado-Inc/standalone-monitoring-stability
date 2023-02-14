@@ -2,7 +2,7 @@ import os
 import shutil
 
 def delete_action(action, boost: bool):
-    if not action:
+    if not action and not boost: # if not clean flag is not present
         hard_clean()
     else:
         soft_clean(boost)
