@@ -79,13 +79,19 @@ def compare_files(base_file_uri, head_file_uri):
 
 def process_performance_data(worksheet_name, base_branch_name, head_branch_name, repo_name, language ,header_flag):
     result = []
+    subscan_headers = list(get_subscan_metadata(repo_name, head_branch_name, language).keys())
     if header_flag:
-        result.append(list(get_subscan_metadata(repo_name, head_branch_name, language).keys()))
+        result.append(subscan_headers)
     else:
         result.append([])
 
-    result.append(list(get_subscan_metadata(repo_name, head_branch_name, language).values()))
-    result.append(list(get_subscan_metadata(repo_name, base_branch_name, language).values()))
+
+
+    head_values = get_subscan_metadata(repo_name, head_branch_name, language)
+    base_values = get_subscan_metadata(repo_name, base_branch_name, language)
+
+    result.append(list(map(lambda x: head_values[x], subscan_headers)))
+    result.append(list(map(lambda x: base_values[x], subscan_headers)))
 
     write_performance_data(f'{os.getcwd()}/output.xlsx', worksheet_name, result)
 
