@@ -28,7 +28,6 @@ def main(base_file, head_file, base_branch_name, head_branch_name, header_flag, 
                                             head_data, base_branch_name, head_branch_name, repo_name, header_flag,
                                             scan_status, language)
 
-    print("In main language: ", language)
 
     process_path_analysis(f'{head_branch_name}-{base_branch_name}-flow-report', base_data, head_data, repo_name,
                           base_branch_name, head_branch_name, language, header_flag)

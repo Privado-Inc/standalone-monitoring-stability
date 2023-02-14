@@ -72,16 +72,13 @@ def get_subscan_metadata(repo_name, branch, language):
         time = metadata_pair[1].strip()
 
         flow_count = int(metadata_pair[-1].replace('\n', '').strip()) if metadata_pair[-1].replace('\n', '').strip().isdigit() and "flow" in metadata_pair[0] else None # Time required and flow count both are captured 
-        print(tag)
         
         # Store values for java to avoid mismatch of values
         if (re.search(r".*(Java).*", language)):
             if (re.search(missing_in_python_regex, tag)):
-                print("Missing: " + tag)
                 missing_in_python_values[tag] = time
                 continue
             
-
         subscan_map[tag] = time # Map all the tags to the times in a dictionary
         
 
@@ -89,41 +86,23 @@ def get_subscan_metadata(repo_name, branch, language):
             subscan_map[tag + " (time) "] = time # Changing key to avoid confusion between flow counts and time required for flow counts, and also to prevent overrides
             subscan_map[tag] = flow_count
     
+
+    # Moved down to sync values with headers
     if (re.search(r".*(Java).*", language)):
         subscan_map["Property file pass"] = missing_in_python_values["Property file pass"]
         subscan_map["IdentifierTagger Non Member"] = missing_in_python_values["IdentifierTagger Non Member"]
         subscan_map["DB config tagger"] = missing_in_python_values["DBConfigTagger"]
         subscan_map["Custom Inherit Tagger"] = missing_in_python_values["CustomInheritTagger"]
+        subscan_map['RegularSinkTagger'], subscan_map['APITagger'] = subscan_map['APITagger'], subscan_map['RegularSinkTagger'] # Hot fix for java
 
+    # Missing in python should be added at the end
     if (re.search(r".*(Python).*", language)):
         subscan_map["Property file pass"] = "--"
         subscan_map["IdentifierTagger Non Member"] = "--"
         subscan_map["DB config tagger"] = "--"
         subscan_map["Custom Inherit Tagger"] = "--"
 
-    print(subscan_map)
 
     return subscan_map
-
-
-# (' Language detection done in \t\t\t', ' 17 ms ', ' 00h:00m:00s:17ms\n')
-# ('language', 'Python\n')
-# (' Base processing done in \t\t\t\t', ' 2712 ms ', ' 00h:00m:02s:712ms\n')
-# (' Run oss data flow is done in \t\t\t', ' 1 ms ', ' 00h:00m:00s:01ms\n')
-# ('LiteralTagger is done in \t\t\t', ' 283 ms ', ' 00h:00m:00s:283ms\n')
-# ('IdentifierTagger is done in \t\t\t', ' 1436 ms ', ' 00h:00m:01s:436ms\n')
-# ('APITagger is done in \t\t\t', ' 237 ms ', ' 00h:00m:00s:237ms\n')
-# ('RegularSinkTagger is done in \t\t\t', ' 2938 ms ', ' 00h:00m:02s:938ms\n')
-# ('CollectionTagger is done in \t\t\t', ' 17 ms ', ' 00h:00m:00s:17ms\n')
-# (' Tagging source code is done in \t\t\t', ' 10905 ms ', ' 00h:00m:10s:905ms\n')
-# ('no of source nodes ', ' 151\n')
-# ('no of sinks nodes ', ' 2140\n')
-# ('Finding flows is done in \t\t\t', ' 497 ms ', ' 00h:00m:00s:497ms ', ' Unique flows ', ' 203\n')
-# ('Filtering flows 1 is done in \t\t\t', ' 16 ms ', ' 00h:00m:00s:16ms ', ' Unique flows ', ' 203\n')
-# ('Filtering flows 2 is done in \t\t\t', ' 46 ms ', ' 00h:00m:00s:46ms ', ' Final flows ', ' 197\n')
-# ('Deduplicating flows is done in \t\t', ' 19 ms ', ' 00h:00m:00s:19ms ', ' Unique flows ', ' 89\n')
-# (' Finding source to sink flow is done in \t\t', ' 997 ms ', ' 00h:00m:00s:997ms ', ' Processed final flows ', ' 89\n')
-# (' Code scanning is done in \t\t\t', ' 14633 ms ', ' 00h:00m:14s:633ms\n')
-# ('Binary file size', ' 0.004096 MB\n')
 
 
