@@ -30,6 +30,7 @@ args: argparse.Namespace = parser.parse_args()
 def workflow():
     args.base = args.base.replace('/', '-')
     args.head = args.head.replace('/', '-')
+    print(args.base, args.head)
     # check if branch name present in args
     if args.base is None or args.head is None:
         print("Please provide flags '-h' and '-b' followed by branch name")
