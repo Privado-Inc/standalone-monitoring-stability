@@ -7,11 +7,9 @@ import re
 
 def get_detected_language(repo, branch):
     cwd = os.getcwd()
-    print("In detected: ", repo)
     with open(f'{cwd}/temp/result/{branch}/{repo}-output.txt') as scan_time_output:
         for line in scan_time_output.readlines():
             if re.search(r".*(Detected language).*", line):
-                print("Language")
                 detected_language = line.split(' ')[-1].replace("'", "")
                 return detected_language
 

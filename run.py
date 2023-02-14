@@ -15,10 +15,10 @@ parser = argparse.ArgumentParser()
 parser.add_argument("-r", "--repos", default=f"{os.getcwd()}/repos.txt")
 parser.add_argument('--upload', action='store_true')
 parser.add_argument('--no-upload', dest='feature', action='store_false')
-parser.add_argument("-f", "--first", default=None)
-parser.add_argument('-s', "--second", default=None)
+parser.add_argument("-b", "--base", default=None)
+parser.add_argument('-h', "--head", default=None)
 parser.add_argument('-nc', action='store_true')
-parser.add_argument('-b', "--boost", default=False)
+parser.add_argument('-bs', "--boost", default=False)
 parser.add_argument('-m', action='store_true')
 parser.add_argument('-d', '--use-docker', action='store_true')
 parser.set_defaults(feature=True)
@@ -27,8 +27,10 @@ args: argparse.Namespace = parser.parse_args()
 
 
 def workflow():
+    args.base = args.base.replace('/', '-')
+    args.head = args.head.replace('/', '-')
     # check if branch name present in args
-    if args.first is None or args.second is None:
+    if args.base is None or args.head is None:
         print("Please provide flags '-f' and '-s' followed by branch name")
         return
 
@@ -41,10 +43,10 @@ def workflow():
 
     # When Privado.json files provided
     if args.m:
-        compare_files(args.first, args.second)
+        compare_files(args.base, args.head)
         return
 
-    create_new_excel(excel_report_location, args.first, args.second)
+    create_new_excel(excel_report_location, args.base, args.head)
     valid_repositories = []
 
     # Cleanup action
@@ -52,7 +54,7 @@ def workflow():
 
     if not args.use_docker:
         # build the Privado binary for both branches
-        build(args.first, args.second, args.boost)
+        build(args.base, args.head, args.boost)
 
     try:
         for repo_link in utils.repo_link_generator.generate_repo_link(args.repos):
@@ -69,31 +71,31 @@ def workflow():
             clone_repo_with_location(repo_link, location, is_git_url)
             valid_repositories.append(repo_name)
 
-        scan_status = scan_repo_report(args.first, args.second, valid_repositories, use_docker=args.use_docker)
+        scan_status = scan_repo_report(args.base, args.head, valid_repositories, use_docker=args.use_docker)
 
         # Used to add header for only one time in report
         header_flag = True
 
         for repo_name in valid_repositories:
             try:
-                base_file = f'{cwd}/temp/result/{args.first}/{repo_name}.json'
-                head_file = f'{cwd}/temp/result/{args.second}/{repo_name}.json'
-                detected_language = get_detected_language(repo_name, args.first)
-                compare_and_generate_report(base_file, head_file, args.first, args.second, header_flag, scan_status, detected_language)
-                scan_status[repo_name][args.first]['comparison_status'] = 'done'
-                scan_status[repo_name][args.first]['comparison_error_message'] = '--'
-                scan_status[repo_name][args.second]['comparison_status'] = 'done'
-                scan_status[repo_name][args.second]['comparison_error_message'] = '--'
+                base_file = f'{cwd}/temp/result/{args.base}/{repo_name}.json'
+                head_file = f'{cwd}/temp/result/{args.head}/{repo_name}.json'
+                detected_language = get_detected_language(repo_name, args.base)
+                compare_and_generate_report(base_file, head_file, args.base, args.head, header_flag, scan_status, detected_language)
+                scan_status[repo_name][args.base]['comparison_status'] = 'done'
+                scan_status[repo_name][args.base]['comparison_error_message'] = '--'
+                scan_status[repo_name][args.head]['comparison_status'] = 'done'
+                scan_status[repo_name][args.head]['comparison_error_message'] = '--'
             except Exception as e:
                 print(f'{repo_name}: comparison report not generating: {e}')
-                scan_status[repo_name][args.first]['comparison_status'] = 'failed'
-                scan_status[repo_name][args.first]['comparison_error_message'] = str(e)
-                scan_status[repo_name][args.second]['comparison_status'] = 'failed'
-                scan_status[repo_name][args.second]['comparison_error_message'] = str(e)
+                scan_status[repo_name][args.base]['comparison_status'] = 'failed'
+                scan_status[repo_name][args.base]['comparison_error_message'] = str(e)
+                scan_status[repo_name][args.head]['comparison_status'] = 'failed'
+                scan_status[repo_name][args.head]['comparison_error_message'] = str(e)
             header_flag = False
 
-        write_scan_status_report(f'{cwd}/output.xlsx', args.first, args.second, scan_status)
-        write_summary_data(f'{cwd}/output.xlsx', args.first, args.second, scan_status)
+        write_scan_status_report(f'{cwd}/output.xlsx', args.base, args.head, scan_status)
+        write_summary_data(f'{cwd}/output.xlsx', args.base, args.head, scan_status)
 
         if args.upload:
             post_report_to_slack()
