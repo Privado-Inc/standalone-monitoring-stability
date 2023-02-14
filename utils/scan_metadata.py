@@ -67,10 +67,7 @@ def get_subscan_metadata(repo_name, branch, language):
         time = metadata_pair[1].strip()
 
         flow_count = int(metadata_pair[-1].replace('\n', '').strip()) if metadata_pair[-1].replace('\n', '').strip().isdigit() and "flow" in metadata_pair[0] else None # Time required and flow count both are captured 
-        if (re.search(r".*(Python).*", language)):
-            subscan_map["Property file pass"] = "--"
-            subscan_map["IdentifierTagger Non Member(ms)"] = "--"
-            subscan_map["DB config tagger"] = "--"
+        
             
 
         subscan_map[tag] = time # Map all the tags to the times in a dictionary
@@ -80,6 +77,11 @@ def get_subscan_metadata(repo_name, branch, language):
             subscan_map[tag + " (time) "] = time # Changing key to avoid confusion between flow counts and time required for flow counts, and also to prevent overrides
             subscan_map[tag] = flow_count
     
+    if (re.search(r".*(Python).*", language)):
+            subscan_map["Property file pass"] = "--"
+            subscan_map["IdentifierTagger Non Member(ms)"] = "--"
+            subscan_map["DB config tagger"] = "--"
+
     return subscan_map
 
 
