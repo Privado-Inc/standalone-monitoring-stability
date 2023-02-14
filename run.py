@@ -11,7 +11,8 @@ import os
 import argparse
 import traceback
 
-parser = argparse.ArgumentParser()
+parser = argparse.ArgumentParser(add_help=False)
+
 parser.add_argument("-r", "--repos", default=f"{os.getcwd()}/repos.txt")
 parser.add_argument('--upload', action='store_true')
 parser.add_argument('--no-upload', dest='feature', action='store_false')
