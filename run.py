@@ -17,7 +17,7 @@ parser.add_argument('--upload', action='store_true')
 parser.add_argument('--no-upload', dest='feature', action='store_false')
 parser.add_argument("-f", "--first", default=None)
 parser.add_argument('-s', "--second", default=None)
-parser.add_argument('-c', action='store_true')
+parser.add_argument('-nc', action='store_true')
 parser.add_argument('-b', "--boost", default=False)
 parser.add_argument('-m', action='store_true')
 parser.add_argument('-d', '--use-docker', action='store_true')
@@ -48,7 +48,7 @@ def workflow():
     valid_repositories = []
 
     # Cleanup action
-    delete_action(args.c, args.boost)
+    delete_action(args.nc, args.boost)
 
     if not args.use_docker:
         # build the Privado binary for both branches
