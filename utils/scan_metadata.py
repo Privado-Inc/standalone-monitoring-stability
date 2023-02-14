@@ -74,10 +74,12 @@ def get_subscan_metadata(repo_name, branch, language):
         flow_count = int(metadata_pair[-1].replace('\n', '').strip()) if metadata_pair[-1].replace('\n', '').strip().isdigit() and "flow" in metadata_pair[0] else None # Time required and flow count both are captured 
         print(tag)
         
+        # Store values for java to avoid mismatch of values
         if (re.search(r".*(Java).*", language)):
             if (re.search(missing_in_python_regex, tag)):
                 print("Missing: " + tag)
                 missing_in_python_values[tag] = time
+                continue
             
 
         subscan_map[tag] = time # Map all the tags to the times in a dictionary
