@@ -32,7 +32,7 @@ def workflow():
     args.head = args.head.replace('/', '-')
     # check if branch name present in args
     if args.base is None or args.head is None:
-        print("Please provide flags '-f' and '-s' followed by branch name")
+        print("Please provide flags '-h' and '-b' followed by branch name")
         return
 
     cwd = os.getcwd()
