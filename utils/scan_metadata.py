@@ -59,6 +59,11 @@ def get_subscan_metadata(repo_name, branch, language):
     subscan_map["language"] = language
     subscan_map["branch"] = branch
 
+    missing_in_python_regex = r".*(Property file pass|IdentifierTagger Non Member|DB config tagger).*"
+
+    missing_in_python_values = dict()
+    
+
     for metadata_pair in get_metadata_pair(filepath):
         tag = re.sub(pattern=r"(\t|done in|is done in)",repl="", string=metadata_pair[0]).strip()
         if ("Base processing" in tag): # base processing is the cpg generation time
@@ -68,6 +73,10 @@ def get_subscan_metadata(repo_name, branch, language):
 
         flow_count = int(metadata_pair[-1].replace('\n', '').strip()) if metadata_pair[-1].replace('\n', '').strip().isdigit() and "flow" in metadata_pair[0] else None # Time required and flow count both are captured 
         
+        if (re.search(r".*(Java).*", language)):
+            if (re.search(missing_in_python_regex, tag)):
+                print("Missing in python")
+                missing_in_python_values[tag] = time
             
 
         subscan_map[tag] = time # Map all the tags to the times in a dictionary
@@ -77,10 +86,15 @@ def get_subscan_metadata(repo_name, branch, language):
             subscan_map[tag + " (time) "] = time # Changing key to avoid confusion between flow counts and time required for flow counts, and also to prevent overrides
             subscan_map[tag] = flow_count
     
+    if (re.search(r".*(Java).*", language)):
+        subscan_map["Property file pass"] = missing_in_python_values["Property file pass"]
+        subscan_map["IdentifierTagger Non Member"] = missing_in_python_values["IdentifierTagger Non Member"]
+        subscan_map["DB config tagger"] = missing_in_python_values["DB config tagger"]
+
     if (re.search(r".*(Python).*", language)):
-            subscan_map["Property file pass"] = "--"
-            subscan_map["IdentifierTagger Non Member(ms)"] = "--"
-            subscan_map["DB config tagger"] = "--"
+        subscan_map["Property file pass"] = "--"
+        subscan_map["IdentifierTagger Non Member(ms)"] = "--"
+        subscan_map["DB config tagger"] = "--"
 
     return subscan_map
 
