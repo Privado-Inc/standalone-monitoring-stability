@@ -59,7 +59,7 @@ def get_subscan_metadata(repo_name, branch, language):
     subscan_map["language"] = language
     subscan_map["branch"] = branch
 
-    missing_in_python_regex = r".*(Property file pass|IdentifierTagger Non Member|DB config tagger).*"
+    missing_in_python_regex = r".*(Property file pass|IdentifierTagger Non Member|DBConfigTagger).*"
 
     missing_in_python_values = dict()
     
@@ -90,11 +90,11 @@ def get_subscan_metadata(repo_name, branch, language):
     if (re.search(r".*(Java).*", language)):
         subscan_map["Property file pass"] = missing_in_python_values["Property file pass"]
         subscan_map["IdentifierTagger Non Member"] = missing_in_python_values["IdentifierTagger Non Member"]
-        subscan_map["DB config tagger"] = missing_in_python_values["DB config tagger"]
+        subscan_map["DB config tagger"] = missing_in_python_values["DBConfigTagger"]
 
     if (re.search(r".*(Python).*", language)):
         subscan_map["Property file pass"] = "--"
-        subscan_map["IdentifierTagger Non Member(ms)"] = "--"
+        subscan_map["IdentifierTagger Non Member"] = "--"
         subscan_map["DB config tagger"] = "--"
 
     return subscan_map
