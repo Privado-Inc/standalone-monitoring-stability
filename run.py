@@ -117,7 +117,10 @@ def workflow():
                     flow_report = process_path_analysis(f'{args.head}-{args.base}-flow-report', base_data, head_data, repo_name, args.base, args.head, detected_language, False)
                     missing_flow_head = functools.reduce(lambda a, x: a + int(x[-4]), flow_report, 0)
                     additional_flow_head = functools.reduce(lambda a, x: a + int(x[-5]), flow_report, 0)
+
                     print("=============================")
+                    print(missing_flow_head)
+                    print(additional_flow_head)
                     print(flow_report)
                 except Exception as e: 
                     print(e)
