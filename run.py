@@ -1,6 +1,6 @@
 import utils.repo_link_generator
 from utils.scan import scan_repo_report
-from utils.compare import main as compare_and_generate_report, compare_files
+from utils.compare import main as compare_and_generate_report, compare_files, process_sources
 from utils.post_to_slack import post_report_to_slack
 from utils.build_binary import build
 from utils.delete import delete_action, clean_after_scan
@@ -10,6 +10,7 @@ from utils.scan import get_detected_language
 import os
 import argparse
 import traceback
+import json
 
 parser = argparse.ArgumentParser(add_help=False)
 
@@ -73,7 +74,7 @@ def workflow():
             valid_repositories.append(repo_name)
 
         scan_status = scan_repo_report(args.base, args.head, valid_repositories, use_docker=args.use_docker)
-
+        source_count = dict()
         # Used to add header for only one time in report
         header_flag = True
 
@@ -82,11 +83,34 @@ def workflow():
                 base_file = f'{cwd}/temp/result/{args.base}/{repo_name}.json'
                 head_file = f'{cwd}/temp/result/{args.head}/{repo_name}.json'
                 detected_language = get_detected_language(repo_name, args.base)
+                
                 compare_and_generate_report(base_file, head_file, args.base, args.head, header_flag, scan_status, detected_language)
+                
                 scan_status[repo_name][args.base]['comparison_status'] = 'done'
                 scan_status[repo_name][args.base]['comparison_error_message'] = '--'
                 scan_status[repo_name][args.head]['comparison_status'] = 'done'
                 scan_status[repo_name][args.head]['comparison_error_message'] = '--'
+
+                try:
+                    base_file = open(base_file)
+                    head_file = open(head_file)
+
+                    base_data = json.load(base_file)
+                    head_data = json.load(head_file)                
+                except Exception as e:
+                    print("File not loaded")
+                    print(e)
+
+                try:
+                    # --
+                    source_data = process_sources(base_data['sources'], head_data['sources'], repo_name, detected_language) # Get the source data from the process_sources function
+                except Exception as e: 
+                    print(e)
+
+                source_count[repo_name] = dict({args.base: source_data[5], args.head: source_data[4]})
+                
+                base_file.close()
+                head_file.close()
             except Exception as e:
                 print(f'{repo_name}: comparison report not generating: {e}')
                 scan_status[repo_name][args.base]['comparison_status'] = 'failed'
@@ -96,7 +120,7 @@ def workflow():
             header_flag = False
 
         write_scan_status_report(f'{cwd}/output.xlsx', args.base, args.head, scan_status)
-        write_summary_data(f'{cwd}/output.xlsx', args.base, args.head, scan_status)
+        write_summary_data(f'{cwd}/output.xlsx', args.base, args.head, scan_status, source_count)
 
         if args.upload:
             post_report_to_slack()
