@@ -90,10 +90,14 @@ def workflow():
                 scan_status[repo_name][args.base]['comparison_error_message'] = '--'
                 scan_status[repo_name][args.head]['comparison_status'] = 'done'
                 scan_status[repo_name][args.head]['comparison_error_message'] = '--'
-                base_data = json.load(base_file)
-                head_data = json.load(head_file)
-                print(base_data)
-                print(head_data)
+
+                try:
+                    base_data = json.load(base_file)
+                    head_data = json.load(head_file)
+                except Exception as e:
+                    print("File not loaded")
+                    print(e)
+
                 print("Source data start")
                 try:
                     # --
