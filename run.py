@@ -101,17 +101,14 @@ def workflow():
                     print("File not loaded")
                     print(e)
 
-                print("Source data start")
                 try:
                     # --
                     source_data = process_sources(base_data['sources'], head_data['sources'], repo_name, detected_language) # Get the source data from the process_sources function
                 except Exception as e: 
                     print(e)
 
-
-                print("Source data: ", source_data)
                 source_count[repo_name] = dict({args.base: source_data[5], args.head: source_data[4]})
-                print(type(source_data))
+                
                 base_file.close()
                 head_file.close()
             except Exception as e:
