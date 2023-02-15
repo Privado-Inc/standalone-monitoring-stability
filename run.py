@@ -10,6 +10,7 @@ from utils.scan import get_detected_language
 import os
 import argparse
 import traceback
+import json
 
 parser = argparse.ArgumentParser(add_help=False)
 
