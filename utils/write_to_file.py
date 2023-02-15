@@ -121,7 +121,7 @@ def write_summary_data(workbook_location, base_branch_name, head_branch_name, re
         head_scan_time = report[repo][head_branch_name]['code_scan_time'].split()[0]
         base_scan_time = report[repo][base_branch_name]['code_scan_time'].split()[0]
         language = report[repo]['language']
-        scan_time_diff = '--' if base_scan_time == '--' or head_scan_time == '--' else int(base_scan_time) - int(head_scan_time)
+        scan_time_diff = '--' if base_scan_time == '--' or head_scan_time == '--' else int(head_scan_time) - int(base_scan_time)
         
         unique_flow_diff = '--' if report[repo][base_branch_name]['unique_flows'] == '--' or report[repo][head_branch_name]['unique_flows'] == '--' else int(report[repo][base_branch_name]['unique_flows']) - int(report[repo][head_branch_name]['unique_flows'])
 
@@ -152,3 +152,6 @@ def highlight_summary_cell(worksheet):
             else:
                 worksheet[f'{col}{row}'].fill = PatternFill(start_color="90EE90", end_color="90EE90", fill_type="solid")
                 worksheet[f'{col}{row}'].font = Font(color='FFFFFF')
+
+
+    
