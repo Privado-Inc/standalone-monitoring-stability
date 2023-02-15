@@ -144,7 +144,10 @@ def write_summary_data(workbook_location, base_branch_name, head_branch_name, re
         unique_source_diff = '--' if data_elements[repo][base_branch_name] == '--' or data_elements[repo][head_branch_name] == '--' else int(data_elements[repo][head_branch_name]) - int(data_elements[repo][base_branch_name])
         
         reachable_flow_time_diff = '--' if report[repo][base_branch_name]['reachable_flow_time'] == '--' or report[repo][head_branch_name]['reachable_flow_time'] == '--' else len(report[repo][head_branch_name]['reachable_flow_time']) - len(report[repo][base_branch_name]['reachable_flow_time'])
-    
+
+        print(report[repo][base_branch_name]['reachable_flow_time'])
+
+
 
         worksheet.append([repo ,language , scan_status, base_scan_time, head_scan_time, scan_time_diff,
                           reachable_flow_time_diff,
