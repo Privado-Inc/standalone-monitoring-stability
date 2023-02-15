@@ -2,6 +2,7 @@ import csv
 import os
 import openpyxl
 from openpyxl.styles import PatternFill, Font
+import functools
 
 
 
