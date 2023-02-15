@@ -201,7 +201,7 @@ def write_summary_data(workbook_location, base_branch_name, head_branch_name, re
     print(scan_time_positive, len(report.keys()) - scan_time_positive, scan_time_negative_average)
     # cannot divide by zero
     scan_time_positive_average = scan_time_positive_average / scan_time_positive if scan_time_positive > 0 else 0 # Average of more time repos
-    scan_time_negative_average = scan_time_negative_average / (len(report.keys()) - scan_time_positive) * -1 if (len(report.keys()) - scan_time_positive) * -1 > 0 else 0 # Average of less time repos
+    scan_time_negative_average = (scan_time_negative_average / (len(report.keys()) - scan_time_positive)) * -1 if (len(report.keys()) - scan_time_positive) > 0 else 0 # Average of less time repos
     
     reachable_by_flow_time_positive_average = reachable_by_flow_time_positive_average / reachable_by_flow_time_positive if reachable_by_flow_time_positive > 0 else 0 # Average of more time repos
     reachable_by_flow_time_negative_average = reachable_by_flow_time_negative_average / (len(report.keys()) - reachable_by_flow_time_positive) * -1 if (len(report.keys()) - reachable_by_flow_time_positive) * -1 > 0 else 0 # Average of less time repos
