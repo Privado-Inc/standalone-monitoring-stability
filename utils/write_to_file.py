@@ -142,32 +142,35 @@ def write_summary_data(workbook_location, base_branch_name, head_branch_name, re
         scan_time_diff = '--' if base_scan_time == '--' or head_scan_time == '--' else int(head_scan_time) - int(base_scan_time)
 
         print("Scan time diff: " , scan_time_diff)
-        if (scan_time_diff > 0): # Head branch took more time
-            scan_time_positive += 1
-            scan_time_positive_average += scan_time_diff
-        else:
-            scan_time_negative_average += (scan_time_diff*-1)
+        if (scan_time_diff != '--'):
+            if (scan_time_diff > 0): # Head branch took more time
+                scan_time_positive += 1
+                scan_time_positive_average += scan_time_diff
+            else:
+                scan_time_negative_average += (scan_time_diff*-1)
 
 
 
         unique_flow_diff = '--' if report[repo][base_branch_name]['unique_flows'] == '--' or report[repo][head_branch_name]['unique_flows'] == '--' else int(report[repo][head_branch_name]['unique_flows']) - int(report[repo][base_branch_name]['unique_flows'])
 
-        if (unique_flow_diff > 0):
-            more_flows += 1
-        elif unique_flow_diff < 0:
-            less_flows += 1
-        else:
-            matching_flows += 1
+        if (unique_flow_diff != '--'):
+            if (unique_flow_diff > 0):
+                more_flows += 1
+            elif unique_flow_diff < 0:
+                less_flows += 1
+            else:
+                matching_flows += 1
 
 
         unique_source_diff = '--' if data_elements[repo][base_branch_name] == '--' or data_elements[repo][head_branch_name] == '--' else int(data_elements[repo][head_branch_name]) - int(data_elements[repo][base_branch_name])
         
-        if (unique_source_diff > 0):
-            more_sources += 1
-        elif unique_source_diff < 0:
-            less_sources += 1
-        else:
-            matching_sources += 1
+        if (unique_source_diff != '--'):
+            if (unique_source_diff > 0):
+                more_sources += 1
+            elif unique_source_diff < 0:
+                less_sources += 1
+            else:
+                matching_sources += 1
 
         
 
@@ -175,11 +178,12 @@ def write_summary_data(workbook_location, base_branch_name, head_branch_name, re
 
 
         print(reachable_flow_time_diff)
-        if (reachable_flow_time_diff > 0): # Head branch took more time
-            reachable_by_flow_time_positive += 1
-            reachable_by_flow_time_positive_average += reachable_flow_time_diff
-        else:
-            reachable_by_flow_time_negative_average += (reachable_flow_time_diff*-1)
+        if (reachable_flow_time_diff != '--'):
+            if (reachable_flow_time_diff > 0): # Head branch took more time
+                reachable_by_flow_time_positive += 1
+                reachable_by_flow_time_positive_average += reachable_flow_time_diff
+            else:
+                reachable_by_flow_time_negative_average += (reachable_flow_time_diff*-1)
 
         worksheet.append([repo ,language , scan_status, base_scan_time, head_scan_time, scan_time_diff,
                           reachable_flow_time_diff,
