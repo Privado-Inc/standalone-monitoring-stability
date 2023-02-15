@@ -11,6 +11,7 @@ import os
 import argparse
 import traceback
 import json
+import functools
 
 parser = argparse.ArgumentParser(add_help=False)
 
@@ -78,6 +79,9 @@ def workflow():
         missing_sink_count = dict()
         print(scan_status)
 
+        missing_flow_head = 0
+        additional_flow_head = 0
+
         # Used to add header for only one time in report
         header_flag = True
 
@@ -111,6 +115,8 @@ def workflow():
                     third_parties_data = process_sinks(base_data['dataFlow'], head_data['dataFlow'], repo_name,scan_status ,detected_language, key='third_parties')
                     leakages_data = process_sinks(base_data['dataFlow'], head_data['dataFlow'], repo_name,scan_status ,detected_language, key='leakages')
                     flow_report = process_path_analysis(f'{args.head}-{args.base}-flow-report', base_data, head_data, repo_name, args.base, args.head, detected_language, False)
+                    missing_flow_head = functools.reduce(lambda a, x: a + int(x[-4]), flow_report, 0)
+                    additional_flow_head = functools.reduce(lambda a, x: a + int(x[-5]), flow_report, 0)
                     print("=============================")
                     print(flow_report)
                 except Exception as e: 
