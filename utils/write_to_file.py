@@ -133,7 +133,7 @@ def write_summary_data(workbook_location, base_branch_name, head_branch_name, re
     less_sources = 0
     matching_sources = 0
 
-    missing_sink_repo_count = len(filter(list(lambda x: x > 0, missing_sinks.values())))
+    missing_sink_repo_count = len(list(filter(lambda x: x > 0, missing_sinks.values())))
     missing_sink_average = sum(missing_sinks.values()) / missing_sink_repo_count if missing_sink_repo_count > 0 else 0
 
 

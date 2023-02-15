@@ -276,6 +276,7 @@ def process_path_analysis(worksheet_name, base_source, head_source, repo_name, b
                        f'Additional Path Id in {head_branch_name}', f'Missing Path ID in {head_branch_name}'])
 
     # Export to the excel file
+    return result
     write_path_data(f'{os.getcwd()}/output.xlsx', worksheet_name, result)
 
 
