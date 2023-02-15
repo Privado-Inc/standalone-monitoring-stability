@@ -44,6 +44,9 @@ def main(base_file, head_file, base_intermediate_file, head_intermediate_file, b
         process_unique_path_analysis(f'{head_branch_name}-{base_branch_name}-unique-flow-report', base_intermediate_data,
                                      head_intermediate_data, repo_name, base_branch_name, head_branch_name, header_flag)
 
+        base_intermediate_file.close()
+        head_intermediate_file.close()
+
     process_performance_data(f'{head_branch_name}-{base_branch_name}-performance-report', base_branch_name,
                              head_branch_name, repo_name, header_flag)
 
@@ -300,7 +303,7 @@ def process_unique_path_analysis(worksheet_name, base_source, head_source, repo_
 
     print("tttt")
 
-    value = sub_process_path(base_source['dataflow'], head_source['dataflow'], 'Total', base_branch_name, head_branch_name, header_flag)
+    value = sub_process_path(base_source['dataFlow'], head_source['dataFlow'], 'Total', base_branch_name, head_branch_name, header_flag)
 
     for j in value[0]:
         result.append(j)
