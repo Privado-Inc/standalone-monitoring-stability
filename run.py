@@ -25,6 +25,7 @@ parser.add_argument('-nc', action='store_true')
 parser.add_argument('-bs', "--boost", default=False)
 parser.add_argument('-m', action='store_true')
 parser.add_argument('-d', '--use-docker', action='store_true')
+parser.add_argument('-guf', '--generate-unique-flow', action='store_true')
 parser.set_defaults(feature=True)
 
 args: argparse.Namespace = parser.parse_args()
@@ -75,12 +76,12 @@ def workflow():
             clone_repo_with_location(repo_link, location, is_git_url)
             valid_repositories.append(repo_name)
 
-        scan_status = scan_repo_report(args.base, args.head, valid_repositories, use_docker=args.use_docker)
+        scan_status = scan_repo_report(args.first, args.second, valid_repositories, use_docker=args.use_docker,
+                                       generate_unique_flow=args.generate_unique_flow)
         source_count = dict()
         missing_sink_count = dict()
         flow_data = dict()
         print(scan_status)
-
 
         # Used to add header for only one time in report
         header_flag = True
@@ -90,8 +91,9 @@ def workflow():
                 base_file = f'{cwd}/temp/result/{args.base}/{repo_name}.json'
                 head_file = f'{cwd}/temp/result/{args.head}/{repo_name}.json'
                 detected_language = get_detected_language(repo_name, args.base)
-                
-                compare_and_generate_report(base_file, head_file, args.base, args.head, header_flag, scan_status, detected_language)
+                base_intermediate_file = f'{cwd}/temp/result/{args.first}/{repo_name}-intermediate.json'
+                head_intermediate_file = f'{cwd}/temp/result/{args.second}/{repo_name}-intermediate.json'
+                compare_and_generate_report(base_file, head_file, args.base, args.head, base_intermediate_file, head_intermediate_file, header_flag, scan_status, detected_language)
                 
                 scan_status[repo_name][args.base]['comparison_status'] = 'done'
                 scan_status[repo_name][args.base]['comparison_error_message'] = '--'
