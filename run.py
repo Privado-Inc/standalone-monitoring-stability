@@ -77,7 +77,9 @@ def workflow():
             try:
                 base_file = f'{cwd}/temp/result/{args.first}/{repo_name}.json'
                 head_file = f'{cwd}/temp/result/{args.second}/{repo_name}.json'
-                compare_and_generate_report(base_file, head_file, args.first, args.second, header_flag, scan_status)
+                base_intermediate_file = f'{cwd}/temp/result/{args.first}/{repo_name}-intermediate.json'
+                head_intermediate_file = f'{cwd}/temp/result/{args.second}/{repo_name}-intermediate.json'
+                compare_and_generate_report(base_file, head_file, base_intermediate_file, head_intermediate_file, args.first, args.second, header_flag, scan_status)
                 scan_status[repo_name][args.first]['comparison_status'] = 'done'
                 scan_status[repo_name][args.first]['comparison_error_message'] = '--'
                 scan_status[repo_name][args.second]['comparison_status'] = 'done'
