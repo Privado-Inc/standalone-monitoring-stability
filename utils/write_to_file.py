@@ -133,7 +133,7 @@ def write_summary_data(workbook_location, base_branch_name, head_branch_name, re
             scan_time_positive += 1
             scan_time_positive_average += scan_time_diff
         else:
-            scan_time_negative_average += scan_time_diff
+            scan_time_negative_average += scan_time_diff*-1
 
 
 
