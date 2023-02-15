@@ -77,10 +77,9 @@ def workflow():
         scan_status = scan_repo_report(args.base, args.head, valid_repositories, use_docker=args.use_docker)
         source_count = dict()
         missing_sink_count = dict()
+        flow_data = dict()
         print(scan_status)
 
-        missing_flow_head = 0
-        additional_flow_head = 0
 
         # Used to add header for only one time in report
         header_flag = True
@@ -115,16 +114,24 @@ def workflow():
                     third_parties_data = process_sinks(base_data['dataFlow'], head_data['dataFlow'], repo_name,scan_status ,detected_language, key='third_parties')
                     leakages_data = process_sinks(base_data['dataFlow'], head_data['dataFlow'], repo_name,scan_status ,detected_language, key='leakages')
                     flow_report = process_path_analysis(f'{args.head}-{args.base}-flow-report', base_data, head_data, repo_name, args.base, args.head, detected_language, False)
-                    missing_flow_head = functools.reduce(lambda a, x: a + int(x[-4]), flow_report, 0)
-                    additional_flow_head = functools.reduce(lambda a, x: a + int(x[-5]), flow_report, 0)
+                    # missing_flow_head = functools.reduce(lambda a, x: a + int(x[-4]), flow_report, 0)
+                    # additional_flow_head = functools.reduce(lambda a, x: a + int(x[-5]), flow_report, 0)
+                    missing_flow_head = flow_report[0][-4]
+                    additional_flow_head = flow_report[0][-5]
+
+                    hundred_percent_missing = functools.reduce(lambda a, x: a.add(x[0]) if x[-3] == '-100%' else set.add(None), flow_report, set())
+
+
 
                     print("=============================")
+                    print(hundred_percent_missing)
                     print(missing_flow_head)
                     print(additional_flow_head)
                     print(flow_report)
                 except Exception as e: 
                     print(e)
 
+                flow_data[repo_name] = dict({'missing': missing_flow_head, 'additional': additional_flow_head})
                 source_count[repo_name] = dict({args.base: source_data[5], args.head: source_data[4]})
                 missing_sink_count[repo_name] = sum([storage_data[-1], third_parties_data[-1], leakages_data[-1]])
                 
@@ -139,7 +146,7 @@ def workflow():
             header_flag = False
 
         write_scan_status_report(f'{cwd}/output.xlsx', args.base, args.head, scan_status)
-        write_summary_data(f'{cwd}/output.xlsx', args.base, args.head, scan_status, source_count, missing_sink_count)
+        write_summary_data(f'{cwd}/output.xlsx', args.base, args.head, scan_status, source_count, missing_sink_count, flow_data)
 
         if args.upload:
             post_report_to_slack()

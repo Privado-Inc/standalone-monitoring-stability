@@ -104,7 +104,7 @@ def write_scan_status_report(workbook_location, base_branch_name, head_branch_na
     workbook.save(workbook_location)
 
 
-def write_summary_data(workbook_location, base_branch_name, head_branch_name, report, data_elements, missing_sinks):
+def write_summary_data(workbook_location, base_branch_name, head_branch_name, report, data_elements, missing_sinks, flow_report):
     print("Data elements: " , data_elements)
     workbook = openpyxl.load_workbook(filename=workbook_location)
     worksheet = workbook['summary']
@@ -136,6 +136,17 @@ def write_summary_data(workbook_location, base_branch_name, head_branch_name, re
     missing_sink_repo_count = len(list(filter(lambda x: x > 0, missing_sinks.values())))
     missing_sink_average = sum(missing_sinks.values()) / missing_sink_repo_count if missing_sink_repo_count > 0 else 0
 
+    additional_not_zero = len(list(filter(lambda x: x['additional'] > 0, flow_report.values())))
+    try:
+        additional_average = functools.reduce(lambda a,x: a + x['additional'], flow_report.values(), 0) / additional_not_zero
+    except:
+        additional_average = 0
+
+    missing_not_zero = len(list(filter(lambda x: x['missing'] > 0, flow_report.values())))
+    try:
+        missing_average = functools.reduce(lambda a,x: a + x['missing'], flow_report.values(), 0) / missing_not_zero
+    except:
+        missing_average = 0
 
     for repo in report.keys():
         scan_status = 'done' if report[repo][head_branch_name]['comparison_error_message'] == '--' and report[repo][base_branch_name]['comparison_error_message'] == '--' else 'failed'
