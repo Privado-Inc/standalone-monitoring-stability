@@ -189,7 +189,7 @@ def write_summary_data(workbook_location, base_branch_name, head_branch_name, re
                           data_elements[repo][head_branch_name], unique_source_diff,
                           report[repo]['missing_sink'],
                          "---"])
-
+        print(report[repo]['missing_sink'])
 
     # cannot divide by zero
     scan_time_positive_average = scan_time_positive_average / scan_time_positive if scan_time_positive > 0 else 0 # Average of more time repos
