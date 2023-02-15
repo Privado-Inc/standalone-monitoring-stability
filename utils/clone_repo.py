@@ -3,7 +3,6 @@ from git.repo.base import Repo
 
 def clone_repo_with_location(repo_path, location, git_url: bool):
     repo_name = repo_path.split('/')[-1].split('.')[0]
-    print(repo_name)
     if git_url:
         clone_repo_with_name(repo_path, location, repo_name)
     else:
