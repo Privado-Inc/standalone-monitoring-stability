@@ -106,7 +106,6 @@ def write_scan_status_report(workbook_location, base_branch_name, head_branch_na
 
 
 def write_summary_data(workbook_location, base_branch_name, head_branch_name, report, data_elements, missing_sinks, flow_report):
-    print("Data elements: " , data_elements)
     workbook = openpyxl.load_workbook(filename=workbook_location)
     worksheet = workbook['summary']
 
@@ -162,7 +161,6 @@ def write_summary_data(workbook_location, base_branch_name, head_branch_name, re
         language = report[repo]['language']
         scan_time_diff = '--' if base_scan_time == '--' or head_scan_time == '--' else int(head_scan_time) - int(base_scan_time)
 
-        print("Scan time diff: " , scan_time_diff)
         if (scan_time_diff != '--'):
             if (scan_time_diff > 0): # Head branch took more time
                 scan_time_positive += 1
@@ -197,7 +195,6 @@ def write_summary_data(workbook_location, base_branch_name, head_branch_name, re
         reachable_flow_time_diff = '--' if report[repo][base_branch_name]['reachable_flow_time'] == '--' or report[repo][head_branch_name]['reachable_flow_time'] == '--' else int(report[repo][head_branch_name]['reachable_flow_time']) - int(report[repo][base_branch_name]['reachable_flow_time'])
 
 
-        print(reachable_flow_time_diff)
         if (reachable_flow_time_diff != '--'):
             if (reachable_flow_time_diff > 0): # Head branch took more time
                 reachable_by_flow_time_positive += 1
@@ -214,9 +211,7 @@ def write_summary_data(workbook_location, base_branch_name, head_branch_name, re
                           data_elements[repo][head_branch_name], unique_source_diff,
                           report[repo]['missing_sink'],
                          "---"])
-        print(report[repo]['missing_sink'])
 
-    print(scan_time_positive, len(report.keys()) - scan_time_positive, scan_time_negative_average)
     # cannot divide by zero
     scan_time_positive_average = scan_time_positive_average / scan_time_positive if scan_time_positive > 0 else 0 # Average of more time repos
     scan_time_negative_average = (scan_time_negative_average / (len(report.keys()) - scan_time_positive)) if (len(report.keys()) - scan_time_positive) > 0 else 0 # Average of less time repos
@@ -226,12 +221,12 @@ def write_summary_data(workbook_location, base_branch_name, head_branch_name, re
 
     write_slack_summary(f'''
         A. Scantime difference.
-        {scan_time_positive} repos took an average {scan_time_positive_average} ms more.
-        {len(report.keys()) - scan_time_positive} repos took an average {scan_time_negative_average} ms  less.
+        {scan_time_positive} repos took an average {floor(scan_time_positive_average)} ms more.
+        {len(report.keys()) - scan_time_positive} repos took an average {floor(scan_time_negative_average)} ms  less.
 
         B. Reachable by flow time difference.
-        {reachable_by_flow_time_positive} repos took an average {reachable_by_flow_time_positive_average} ms more.
-        {len(report.keys()) - reachable_by_flow_time_positive} repos took an average {reachable_by_flow_time_negative_average} ms less.
+        {reachable_by_flow_time_positive} repos took an average {floor(reachable_by_flow_time_positive_average)} ms more.
+        {len(report.keys()) - reachable_by_flow_time_positive} repos took an average {floor(reachable_by_flow_time_negative_average)} ms less.
 
         C. Reachable by flow count difference.
         {matching_flows} repositories have exactly matching flows.
@@ -244,19 +239,16 @@ def write_summary_data(workbook_location, base_branch_name, head_branch_name, re
         {more_sources} repositories have additional elements.
 
         E. Missing sinks.
-        {missing_sink_repo_count} repositories have an average {missing_sink_average} missing sinks.
+        {missing_sink_repo_count} repositories have an average {floor(missing_sink_average)} missing sinks.
 
         F. Source to Sink Flow data
         {hundred_percent_missing} repositories have hundred percent missing flows.
         {matching_flow_repo_count} repositories have matching flows.
-        {additional_not_zero} repositories have on an average {additional_average} additional flows.
-        {missing_not_zero} repositories have on an average {missing_average} missing flows.
+        {additional_not_zero} repositories have on an average {floor(additional_average)} additional flows.
+        {missing_not_zero} repositories have on an average {floor(missing_average)} missing flows.
         
     ''')
     
-    print(scan_time_positive)
-    print(scan_time_negative_average, scan_time_positive_average)
-
     highlight_summary_cell(worksheet)
     workbook.save(workbook_location)
 

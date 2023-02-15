@@ -190,9 +190,6 @@ def process_sources(source_base, source_head, repo_name, language):
 
     # Nodes present in base, but not in head
     missing_in_head = len(source_set_base.union(source_set_head).difference(source_set_head))
-
-    print([repo_name, language ,'Source','--', head_sources_count, base_sources_count, source_name_head,
-            source_name_base, '0 ', added, removed, missing_in_head])
     return [repo_name, language ,'Source','--', head_sources_count, base_sources_count, source_name_head,
             source_name_base, '0 ', added, removed, missing_in_head]
 
@@ -275,7 +272,6 @@ def process_path_analysis(worksheet_name, base_source, head_source, repo_name, b
                        f'Additional in {head_branch_name}', f'Missing in {head_branch_name}', 'Delta in %',
                        f'Additional Path Id in {head_branch_name}', f'Missing Path ID in {head_branch_name}'])
 
-    print(result)
     # Export to the excel file
     if (write_report): write_path_data(f'{os.getcwd()}/output.xlsx', worksheet_name, result)
     return result
