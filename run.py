@@ -12,6 +12,7 @@ import argparse
 import traceback
 import json
 import functools
+import re
 
 parser = argparse.ArgumentParser(add_help=False)
 
@@ -118,15 +119,14 @@ def workflow():
                     # additional_flow_head = functools.reduce(lambda a, x: a + int(x[-5]), flow_report, 0)
                     missing_flow_head = flow_report[0][-4]
                     additional_flow_head = flow_report[0][-5]
-
+                    matching_flows = 0
 
                     hundred_percent_missing_repos = set()
-
                     for flow in flow_report:
-                        if (flow[-3] == '-100%'):
+                        if (flow[-3] == '-100%' or flow[-3] == '-100'):
                             hundred_percent_missing_repos.add(flow[0])
 
-                    
+                                        
 
                     print("=============================")
                     print(hundred_percent_missing_repos)
@@ -136,7 +136,7 @@ def workflow():
                 except Exception as e: 
                     print(e)
 
-                flow_data[repo_name] = dict({'missing': missing_flow_head, 'additional': additional_flow_head})
+                flow_data[repo_name] = dict({'missing': missing_flow_head, 'additional': additional_flow_head, 'hundred_missing': len(hundred_percent_missing_repos), 'matching_flows': True if flow_report[0][-3] == '0' else False})
                 source_count[repo_name] = dict({args.base: source_data[5], args.head: source_data[4]})
                 missing_sink_count[repo_name] = sum([storage_data[-1], third_parties_data[-1], leakages_data[-1]])
                 

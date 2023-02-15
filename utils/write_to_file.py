@@ -148,6 +148,10 @@ def write_summary_data(workbook_location, base_branch_name, head_branch_name, re
     except:
         missing_average = 0
 
+    matching_flow_repo_count = len(list(filter(lambda x: x['matching_flows'], flow_report.values())))
+    hundred_percent_missing = len(list(filter(lambda x: x['hundred_missing'] > 0, flow_report.values())))    
+
+
     for repo in report.keys():
         scan_status = 'done' if report[repo][head_branch_name]['comparison_error_message'] == '--' and report[repo][base_branch_name]['comparison_error_message'] == '--' else 'failed'
         head_scan_time = report[repo][head_branch_name]['code_scan_time'].split()[0]
@@ -239,7 +243,12 @@ def write_summary_data(workbook_location, base_branch_name, head_branch_name, re
         E. Missing sinks.
         {missing_sink_repo_count} repositories have an average {missing_sink_average} missing sinks.
 
-        F.       
+        F. Source to Sink Flow data
+        {hundred_percent_missing} repositories have hundred percent missing flows.
+        {matching_flow_repo_count} repositories have matching flows.
+        {additional_not_zero} repositories have on an average {additional_average} additional flows.
+        {missing_not_zero} repositories have on an average {missing_average} missing flows.
+        
     ''')
     
     print(scan_time_positive)
