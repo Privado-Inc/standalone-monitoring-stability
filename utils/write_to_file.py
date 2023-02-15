@@ -3,8 +3,7 @@ import os
 import openpyxl
 from openpyxl.styles import PatternFill, Font
 import functools
-import math
-
+from math import floor
 
 def create_new_excel_for_file(location, first_file, second_file):
     wb = openpyxl.Workbook()
