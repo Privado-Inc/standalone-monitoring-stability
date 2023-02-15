@@ -119,7 +119,7 @@ def workflow():
                     missing_flow_head = flow_report[0][-4]
                     additional_flow_head = flow_report[0][-5]
 
-                    hundred_percent_missing = functools.reduce(lambda a, x: a.add(x[0]) if x[-3] == '-100%' else set.add(None), flow_report, set())
+                    hundred_percent_missing = functools.reduce(lambda a, x: print(a, x), flow_report, set())
 
 
 
