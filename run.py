@@ -89,13 +89,16 @@ def workflow():
                 scan_status[repo_name][args.base]['comparison_error_message'] = '--'
                 scan_status[repo_name][args.head]['comparison_status'] = 'done'
                 scan_status[repo_name][args.head]['comparison_error_message'] = '--'
+                base_data = json.load(base_file)
+                head_data = json.load(head_file)
 
                 print("Source data start")
                 try:
                     # --
-                    source_data = process_sources(args.base, args.head, repo_name, detected_language) # Get the source data from the process_sources function
+                    source_data = process_sources(base_data['sources'], head_data['sources'], repo_name, detected_language) # Get the source data from the process_sources function
                 except Exception as e: 
                     print(e)
+
 
                 print("Source data: ", source_data)
                 source_count[repo_name] = dict({args.base: source_data[5], args.head: source_data[4]})
