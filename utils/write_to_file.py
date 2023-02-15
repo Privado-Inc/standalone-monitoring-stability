@@ -117,6 +117,11 @@ def write_summary_data(workbook_location, base_branch_name, head_branch_name, re
                       f"Missing sinks in {head_branch_name}",
                       "No of 100% missing source to sink combinations"])
 
+    scan_time_positive = 0
+    scan_time_positive_average = 0
+    scan_time_negative_average = 0
+
+
     for repo in report.keys():
         scan_status = 'done' if report[repo][head_branch_name]['comparison_error_message'] == '--' and report[repo][base_branch_name]['comparison_error_message'] == '--' else 'failed'
         head_scan_time = report[repo][head_branch_name]['code_scan_time'].split()[0]
@@ -124,6 +129,15 @@ def write_summary_data(workbook_location, base_branch_name, head_branch_name, re
         language = report[repo]['language']
         scan_time_diff = '--' if base_scan_time == '--' or head_scan_time == '--' else int(head_scan_time) - int(base_scan_time)
         
+        if (scan_time_diff > 0): # Head branch took more time
+            scan_time_positive += 1
+            scan_time_positive_average += scan_time_diff
+        else:
+            scan_time_negative_average += scan_time_diff
+
+
+
+
         unique_flow_diff = '--' if report[repo][base_branch_name]['unique_flows'] == '--' or report[repo][head_branch_name]['unique_flows'] == '--' else int(report[repo][head_branch_name]['unique_flows']) - int(report[repo][base_branch_name]['unique_flows'])
 
         unique_source_diff = '--' if data_elements[repo][base_branch_name] == '--' or data_elements[repo][head_branch_name] == '--' else int(data_elements[repo][head_branch_name]) - int(data_elements[repo][base_branch_name])
@@ -139,6 +153,12 @@ def write_summary_data(workbook_location, base_branch_name, head_branch_name, re
                           data_elements[repo][head_branch_name], unique_source_diff,
                           report[repo]['missing_sink'],
                          "---"])
+
+    scan_time_positive_average /= scan_time_positive # Average of more time repos
+    scan_time_negative_average /= (len(report.keys()) - scan_time_positive) # Average of less time repos
+
+    print(scan_time_positive)
+    print(scan_time_negative_average, scan_time_positive_average)
 
     highlight_summary_cell(worksheet)
     workbook.save(workbook_location)

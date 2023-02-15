@@ -74,7 +74,7 @@ def workflow():
             valid_repositories.append(repo_name)
 
         scan_status = scan_repo_report(args.base, args.head, valid_repositories, use_docker=args.use_docker)
-
+        source_count = dict()
         print(scan_status)
 
         # Used to add header for only one time in report
