@@ -129,7 +129,7 @@ def workflow():
                     
 
                     print("=============================")
-                    print(hundred_percent_missing)
+                    print(hundred_percent_missing_repos)
                     print(missing_flow_head)
                     print(additional_flow_head)
                     print(flow_report)
