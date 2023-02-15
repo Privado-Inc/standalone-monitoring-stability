@@ -104,7 +104,7 @@ def write_scan_status_report(workbook_location, base_branch_name, head_branch_na
     workbook.save(workbook_location)
 
 
-def write_summary_data(workbook_location, base_branch_name, head_branch_name, report):
+def write_summary_data(workbook_location, base_branch_name, head_branch_name, report, data_elements):
     workbook = openpyxl.load_workbook(filename=workbook_location)
     worksheet = workbook['summary']
 
@@ -123,18 +123,18 @@ def write_summary_data(workbook_location, base_branch_name, head_branch_name, re
         language = report[repo]['language']
         scan_time_diff = '--' if base_scan_time == '--' or head_scan_time == '--' else int(base_scan_time) - int(head_scan_time)
         
-        unique_flow_diff = '--' if report[repo][base_branch_name]['unique_flows'] == '--' or report[repo][head_branch_name]['unique_flows'] == '--' else int(report[repo][base_branch_name]['unique_flows']) - int(report[repo][head_branch_name]['unique_flows'])
+        unique_flow_diff = '--' if report[repo][base_branch_name]['unique_flows'] == '--' or report[repo][head_branch_name]['unique_flows'] == '--' else int(report[repo][head_branch_name]['unique_flows']) - int(report[repo][base_branch_name]['unique_flows'])
 
-        unique_source_diff = '--' if report[repo][base_branch_name]['unique_source'] == '--' or report[repo][head_branch_name]['unique_source'] == '--' else int(report[repo][base_branch_name]['unique_source']) - int(report[repo][head_branch_name]['unique_source'])
+        unique_source_diff = '--' if data_elements[repo][base_branch_name] == '--' or data_elements[repo][head_branch_name] == '--' else int(data_elements[repo][head_branch_name]) - int(data_elements[repo][base_branch_name])
         
-        reachable_flow_time_diff = '--' if report[repo][base_branch_name]['reachable_flow_time'] == '--' or report[repo][head_branch_name]['reachable_flow_time'] == '--' else len(report[repo][base_branch_name]['reachable_flow_time']) - len(report[repo][head_branch_name]['reachable_flow_time'])
+        reachable_flow_time_diff = '--' if report[repo][base_branch_name]['reachable_flow_time'] == '--' or report[repo][head_branch_name]['reachable_flow_time'] == '--' else len(report[repo][head_branch_name]['reachable_flow_time']) - len(report[repo][base_branch_name]['reachable_flow_time'])
 
         worksheet.append([repo ,language , scan_status, base_scan_time, head_scan_time, scan_time_diff,
                           reachable_flow_time_diff,
                           report[repo][base_branch_name]['unique_flows'],
                           report[repo][head_branch_name]['unique_flows'], unique_flow_diff,
-                          report[repo][base_branch_name]['unique_source'],
-                          report[repo][head_branch_name]['unique_source'], unique_source_diff,
+                          data_elements[repo][base_branch_name],
+                          data_elements[repo][head_branch_name], unique_source_diff,
                           report[repo]['missing_sink'],
                          "---"])
 
@@ -144,7 +144,7 @@ def write_summary_data(workbook_location, base_branch_name, head_branch_name, re
 
 def highlight_summary_cell(worksheet):
 
-    for col in ['E', 'F', 'I', 'L', 'M']:
+    for col in ['F', 'G', 'J', 'M', 'N']:
         for row in range(2, len(worksheet[col]) + 1):
             if int(worksheet[f'{col}{row}'].value) < 0:
                 worksheet[f'{col}{row}'].fill = PatternFill(start_color="FF0000", end_color="FF0000", fill_type = "solid")
