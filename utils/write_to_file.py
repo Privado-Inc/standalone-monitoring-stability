@@ -201,19 +201,19 @@ def write_summary_data(workbook_location, base_branch_name, head_branch_name, re
     print(scan_time_positive, len(report.keys()) - scan_time_positive, scan_time_negative_average)
     # cannot divide by zero
     scan_time_positive_average = scan_time_positive_average / scan_time_positive if scan_time_positive > 0 else 0 # Average of more time repos
-    scan_time_negative_average = (scan_time_negative_average / (len(report.keys()) - scan_time_positive)) * -1 if (len(report.keys()) - scan_time_positive) > 0 else 0 # Average of less time repos
+    scan_time_negative_average = (scan_time_negative_average / (len(report.keys()) - scan_time_positive)) if (len(report.keys()) - scan_time_positive) > 0 else 0 # Average of less time repos
     
     reachable_by_flow_time_positive_average = reachable_by_flow_time_positive_average / reachable_by_flow_time_positive if reachable_by_flow_time_positive > 0 else 0 # Average of more time repos
-    reachable_by_flow_time_negative_average = reachable_by_flow_time_negative_average / (len(report.keys()) - reachable_by_flow_time_positive) * -1 if (len(report.keys()) - reachable_by_flow_time_positive) > 0 else 0 # Average of less time repos
+    reachable_by_flow_time_negative_average = reachable_by_flow_time_negative_average / (len(report.keys()) - reachable_by_flow_time_positive) if (len(report.keys()) - reachable_by_flow_time_positive) > 0 else 0 # Average of less time repos
 
     write_slack_summary(f'''
         A. Scantime difference.
         {scan_time_positive} repos took an average {scan_time_positive_average} ms more.
-        {len(report.keys()) - scan_time_positive} repos took an average {scan_time_negative_average} time less.
+        {len(report.keys()) - scan_time_positive} repos took an average {scan_time_negative_average} ms  less.
 
         B. Reachable by flow time difference.
         {reachable_by_flow_time_positive} repos took an average {reachable_by_flow_time_positive_average} ms more.
-        {len(report.keys()) - reachable_by_flow_time_positive} repos took an average {reachable_by_flow_time_negative_average} time less.
+        {len(report.keys()) - reachable_by_flow_time_positive} repos took an average {reachable_by_flow_time_negative_average} ms less.
 
         C. Reachable by flow count difference.
         {matching_flows} repositories have exactly matching flows.
