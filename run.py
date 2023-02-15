@@ -92,8 +92,11 @@ def workflow():
                 scan_status[repo_name][args.head]['comparison_error_message'] = '--'
 
                 try:
+                    base_file = open(base_file)
+                    head_file = open(head_file)
+
                     base_data = json.load(base_file)
-                    head_data = json.load(head_file)
+                    head_data = json.load(head_file)                
                 except Exception as e:
                     print("File not loaded")
                     print(e)
@@ -109,6 +112,8 @@ def workflow():
                 print("Source data: ", source_data)
                 source_count[repo_name] = dict({args.base: source_data[5], args.head: source_data[4]})
                 print(type(source_data))
+                base_file.close()
+                head_file.close()
             except Exception as e:
                 print(f'{repo_name}: comparison report not generating: {e}')
                 scan_status[repo_name][args.base]['comparison_status'] = 'failed'
