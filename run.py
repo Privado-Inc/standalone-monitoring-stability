@@ -91,6 +91,7 @@ def workflow():
                 scan_status[repo_name][args.head]['comparison_error_message'] = '--'
 
                 source_data = process_sources(args.base, args.head, repo_name, detected_language) # Get the source data from the process_sources function
+                print(source_data)
                 source_count[repo_name] = {args.base: source_data[5], args.head: source_data[4]}
             except Exception as e:
                 print(f'{repo_name}: comparison report not generating: {e}')
