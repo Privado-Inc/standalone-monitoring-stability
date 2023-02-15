@@ -104,7 +104,7 @@ def write_scan_status_report(workbook_location, base_branch_name, head_branch_na
     workbook.save(workbook_location)
 
 
-def write_summary_data(workbook_location, base_branch_name, head_branch_name, report, data_elements):
+def write_summary_data(workbook_location, base_branch_name, head_branch_name, report, data_elements, missing_sinks, flow_report):
     print("Data elements: " , data_elements)
     workbook = openpyxl.load_workbook(filename=workbook_location)
     worksheet = workbook['summary']
@@ -129,10 +129,13 @@ def write_summary_data(workbook_location, base_branch_name, head_branch_name, re
     more_flows = 0
     less_flows = 0
 
-
     more_sources = 0
     less_sources = 0
     matching_sources = 0
+
+    missing_sink_repo_count = len(filter(list(lambda x: x > 0, missing_sinks.values())))
+    missing_sink_average = sum(missing_sinks.values()) / missing_sink_repo_count if missing_sink_repo_count > 0 else 0
+
 
     for repo in report.keys():
         scan_status = 'done' if report[repo][head_branch_name]['comparison_error_message'] == '--' and report[repo][base_branch_name]['comparison_error_message'] == '--' else 'failed'
@@ -173,7 +176,6 @@ def write_summary_data(workbook_location, base_branch_name, head_branch_name, re
                 matching_sources += 1
 
         
-
         reachable_flow_time_diff = '--' if report[repo][base_branch_name]['reachable_flow_time'] == '--' or report[repo][head_branch_name]['reachable_flow_time'] == '--' else int(report[repo][head_branch_name]['reachable_flow_time']) - int(report[repo][base_branch_name]['reachable_flow_time'])
 
 
@@ -184,6 +186,7 @@ def write_summary_data(workbook_location, base_branch_name, head_branch_name, re
                 reachable_by_flow_time_positive_average += reachable_flow_time_diff
             else:
                 reachable_by_flow_time_negative_average += (reachable_flow_time_diff*-1)
+
 
         worksheet.append([repo ,language , scan_status, base_scan_time, head_scan_time, scan_time_diff,
                           reachable_flow_time_diff,
@@ -219,7 +222,12 @@ def write_summary_data(workbook_location, base_branch_name, head_branch_name, re
         D. Unique data elements difference.
         {matching_sources} repositories have exactly matching flows.
         {less_sources} repositories have missing flows.
-        {more_sources} repositories have additional flows.      
+        {more_sources} repositories have additional flows.
+
+        E. Missing sinks.
+        {missing_sink_repo_count} repositories have an average {missing_sink_average} missing sinks.
+
+        F.       
     ''')
     
     print(scan_time_positive)

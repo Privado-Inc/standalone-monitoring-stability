@@ -1,6 +1,6 @@
 import utils.repo_link_generator
 from utils.scan import scan_repo_report
-from utils.compare import main as compare_and_generate_report, compare_files, process_sources
+from utils.compare import main as compare_and_generate_report, compare_files, process_sources, process_sinks
 from utils.post_to_slack import post_report_to_slack
 from utils.build_binary import build
 from utils.delete import delete_action, clean_after_scan
@@ -75,6 +75,7 @@ def workflow():
 
         scan_status = scan_repo_report(args.base, args.head, valid_repositories, use_docker=args.use_docker)
         source_count = dict()
+        missing_sink_count = dict()
         print(scan_status)
 
         # Used to add header for only one time in report
@@ -106,10 +107,14 @@ def workflow():
                 try:
                     # --
                     source_data = process_sources(base_data['sources'], head_data['sources'], repo_name, detected_language) # Get the source data from the process_sources function
+                    storage_data = process_sinks(base_data['dataFlow'], head_data['dataFlow'], repo_name, language, key='storages')
+                    third_parties_data = process_sinks(base_data['dataFlow'], head_data['dataFlow'], repo_name, language, key='third_parties')
+                    leakages_data = process_sinks(base_data['dataFlow'], head_data['dataFlow'], repo_name, language, key='leakages')
                 except Exception as e: 
                     print(e)
 
                 source_count[repo_name] = dict({args.base: source_data[5], args.head: source_data[4]})
+                missing_sink_count[repo_name] = sum(storage_data[-1], third_parties_data[-1], leakages_data[-1])
                 
                 base_file.close()
                 head_file.close()
@@ -122,7 +127,7 @@ def workflow():
             header_flag = False
 
         write_scan_status_report(f'{cwd}/output.xlsx', args.base, args.head, scan_status)
-        write_summary_data(f'{cwd}/output.xlsx', args.base, args.head, scan_status, source_count)
+        write_summary_data(f'{cwd}/output.xlsx', args.base, args.head, scan_status, source_count, missing_sink_count)
 
         if args.upload:
             post_report_to_slack()
