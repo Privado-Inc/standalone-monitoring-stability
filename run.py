@@ -110,7 +110,7 @@ def workflow():
                     storage_data = process_sinks(base_data['dataFlow'], head_data['dataFlow'], repo_name,scan_status ,detected_language, key='storages')
                     third_parties_data = process_sinks(base_data['dataFlow'], head_data['dataFlow'], repo_name,scan_status ,detected_language, key='third_parties')
                     leakages_data = process_sinks(base_data['dataFlow'], head_data['dataFlow'], repo_name,scan_status ,detected_language, key='leakages')
-                    flow_report = process_path_analysis('abc', base_data, head_data, repo_name, args.base, args.head, detected_language, False)
+                    flow_report = process_path_analysis(f'{args.head}-{args.base}-flow-report', base_data, head_data, repo_name, args.base, args.head, detected_language, False)
                     print("=============================")
                     print(flow_report)
                 except Exception as e: 
