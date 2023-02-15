@@ -107,9 +107,9 @@ def workflow():
                 try:
                     # --
                     source_data = process_sources(base_data['sources'], head_data['sources'], repo_name, detected_language) # Get the source data from the process_sources function
-                    storage_data = process_sinks(base_data['dataFlow'], head_data['dataFlow'], repo_name, language, key='storages')
-                    third_parties_data = process_sinks(base_data['dataFlow'], head_data['dataFlow'], repo_name, language, key='third_parties')
-                    leakages_data = process_sinks(base_data['dataFlow'], head_data['dataFlow'], repo_name, language, key='leakages')
+                    storage_data = process_sinks(base_data['dataFlow'], head_data['dataFlow'], repo_name, detected_language, key='storages')
+                    third_parties_data = process_sinks(base_data['dataFlow'], head_data['dataFlow'], repo_name, detected_language, key='third_parties')
+                    leakages_data = process_sinks(base_data['dataFlow'], head_data['dataFlow'], repo_name, detected_language, key='leakages')
                 except Exception as e: 
                     print(e)
 
