@@ -221,9 +221,9 @@ def write_summary_data(workbook_location, base_branch_name, head_branch_name, re
         {more_flows} repositories have additional flows.
 
         D. Unique data elements difference.
-        {matching_sources} repositories have exactly matching flows.
-        {less_sources} repositories have missing flows.
-        {more_sources} repositories have additional flows.
+        {matching_sources} repositories have exactly matching elements.
+        {less_sources} repositories have missing data elements.
+        {more_sources} repositories have additional elements.
 
         E. Missing sinks.
         {missing_sink_repo_count} repositories have an average {missing_sink_average} missing sinks.

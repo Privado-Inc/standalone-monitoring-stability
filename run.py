@@ -1,6 +1,6 @@
 import utils.repo_link_generator
 from utils.scan import scan_repo_report
-from utils.compare import main as compare_and_generate_report, compare_files, process_sources, process_sinks
+from utils.compare import main as compare_and_generate_report, compare_files, process_sources, process_sinks, process_path_analysis
 from utils.post_to_slack import post_report_to_slack
 from utils.build_binary import build
 from utils.delete import delete_action, clean_after_scan
@@ -110,7 +110,9 @@ def workflow():
                     storage_data = process_sinks(base_data['dataFlow'], head_data['dataFlow'], repo_name,scan_status ,detected_language, key='storages')
                     third_parties_data = process_sinks(base_data['dataFlow'], head_data['dataFlow'], repo_name,scan_status ,detected_language, key='third_parties')
                     leakages_data = process_sinks(base_data['dataFlow'], head_data['dataFlow'], repo_name,scan_status ,detected_language, key='leakages')
-                    # flow_report = process_path_analysis()
+                    flow_report = process_path_analysis('abc', base_data, head_data, repo_name, args.base, args.head, detected_language, False)
+                    print("=============================")
+                    print(flow_report)
                 except Exception as e: 
                     print(e)
 

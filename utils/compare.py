@@ -241,7 +241,7 @@ def process_sinks(base_dataflows, head_dataflows, repo_name, scan_status, langua
     # return result
 
 
-def process_path_analysis(worksheet_name, base_source, head_source, repo_name, base_branch_name, head_branch_name, language ,header_flag):
+def process_path_analysis(worksheet_name, base_source, head_source, repo_name, base_branch_name, head_branch_name, language ,header_flag, write_report=True):
     result = []
 
 
@@ -277,8 +277,8 @@ def process_path_analysis(worksheet_name, base_source, head_source, repo_name, b
 
     print(result)
     # Export to the excel file
+    if (write_report): write_path_data(f'{os.getcwd()}/output.xlsx', worksheet_name, result)
     return result
-    write_path_data(f'{os.getcwd()}/output.xlsx', worksheet_name, result)
 
 
 def sub_process_path(base_source, head_source, sink_type, base_branch_name, head_branch_name, repo_name, language):
