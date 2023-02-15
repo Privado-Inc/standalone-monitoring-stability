@@ -104,7 +104,7 @@ def write_scan_status_report(workbook_location, base_branch_name, head_branch_na
     workbook.save(workbook_location)
 
 
-def write_summary_data(workbook_location, base_branch_name, head_branch_name, report, data_elements, missing_sinks, flow_report):
+def write_summary_data(workbook_location, base_branch_name, head_branch_name, report, data_elements, missing_sinks):
     print("Data elements: " , data_elements)
     workbook = openpyxl.load_workbook(filename=workbook_location)
     worksheet = workbook['summary']
