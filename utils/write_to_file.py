@@ -125,7 +125,14 @@ def write_summary_data(workbook_location, base_branch_name, head_branch_name, re
     reachable_by_flow_time_positive_average = 0
     reachable_by_flow_time_negative_average = 0
 
+    matching_flows = 0
+    more_flows = 0
+    less_flows = 0
 
+
+    more_sources = 0
+    less_sources = 0
+    matching_sources = 0
 
     for repo in report.keys():
         scan_status = 'done' if report[repo][head_branch_name]['comparison_error_message'] == '--' and report[repo][base_branch_name]['comparison_error_message'] == '--' else 'failed'
@@ -145,8 +152,25 @@ def write_summary_data(workbook_location, base_branch_name, head_branch_name, re
 
         unique_flow_diff = '--' if report[repo][base_branch_name]['unique_flows'] == '--' or report[repo][head_branch_name]['unique_flows'] == '--' else int(report[repo][head_branch_name]['unique_flows']) - int(report[repo][base_branch_name]['unique_flows'])
 
+        if (unique_flow_diff > 0):
+            more_flows += 1
+        elif unique_flow_diff < 0:
+            less_flows += 1
+        else:
+            matching_flows += 1
+
+
         unique_source_diff = '--' if data_elements[repo][base_branch_name] == '--' or data_elements[repo][head_branch_name] == '--' else int(data_elements[repo][head_branch_name]) - int(data_elements[repo][base_branch_name])
         
+        if (unique_source_diff > 0):
+            more_sources += 1
+        elif unique_source_diff < 0:
+            less_sources += 1
+        else:
+            matching_sources += 1
+
+        
+
         reachable_flow_time_diff = '--' if report[repo][base_branch_name]['reachable_flow_time'] == '--' or report[repo][head_branch_name]['reachable_flow_time'] == '--' else int(report[repo][head_branch_name]['reachable_flow_time']) - int(report[repo][base_branch_name]['reachable_flow_time'])
 
 
@@ -157,8 +181,6 @@ def write_summary_data(workbook_location, base_branch_name, head_branch_name, re
         else:
             reachable_by_flow_time_negative_average += (reachable_flow_time_diff*-1)
 
-
-
         worksheet.append([repo ,language , scan_status, base_scan_time, head_scan_time, scan_time_diff,
                           reachable_flow_time_diff,
                           report[repo][base_branch_name]['unique_flows'],
@@ -168,6 +190,7 @@ def write_summary_data(workbook_location, base_branch_name, head_branch_name, re
                           report[repo]['missing_sink'],
                          "---"])
 
+
     # cannot divide by zero
     scan_time_positive_average = scan_time_positive_average / scan_time_positive if scan_time_positive > 0 else 0 # Average of more time repos
     scan_time_negative_average = scan_time_negative_average / (len(report.keys()) - scan_time_positive) * -1 if (len(report.keys()) - scan_time_positive) * -1 > 0 else 0 # Average of less time repos
@@ -176,13 +199,23 @@ def write_summary_data(workbook_location, base_branch_name, head_branch_name, re
     reachable_by_flow_time_negative_average = reachable_by_flow_time_negative_average / (len(report.keys()) - reachable_by_flow_time_positive) * -1 if (len(report.keys()) - reachable_by_flow_time_positive) * -1 > 0 else 0 # Average of less time repos
 
     write_slack_summary(f'''
-        A. Scantime
+        A. Scantime difference.
         {scan_time_positive} repos took an average {scan_time_positive_average} ms more.
         {len(report.keys()) - scan_time_positive} repos took an average {scan_time_negative_average} time less.
 
-        B. Reachable by flow time
+        B. Reachable by flow time difference.
         {reachable_by_flow_time_positive} repos took an average {reachable_by_flow_time_positive_average} ms more.
         {len(report.keys()) - reachable_by_flow_time_positive} repos took an average {reachable_by_flow_time_negative_average} time less.
+
+        C. Reachable by flow count difference.
+        {matching_flows} repositories have exactly matching flows.
+        {less_flows} repositories have missing flows.
+        {more_flows} repositories have additional flows.
+
+        D. Unique data elements difference.
+        {matching_sources} repositories have exactly matching flows.
+        {less_sources} repositories have missing flows.
+        {more_sources} repositories have additional flows.      
     ''')
     
     print(scan_time_positive)
