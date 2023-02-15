@@ -139,13 +139,15 @@ def write_summary_data(workbook_location, base_branch_name, head_branch_name, re
     additional_not_zero = len(list(filter(lambda x: x['additional'] > 0, flow_report.values())))
     try:
         additional_average = functools.reduce(lambda a,x: a + x['additional'], flow_report.values(), 0) / additional_not_zero
-    except:
+    except Exception as e:
+        print(e)
         additional_average = 0
 
     missing_not_zero = len(list(filter(lambda x: x['missing'] > 0, flow_report.values())))
     try:
         missing_average = functools.reduce(lambda a,x: a + x['missing'], flow_report.values(), 0) / missing_not_zero
-    except:
+    except Exception as e:
+        print(e)
         missing_average = 0
 
     matching_flow_repo_count = len(list(filter(lambda x: x['matching_flows'], flow_report.values())))
