@@ -29,12 +29,7 @@ def main(base_file, head_file, base_intermediate_file, head_intermediate_file, b
     process_path_analysis(f'{head_branch_name}-{base_branch_name}-flow-report', base_data, head_data, repo_name,
                           base_branch_name, head_branch_name, header_flag)
 
-    print("rrrr")
-    print(base_intermediate_file)
-    print(head_intermediate_file)
-
     if os.path.isfile(base_intermediate_file) and os.path.isfile(head_intermediate_file):
-        print("aaaaa")
         base_intermediate_file = open(base_intermediate_file)
         head_intermediate_file = open(head_intermediate_file)
 
@@ -301,9 +296,7 @@ def process_path_analysis(worksheet_name, base_source, head_source, repo_name, b
 def process_unique_path_analysis(worksheet_name, base_source, head_source, repo_name, base_branch_name, head_branch_name, header_flag):
     result = []
 
-    print("tttt")
-
-    value = sub_process_path(base_source['dataFlow'], head_source['dataFlow'], 'Total', base_branch_name, head_branch_name, header_flag)
+    value = sub_process_path(base_source['dataFlow'], head_source['dataFlow'], '---', base_branch_name, head_branch_name, repo_name)
 
     for j in value[0]:
         result.append(j)
@@ -312,8 +305,6 @@ def process_unique_path_analysis(worksheet_name, base_source, head_source, repo_
         result.insert(0, ['Repo Name', 'Sink Category', 'Source', 'Sink', head_branch_name, base_branch_name,
                        f'Additional in {head_branch_name}', f'Missing in {head_branch_name}', 'Delta in %',
                        f'Additional Path Id in {head_branch_name}', f'Missing Path ID in {head_branch_name}'])
-
-    print(worksheet_name)
 
     # Export to the Excel file
     write_path_data(f'{os.getcwd()}/output.xlsx', worksheet_name, result)
