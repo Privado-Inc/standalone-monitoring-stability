@@ -115,7 +115,7 @@ def workflow():
                     print(e)
 
                 source_count[repo_name] = dict({args.base: source_data[5], args.head: source_data[4]})
-                missing_sink_count[repo_name] = sum(storage_data[-1], third_parties_data[-1], leakages_data[-1])
+                missing_sink_count[repo_name] = sum([storage_data[-1], third_parties_data[-1], leakages_data[-1]])
                 
                 base_file.close()
                 head_file.close()
