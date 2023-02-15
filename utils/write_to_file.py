@@ -155,7 +155,14 @@ def write_summary_data(workbook_location, base_branch_name, head_branch_name, re
                          "---"])
 
     scan_time_positive_average /= scan_time_positive # Average of more time repos
-    scan_time_negative_average /= (len(report.keys()) - scan_time_positive) # Average of less time repos
+    scan_time_negative_average /= (len(report.keys()) - scan_time_positive) * -1 # Average of less time repos
+
+    write_slack_summary(f'''
+        A. Scantime
+
+        {scan_time_positive} repos took an average {scan_time_positive_average} ms more.
+        {len(report.keys()) - scan_time_positive} repos took an average {scan_time_negative_average} time less.
+    ''')
 
     print(scan_time_positive)
     print(scan_time_negative_average, scan_time_positive_average)
@@ -177,3 +184,6 @@ def highlight_summary_cell(worksheet):
 
 
     
+def write_slack_summary(statement):
+    with open(f"{cwd}/slack_summary.txt", "a") as slack_summary:
+        slack_summary.writelines(statement)
