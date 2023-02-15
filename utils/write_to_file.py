@@ -129,7 +129,7 @@ def write_summary_data(workbook_location, base_branch_name, head_branch_name, re
         language = report[repo]['language']
         scan_time_diff = '--' if base_scan_time == '--' or head_scan_time == '--' else int(head_scan_time) - int(base_scan_time)
 
-        print("Scan time diff: " + scan_time_diff)
+        print("Scan time diff: " , scan_time_diff)
         if (scan_time_diff > 0): # Head branch took more time
             scan_time_positive += 1
             scan_time_positive_average += scan_time_diff
