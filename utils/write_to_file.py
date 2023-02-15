@@ -121,6 +121,11 @@ def write_summary_data(workbook_location, base_branch_name, head_branch_name, re
     scan_time_positive_average = 0
     scan_time_negative_average = 0
 
+    reachable_by_flow_time_positive = 0
+    reachable_by_flow_time_positive_average = 0
+    reachable_by_flow_time_negative_average = 0
+
+
 
     for repo in report.keys():
         scan_status = 'done' if report[repo][head_branch_name]['comparison_error_message'] == '--' and report[repo][base_branch_name]['comparison_error_message'] == '--' else 'failed'
@@ -134,8 +139,7 @@ def write_summary_data(workbook_location, base_branch_name, head_branch_name, re
             scan_time_positive += 1
             scan_time_positive_average += scan_time_diff
         else:
-            scan_time_negative_average += scan_time_diff*-1
-
+            scan_time_negative_average += (scan_time_diff*-1)
 
 
 
@@ -143,9 +147,15 @@ def write_summary_data(workbook_location, base_branch_name, head_branch_name, re
 
         unique_source_diff = '--' if data_elements[repo][base_branch_name] == '--' or data_elements[repo][head_branch_name] == '--' else int(data_elements[repo][head_branch_name]) - int(data_elements[repo][base_branch_name])
         
-        reachable_flow_time_diff = '--' if report[repo][base_branch_name]['reachable_flow_time'] == '--' or report[repo][head_branch_name]['reachable_flow_time'] == '--' else len(report[repo][head_branch_name]['reachable_flow_time']) - len(report[repo][base_branch_name]['reachable_flow_time'])
+        reachable_flow_time_diff = '--' if report[repo][base_branch_name]['reachable_flow_time'] == '--' or report[repo][head_branch_name]['reachable_flow_time'] == '--' else int(report[repo][head_branch_name]['reachable_flow_time']) - int(report[repo][base_branch_name]['reachable_flow_time'])
 
-        print(report[repo][base_branch_name]['reachable_flow_time'])
+
+        print(reachable_flow_time_diff)
+        if (reachable_flow_time_diff > 0): # Head branch took more time
+            reachable_by_flow_time_positive += 1
+            reachable_by_flow_time_positive_average += reachable_flow_time_diff
+        else:
+            reachable_by_flow_time_negative_average += (reachable_flow_time_diff*-1)
 
 
 
@@ -161,14 +171,20 @@ def write_summary_data(workbook_location, base_branch_name, head_branch_name, re
     # cannot divide by zero
     scan_time_positive_average = scan_time_positive_average / scan_time_positive if scan_time_positive > 0 else 0 # Average of more time repos
     scan_time_negative_average = scan_time_negative_average / (len(report.keys()) - scan_time_positive) * -1 if (len(report.keys()) - scan_time_positive) * -1 > 0 else 0 # Average of less time repos
+    
+    reachable_by_flow_time_positive_average = reachable_by_flow_time_positive_average / reachable_by_flow_time_positive if reachable_by_flow_time_positive > 0 else 0 # Average of more time repos
+    reachable_by_flow_time_negative_average = reachable_by_flow_time_negative_average / (len(report.keys()) - reachable_by_flow_time_positive) * -1 if (len(report.keys()) - reachable_by_flow_time_positive) * -1 > 0 else 0 # Average of less time repos
 
     write_slack_summary(f'''
         A. Scantime
-
         {scan_time_positive} repos took an average {scan_time_positive_average} ms more.
         {len(report.keys()) - scan_time_positive} repos took an average {scan_time_negative_average} time less.
-    ''')
 
+        B. Reachable by flow time
+        {reachable_by_flow_time_positive} repos took an average {reachable_by_flow_time_positive_average} ms more.
+        {len(report.keys()) - reachable_by_flow_time_positive} repos took an average {reachable_by_flow_time_negative_average} time less.
+    ''')
+    
     print(scan_time_positive)
     print(scan_time_negative_average, scan_time_positive_average)
 
