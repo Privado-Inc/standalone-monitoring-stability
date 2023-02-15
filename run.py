@@ -92,7 +92,8 @@ def workflow():
                 scan_status[repo_name][args.head]['comparison_error_message'] = '--'
                 base_data = json.load(base_file)
                 head_data = json.load(head_file)
-
+                print(base_data)
+                print(head_data)
                 print("Source data start")
                 try:
                     # --
