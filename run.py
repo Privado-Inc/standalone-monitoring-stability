@@ -76,7 +76,7 @@ def workflow():
             clone_repo_with_location(repo_link, location, is_git_url)
             valid_repositories.append(repo_name)
 
-        scan_status = scan_repo_report(args.first, args.second, valid_repositories, use_docker=args.use_docker,
+        scan_status = scan_repo_report(args.base, args.head, valid_repositories, use_docker=args.use_docker,
                                        generate_unique_flow=args.generate_unique_flow)
         source_count = dict()
         missing_sink_count = dict()
@@ -91,8 +91,8 @@ def workflow():
                 base_file = f'{cwd}/temp/result/{args.base}/{repo_name}.json'
                 head_file = f'{cwd}/temp/result/{args.head}/{repo_name}.json'
                 detected_language = get_detected_language(repo_name, args.base)
-                base_intermediate_file = f'{cwd}/temp/result/{args.first}/{repo_name}-intermediate.json'
-                head_intermediate_file = f'{cwd}/temp/result/{args.second}/{repo_name}-intermediate.json'
+                base_intermediate_file = f'{cwd}/temp/result/{args.base}/{repo_name}-intermediate.json'
+                head_intermediate_file = f'{cwd}/temp/result/{args.head}/{repo_name}-intermediate.json'
                 compare_and_generate_report(base_file, head_file, args.base, args.head, base_intermediate_file, head_intermediate_file, header_flag, scan_status, detected_language)
                 
                 scan_status[repo_name][args.base]['comparison_status'] = 'done'
@@ -111,14 +111,11 @@ def workflow():
                     print(e)
 
                 try:
-                    # --
                     source_data = process_sources(base_data['sources'], head_data['sources'], repo_name, detected_language) # Get the source data from the process_sources function
                     storage_data = process_sinks(base_data['dataFlow'], head_data['dataFlow'], repo_name,scan_status ,detected_language, key='storages')
                     third_parties_data = process_sinks(base_data['dataFlow'], head_data['dataFlow'], repo_name,scan_status ,detected_language, key='third_parties')
                     leakages_data = process_sinks(base_data['dataFlow'], head_data['dataFlow'], repo_name,scan_status ,detected_language, key='leakages')
                     flow_report = process_path_analysis(f'{args.head}-{args.base}-flow-report', base_data, head_data, repo_name, args.base, args.head, detected_language, False)
-                    # missing_flow_head = functools.reduce(lambda a, x: a + int(x[-4]), flow_report, 0)
-                    # additional_flow_head = functools.reduce(lambda a, x: a + int(x[-5]), flow_report, 0)
                     missing_flow_head = flow_report[0][-4]
                     additional_flow_head = flow_report[0][-5]
                     matching_flows = 0
@@ -128,13 +125,6 @@ def workflow():
                         if (flow[-3] == '-100%' or flow[-3] == '-100'):
                             hundred_percent_missing_repos.add(flow[0])
 
-                                        
-
-                    print("=============================")
-                    print(hundred_percent_missing_repos)
-                    print(missing_flow_head)
-                    print(additional_flow_head)
-                    print(flow_report)
                 except Exception as e: 
                     print(e)
 
