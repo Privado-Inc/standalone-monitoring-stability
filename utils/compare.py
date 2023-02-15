@@ -7,7 +7,7 @@ from utils.scan_metadata import get_subscan_metadata
 from utils.scan import generate_scan_status_data_for_file
 
 
-def main(base_file, head_file, base_branch_name, head_branch_name, header_flag, scan_status):
+def main(base_file, head_file, base_intermediate_file, head_intermediate_file, base_branch_name, head_branch_name, header_flag, scan_status):
     try:
         base_file.split('/')[-1].split('.')[0]
     except Exception as e:
@@ -28,6 +28,19 @@ def main(base_file, head_file, base_branch_name, head_branch_name, header_flag, 
 
     process_path_analysis(f'{head_branch_name}-{base_branch_name}-flow-report', base_data, head_data, repo_name,
                           base_branch_name, head_branch_name, header_flag)
+
+    if os.path.isfile(base_intermediate_file) and os.path.isfile(head_intermediate_file):
+        base_intermediate_file = open(base_intermediate_file)
+        head_intermediate_file = open(head_intermediate_file)
+
+        base_intermediate_data = json.load(base_intermediate_file)
+        head_intermediate_data = json.load(head_intermediate_file)
+
+        process_unique_path_analysis(f'{head_branch_name}-{base_branch_name}-unique-flow-report', base_intermediate_data,
+                                     head_intermediate_data, repo_name, base_branch_name, head_branch_name, header_flag)
+
+        base_intermediate_file.close()
+        head_intermediate_file.close()
 
     process_performance_data(f'{head_branch_name}-{base_branch_name}-performance-report', base_branch_name,
                              head_branch_name, repo_name, header_flag)
@@ -277,6 +290,23 @@ def process_path_analysis(worksheet_name, base_source, head_source, repo_name, b
                        f'Additional Path Id in {head_branch_name}', f'Missing Path ID in {head_branch_name}'])
 
     # Export to the excel file
+    write_path_data(f'{os.getcwd()}/output.xlsx', worksheet_name, result)
+
+
+def process_unique_path_analysis(worksheet_name, base_source, head_source, repo_name, base_branch_name, head_branch_name, header_flag):
+    result = []
+
+    value = sub_process_path(base_source['dataFlow'], head_source['dataFlow'], '---', base_branch_name, head_branch_name, repo_name)
+
+    for j in value[0]:
+        result.append(j)
+
+    if header_flag:
+        result.insert(0, ['Repo Name', 'Sink Category', 'Source', 'Sink', head_branch_name, base_branch_name,
+                       f'Additional in {head_branch_name}', f'Missing in {head_branch_name}', 'Delta in %',
+                       f'Additional Path Id in {head_branch_name}', f'Missing Path ID in {head_branch_name}'])
+
+    # Export to the Excel file
     write_path_data(f'{os.getcwd()}/output.xlsx', worksheet_name, result)
 
 

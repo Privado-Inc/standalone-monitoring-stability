@@ -20,6 +20,7 @@ parser.add_argument('-c', action='store_true')
 parser.add_argument('-b', "--boost", default=False)
 parser.add_argument('-m', action='store_true')
 parser.add_argument('-d', '--use-docker', action='store_true')
+parser.add_argument('-guf', '--generate-unique-flow', action='store_true')
 parser.set_defaults(feature=True)
 
 args: argparse.Namespace = parser.parse_args()
@@ -68,7 +69,8 @@ def workflow():
             clone_repo_with_location(repo_link, location, is_git_url)
             valid_repositories.append(repo_name)
 
-        scan_status = scan_repo_report(args.first, args.second, valid_repositories, use_docker=args.use_docker)
+        scan_status = scan_repo_report(args.first, args.second, valid_repositories, use_docker=args.use_docker,
+                                       generate_unique_flow=args.generate_unique_flow)
 
         # Used to add header for only one time in report
         header_flag = True
@@ -77,7 +79,9 @@ def workflow():
             try:
                 base_file = f'{cwd}/temp/result/{args.first}/{repo_name}.json'
                 head_file = f'{cwd}/temp/result/{args.second}/{repo_name}.json'
-                compare_and_generate_report(base_file, head_file, args.first, args.second, header_flag, scan_status)
+                base_intermediate_file = f'{cwd}/temp/result/{args.first}/{repo_name}-intermediate.json'
+                head_intermediate_file = f'{cwd}/temp/result/{args.second}/{repo_name}-intermediate.json'
+                compare_and_generate_report(base_file, head_file, base_intermediate_file, head_intermediate_file, args.first, args.second, header_flag, scan_status)
                 scan_status[repo_name][args.first]['comparison_status'] = 'done'
                 scan_status[repo_name][args.first]['comparison_error_message'] = '--'
                 scan_status[repo_name][args.second]['comparison_status'] = 'done'
