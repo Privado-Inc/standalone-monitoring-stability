@@ -1,6 +1,7 @@
 # Standalone-monitoring-stability
 
-Steps to use the standalone-comparison-tool
+#### Steps to use the standalone-comparison-tool
+
 * Setup
 	1. Navigate to the directory
 	2. Run `python3 -m pip install --user virtualenv`
@@ -9,12 +10,32 @@ Steps to use the standalone-comparison-tool
 	5. Run `pip install -r requirements.txt` to install all the dependencies.
 	6. Run `python3 ./run.py -f [first_branch] -s [second_branch]`
 
-* To use the previously downloaded privado files
-    *   Run `python3 ./run.py -f [first_branch] -s [second_branch] -c`
 
-* To specify a custom repository list:
-	*  Create a file `your-repos.txt` which should be a new-line separated list of *public* repository links hosted on Github. 
-	*  Run `python3 ./run.py -r path_to_file.txt`
- 
- * To skip sending results to slack: 
-	 * Run `python3 ./run.py -r path_to_file.txt --no-upload`
+* Options
+	* To specify a custom repository list, use `-r` or `--repos`. Default is `./repos.txt`.
+	  	* Run `python3 ./run.py -r path_to_file.txt -f [base_branch] -s [head_branch]`
+	* To upload the output result to slack, use `--upload`. Default is set to `--no-upload`
+		* Run `python3 ./run.py -f [base_branch] -s [head_branch] --upload`
+	* To clear all the previously generated cache and binary data, use `-c`. 
+		* Run `python3 ./run.py -f [base_branch] -s [head_branch] -c`
+	* To store the privado-core binary for future use, use `-b`
+		* Run `python3 ./run.py -f [base_branch] -s [head_branch] -b True`. Cache is deleted after each run by default.
+	* To compare already genereated `privado.json` files, use `-m`
+		* Run `python3 ./run.py -f [base_privado_json_path] -s [head_privado_json_path] -m`
+	* To use docker build instead of generating binaries, use `-d` or `--use-docker`
+		* Run `python3 ./run.py --use-docker -f [base_docker_tag] -s [head_docker_tag]`
+
+
+#### Folder structure for storing the results.
+```
+- temp
+	- privado
+	- privado-core
+	- result
+		- base_branch
+			- repo-output.txt --- Contains the scan results
+			- repo.json --- privado.json for the repository
+		- head_branch
+			- repo-output.txt --- Contains the scan results
+			- repo.json --- privado.json for the repository
+```		
