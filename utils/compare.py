@@ -329,7 +329,7 @@ def sub_process_path(base_source, head_source, sink_type, base_branch_name, head
             process_source_head_data[source_id] = sink_data
 
     source_union = set(process_source_head_data.keys()).union(set(process_source_base_data.keys()))
-
+    final_result_list.append([f'Flow ({name})', head_branch_name, base_branch_name, f'Additional in {head_branch_name}', f'Missing in {head_branch_name}', "Delta in %", "Additional Path ID", "Missing Path Id"])
     # Process source data sequentially for every sourceId present in head and base branch
     for i in source_union:
 
@@ -347,6 +347,7 @@ def sub_process_path(base_source, head_source, sink_type, base_branch_name, head
                 final_result_list.append([repo_name, sink_type, i, sink, len(process_source_head_data[i][sink]), 0,
                                           len(process_source_head_data[i][sink]), 0, '100%', '\n'.join(additional_ids),
                                           0])
+           
             continue
 
         # If sourceID is not present in head branch means source data is missing w.r.t. head branch
