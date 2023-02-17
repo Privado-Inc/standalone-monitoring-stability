@@ -64,14 +64,14 @@ def build_binary_for_joern(versions):
         build_binary_and_move_for_joern(versions[0], f'{os.getcwd()}/temp/joern/first/privado-core')
     except Exception as e:
         print(f'Binary generation failed for joern version {versions[0]}: ', e)
-        write_slack_summary(f' Binary generation failed for joern version {versions[0]}', e)
-        return False
+        write_slack_summary(f' Binary generation failed for joern version {versions[0]} \n {str(e)}')
+        return False 
 
     try:
         build_binary_and_move_for_joern(versions[1], f'{os.getcwd()}/temp/joern/second/privado-core')
     except Exception as e:
         print(f'Binary generation failed for joern version {versions[1]}: ', e)
-        write_slack_summary(f'Binary generation failed for joern version {versions[1]}: ', e)
+        write_slack_summary(f'Binary generation failed for joern version {versions[1]} \n {str(e)}')
         return False
 
     return True
