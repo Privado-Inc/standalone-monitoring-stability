@@ -16,7 +16,7 @@ def check_update():
 
     clone_repo_with_name("https://github.com/Privado-Inc/privado", f'{temp_dir}/privado', "privado")
 
-    os.system(f'chmod 777 {temp_dir}/privado-core/second/updateDependencies.sh')
+    os.system(f'chmod 777 {temp_dir}/joern/second/updateDependencies.sh')
 
     check_command = f'cd {temp_dir}/joern/second/privado-core/ && ./updateDependencies.sh --non-interactive'
     output = os.popen(check_command).read()
