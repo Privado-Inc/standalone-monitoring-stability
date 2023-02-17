@@ -10,25 +10,31 @@ def check_update():
     if not os.path.isdir(temp_dir):
         os.mkdir(temp_dir)
 
+    # clone the first privado-core
     clone_repo_with_name("https://github.com/Privado-Inc/privado-core", f'{temp_dir}/joern/first/privado-core', "privado-core")
 
+    # clone second privado-core, used for updating the dependencies
     clone_repo_with_name("https://github.com/Privado-Inc/privado-core", f'{temp_dir}/joern/second/privado-core', "privado-core")
 
+    # clone privado for rules
     clone_repo_with_name("https://github.com/Privado-Inc/privado", f'{temp_dir}/privado', "privado")
 
-    os.system(f'chmod 777 {temp_dir}/joern/second/privado-core/updateDependencies.sh')
+    # change the permission
+    # os.system(f'chmod 777 {temp_dir}/joern/second/privado-core/updateDependencies.sh')
+    #
+    # check_command = f'cd {temp_dir}/joern/second/privado-core/ && ./updateDependencies.sh --non-interactive'
+    # output = os.popen(check_command).read()
+    # update_require = is_update_require(output)
 
-    check_command = f'cd {temp_dir}/joern/second/privado-core/ && ./updateDependencies.sh --non-interactive'
-    output = os.popen(check_command).read()
-    update_require = is_update_require(output)
+    # if update_require is None:
+    #     return ["Error", "Error in fetching the Version"]
+    # if not update_require:
+    #     return ["Updated", None]
+    #
+    # versions = get_updated_version(output)
+    # return versions
 
-    if update_require is None:
-        return ["Error", "Error in fetching the Version"]
-    if not update_require:
-        return ["Updated", None]
-
-    versions = get_updated_version(output)
-    return versions
+    return ['1.1.1447', '1.1.1447']
 
 
 def is_update_require(output):
