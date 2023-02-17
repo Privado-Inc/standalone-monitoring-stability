@@ -15,24 +15,40 @@ def build(first_branch, second_branch, skip_build = False):
     if not os.path.isdir(f'{temp_dir}/privado'):
         clone_repo_with_name("https://github.com/Privado-Inc/privado", f'{temp_dir}/privado', "privado")
     
-    build_binary_and_move(repo, first_branch, True, f'{pwd}/temp/privado-core')
-    build_binary_and_move(repo, second_branch, True, f'{pwd}/temp/privado-core')
+    build_binary_and_move(repo, first_branch)
+    build_binary_and_move(repo, second_branch)
 
-
-def build_binary_and_move(repo, branch_name, checkout, core_dir):
+def build_binary_and_move(repo, branch_name):
     path = os.getcwd()
+    core_dir = f'{path}/temp/privado-core'
     binary_dir = f'{core_dir}/target/universal/stage/*'
     final_dir = f'{path}/temp/binary/{branch_name}'
 
-    if checkout:
-        try:
-            repo.git.checkout(branch_name)
-            o = repo.remotes.origin
-            o.pull()
-        except Exception:
-            print(branch_name + " doesn't exist")
-    print(f'Buliding Privado Binary for {branch_name}')
+    try:
+        repo.git.checkout(branch_name)
+        o = repo.remotes.origin
+        o.pull()
+    except Exception:
+        print(branch_name + " doesn't exist")
+    print("Buliding Privado Binary for " + branch_name)
     os.system("cd " + core_dir + " && sbt clean && sbt stage")
     os.system("mkdir -p " + final_dir)
     os.system("mv " + binary_dir + " " + final_dir)
     print("Build Completed")
+
+
+def build_binary_and_move_for_joern(branch_name, core_dir):
+    path = os.getcwd()
+    binary_dir = f'{core_dir}/target/universal/stage/*'
+    final_dir = f'{path}/temp/binary/{branch_name}'
+    print("Buliding Privado Binary for " + branch_name)
+    build_output = os.popen("cd " + core_dir + " && sbt clean && sbt stage").read()
+
+    for line in build_output.split('\n'):
+        if 'Error' in line:
+            raise Exception('Getting sbt error')
+
+    os.system("mkdir -p " + final_dir)
+    os.system("mv " + binary_dir + " " + final_dir)
+    print("Build Completed")
+    return True

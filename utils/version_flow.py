@@ -1,6 +1,6 @@
 import os
 from utils.clone_repo import clone_repo_with_name
-from utils.build_binary import build_binary_and_move
+from utils.build_binary import build_binary_and_move_for_joern
 
 
 def check_update():
@@ -20,21 +20,19 @@ def check_update():
     clone_repo_with_name("https://github.com/Privado-Inc/privado", f'{temp_dir}/privado', "privado")
 
     # change the permission
-    # os.system(f'chmod 777 {temp_dir}/joern/second/privado-core/updateDependencies.sh')
-    #
-    # check_command = f'cd {temp_dir}/joern/second/privado-core/ && ./updateDependencies.sh --non-interactive'
-    # output = os.popen(check_command).read()
-    # update_require = is_update_require(output)
+    os.system(f'chmod 777 {temp_dir}/joern/second/privado-core/updateDependencies.sh')
 
-    # if update_require is None:
-    #     return ["Error", "Error in fetching the Version"]
-    # if not update_require:
-    #     return ["Updated", None]
-    #
-    # versions = get_updated_version(output)
-    # return versions
+    check_command = f'cd {temp_dir}/joern/second/privado-core/ && ./updateDependencies.sh --non-interactive'
+    output = os.popen(check_command).read()
+    update_require = is_update_require(output)
 
-    return ['1.1.1447', '1.1.1447']
+    if update_require is None:
+        return ["Error", "Error in fetching the Version"]
+    if not update_require:
+        return ["Updated", None]
+
+    versions = get_updated_version(output)
+    return versions
 
 
 def is_update_require(output):
@@ -61,15 +59,15 @@ def get_updated_version(output):
 def build_binary_for_joern(versions):
     # Build binary for current version
     try:
-        build_binary_and_move(None, versions[0], False, f'{os.getcwd()}/temp/joern/first/privado-core')
+        build_binary_and_move_for_joern(versions[0], f'{os.getcwd()}/temp/joern/first/privado-core')
     except Exception as e:
-        print(f'Binary not generating for joern version {versions[0]}', e)
+        print(f'Binary generation failed for joern version {versions[0]}', e)
         return False
 
     try:
-        build_binary_and_move(None, versions[1], False, f'{os.getcwd()}/temp/joern/second/privado-core')
+        build_binary_and_move_for_joern(versions[1], f'{os.getcwd()}/temp/joern/second/privado-core')
     except Exception as e:
-        print(f'Binary not generating for joern version {versions[1]}', e)
+        print(f'Binary generation failed for joern version {versions[1]}', e)
         return False
 
     return True
