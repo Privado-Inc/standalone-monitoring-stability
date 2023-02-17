@@ -55,13 +55,13 @@ def get_updated_version(output):
 def build_binary_for_joern(versions):
     # Build binary for current version
     try:
-        build_binary_and_move(None, versions[0], False, f'{os.getcwd()}/joern/first/privado-core')
+        build_binary_and_move(None, versions[0], False, f'{os.getcwd()}/temp/joern/first/privado-core')
     except Exception as e:
         print(f'Binary not generating for joern version {versions[0]}', e)
         return False
 
     try:
-        build_binary_and_move(None, versions[1], False, f'{os.getcwd()}/joern/second/privado-core')
+        build_binary_and_move(None, versions[1], False, f'{os.getcwd()}/temp/joern/second/privado-core')
     except Exception as e:
         print(f'Binary not generating for joern version {versions[1]}', e)
         return False
