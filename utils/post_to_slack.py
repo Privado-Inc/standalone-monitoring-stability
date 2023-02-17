@@ -16,7 +16,7 @@ def zip_result():
 
     os.system(f'mv {cwd}/temp/result {cwd}/report')
     os.system(f'mv {cwd}/output.xlsx {cwd}/report/output.xlsx')
-    os.system(f'zip -r {cwd}/report.zip {cwd}/report')
+    os.system(f'zip -r ./report.zip ./report')
 
 
 def post_report_to_slack(zip_require):
