@@ -45,7 +45,7 @@ def build_binary_and_move_for_joern(branch_name, core_dir):
     build_output = os.popen("cd " + core_dir + " && sbt clean && sbt stage").read()
 
     for line in build_output.split('\n'):
-        if 'Error' in line:
+        if '[error]' in line:
             raise Exception('Getting sbt error')
 
     print(build_output)
