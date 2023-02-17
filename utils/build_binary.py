@@ -48,6 +48,8 @@ def build_binary_and_move_for_joern(branch_name, core_dir):
         if 'Error' in line:
             raise Exception('Getting sbt error')
 
+    print(build_output)
+
     os.system("mkdir -p " + final_dir)
     os.system("mv " + binary_dir + " " + final_dir)
     print("Build Completed")
