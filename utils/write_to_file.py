@@ -265,7 +265,6 @@ def highlight_summary_cell(worksheet):
                 worksheet[f'{col}{row}'].font = Font(color='FFFFFF')
 
 
-    
 def write_slack_summary(statement):
     with open(f"{os.getcwd()}/slack_summary.txt", "a") as slack_summary:
         slack_summary.writelines(statement)

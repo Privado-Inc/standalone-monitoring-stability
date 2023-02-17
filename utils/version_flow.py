@@ -1,6 +1,7 @@
 import os
 from utils.clone_repo import clone_repo_with_name
 from utils.build_binary import build_binary_and_move_for_joern
+from utils.write_to_file import write_slack_summary
 
 
 def check_update():
@@ -58,16 +59,19 @@ def get_updated_version(output):
 
 def build_binary_for_joern(versions):
     # Build binary for current version
+    write_slack_summary(f'Current version: {versions[0]} \n Updated Version: {versions[1]} \n')
     try:
         build_binary_and_move_for_joern(versions[0], f'{os.getcwd()}/temp/joern/first/privado-core')
     except Exception as e:
-        print(f'Binary generation failed for joern version {versions[0]}', e)
+        print(f'Binary generation failed for joern version {versions[0]}: ', e)
+        write_slack_summary(f' Binary generation failed for joern version {versions[0]}', e)
         return False
 
     try:
         build_binary_and_move_for_joern(versions[1], f'{os.getcwd()}/temp/joern/second/privado-core')
     except Exception as e:
-        print(f'Binary generation failed for joern version {versions[1]}', e)
+        print(f'Binary generation failed for joern version {versions[1]}: ', e)
+        write_slack_summary(f'Binary generation failed for joern version {versions[1]}: ', e)
         return False
 
     return True

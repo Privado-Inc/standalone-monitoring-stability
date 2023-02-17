@@ -8,6 +8,7 @@ from utils.clone_repo import clone_repo_with_location
 from utils.write_to_file import create_new_excel, write_scan_status_report, write_summary_data
 from utils.scan import get_detected_language
 from utils.version_flow import check_update, build_binary_for_joern
+from utils.write_to_file import write_slack_summary
 import os
 import argparse
 import traceback
@@ -36,13 +37,19 @@ def workflow():
     # Cleanup action
     delete_action(args.nc, args.boost)
 
+    if os.path.isfile(f'{os.getcwd()}/slack_summary.txt'):
+        os.system(f'rm {os.getcwd()}/slack_summary.txt')
+
     if args.joern_update:
         versions = check_update()
         if versions == 'updated':
             print("No Update Available")
+            write_slack_summary(f"Current version: {versions[0]} \n Updated Version: {versions[1]} \n No Update Available for Comparison")
+            post_report_to_slack(False)
             return
         else:
             if not build_binary_for_joern(versions):
+                post_report_to_slack(False)
                 return
             args.base = versions[0]
             args.head = versions[1]
@@ -157,8 +164,8 @@ def workflow():
         write_scan_status_report(f'{cwd}/output.xlsx', args.base, args.head, scan_status)
         write_summary_data(f'{cwd}/output.xlsx', args.base, args.head, scan_status, source_count, missing_sink_count, flow_data)
 
-        if args.upload:
-            post_report_to_slack()
+        if args.upload or args.joern_update:
+            post_report_to_slack(True)
     except Exception as e:
         traceback.print_exc()
         print(f"An exception occurred {str(e)}")
