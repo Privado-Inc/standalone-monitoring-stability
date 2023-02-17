@@ -8,3 +8,6 @@
 *.csv
 .DS_Store
 *.xlsx
+slack_summary.txt
+report
+report.zip
