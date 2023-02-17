@@ -35,3 +35,22 @@ def build_binary_and_move(repo, branch_name):
     os.system("mkdir -p " + final_dir)
     os.system("mv " + binary_dir + " " + final_dir)
     print("Build Completed")
+
+
+def build_binary_and_move_for_joern(branch_name, core_dir):
+    path = os.getcwd()
+    binary_dir = f'{core_dir}/target/universal/stage/*'
+    final_dir = f'{path}/temp/binary/{branch_name}'
+    print("Buliding Privado Binary for " + branch_name)
+    build_output = os.popen("cd " + core_dir + " && sbt clean && sbt stage").read()
+
+    for line in build_output.split('\n'):
+        if '[error]' in line:
+            raise Exception('Getting sbt error')
+
+    print(build_output)
+
+    os.system("mkdir -p " + final_dir)
+    os.system("mv " + binary_dir + " " + final_dir)
+    print("Build Completed")
+    return True

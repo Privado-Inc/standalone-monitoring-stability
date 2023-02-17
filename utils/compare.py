@@ -40,7 +40,7 @@ def main(base_file, head_file,base_branch_name, head_branch_name, base_intermedi
         head_intermediate_data = json.load(head_intermediate_file)
 
         process_unique_path_analysis(f'{head_branch_name}-{base_branch_name}-unique-flow-report', base_intermediate_data,
-                                     head_intermediate_data, repo_name, base_branch_name, head_branch_name, header_flag)
+                                     head_intermediate_data, repo_name, base_branch_name, head_branch_name, header_flag, language)
 
         base_intermediate_file.close()
         head_intermediate_file.close()
@@ -290,10 +290,10 @@ def process_path_analysis(worksheet_name, base_source, head_source, repo_name, b
     return result
 
 
-def process_unique_path_analysis(worksheet_name, base_source, head_source, repo_name, base_branch_name, head_branch_name, header_flag):
+def process_unique_path_analysis(worksheet_name, base_source, head_source, repo_name, base_branch_name, head_branch_name, header_flag, language):
     result = []
 
-    value = sub_process_path(base_source['dataFlow'], head_source['dataFlow'], '---', base_branch_name, head_branch_name, repo_name)
+    value = sub_process_path(base_source['dataFlow'], head_source['dataFlow'], '---', base_branch_name, head_branch_name, repo_name, language)
 
     for j in value[0]:
         result.append(j)

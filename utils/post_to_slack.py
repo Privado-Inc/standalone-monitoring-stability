@@ -2,25 +2,60 @@ import os
 from dotenv import load_dotenv
 from slack_sdk import WebClient
 
-def get_file_content(file_path):
-    with open(file_path, 'rb') as report:
-        return report.read()    
 
-def post_report_to_slack():
+def zip_result():
+    cwd = os.getcwd()
+
+    if os.path.isfile(f'{cwd}/report.zip'):
+        os.system(f'rm {cwd}/report.zip')
+
+    if os.path.isdir(f'{cwd}/report/'):
+        os.system(f'rm -r {cwd}/report')
+
+    os.system(f'mkdir -p {cwd}/report')
+
+    os.system(f'mv {cwd}/temp/result {cwd}/report')
+    os.system(f'mv {cwd}/output.xlsx {cwd}/report/output.xlsx')
+    os.system(f'zip -r ./report.zip ./report')
+
+
+def post_report_to_slack(zip_require):
     load_dotenv()
+    if zip_require:
+        zip_result()
+    cwd = os.getcwd()
 
-    slack_client = WebClient(os.environ["SLACK_TOKEN"])
+    slack_token = os.environ["SLACK_TOKEN"]
     slack_channel = os.environ["SLACK_CHANNEL_1"]
-    file_path = f"{os.getcwd()}/comparison_report.csv"
-    report_file = slack_client.files_upload(
-        title="Comparison report",
-        filename= file_path,
-        content= get_file_content(file_path),
-    )
+    client = WebClient(token=slack_token)
 
-    file_url = report_file.get("file").get("permalink")
-    file_message = slack_client.chat_postMessage(
-        channel= f"#{slack_channel}",
-        text= f"Comparison report generated: {file_url}",
-    )
+    summary_report = []
 
+    with open(f'{cwd}/slack_summary.txt') as file:
+        for line in file.readlines():
+            summary_report.append(line)
+
+    try:
+        if not zip_require:
+            response = client.chat_postMessage(
+                channel=slack_channel,
+                text='\n'.join(summary_report)
+            )
+        else:
+            response = client.files_upload(
+                file=f'{cwd}/report.zip',
+                initial_comment='\n'.join(summary_report),
+                channels=slack_channel
+            )
+
+        if response.status_code == 200:
+            print("Report sent to slack channel")
+        else:
+            print("Report not sent", response.data)
+
+    except Exception as e:
+        print("Error in sending the report to slack", e)
+
+
+if __name__ == '__main__':
+    post_report_to_slack(False)
