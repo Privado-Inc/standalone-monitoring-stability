@@ -7,12 +7,11 @@ from utils.delete import delete_action, clean_after_scan
 from utils.clone_repo import clone_repo_with_location
 from utils.write_to_file import create_new_excel, write_scan_status_report, write_summary_data
 from utils.scan import get_detected_language
+from utils.version_flow import check_update, build_binary_for_joern
 import os
 import argparse
 import traceback
 import json
-import functools
-import re
 
 parser = argparse.ArgumentParser(add_help=False)
 
@@ -26,17 +25,33 @@ parser.add_argument('-bs', "--boost", default=False)
 parser.add_argument('-m', action='store_true')
 parser.add_argument('-d', '--use-docker', action='store_true')
 parser.add_argument('-guf', '--generate-unique-flow', action='store_true')
+parser.add_argument('-ju', '--joern-update', action='store_true')
 parser.set_defaults(feature=True)
 
 args: argparse.Namespace = parser.parse_args()
 
 
 def workflow():
+
+    # Cleanup action
+    delete_action(args.nc, args.boost)
+
+    if args.joern_update:
+        versions = check_update()
+        if versions == 'updated':
+            print("No Update Available")
+            return
+        else:
+            if not build_binary_for_joern(versions):
+                return
+            args.base = versions[0]
+            args.head = versions[1]
+
     args.base = args.base.replace('/', '-')
     args.head = args.head.replace('/', '-')
     # check if branch name present in args
     if args.base is None or args.head is None:
-        print("Please provide flags '-h' and '-b' followed by branch name")
+        print("Please provide flags '-h' and '-b' followed by value")
         return
 
     cwd = os.getcwd()
@@ -54,10 +69,7 @@ def workflow():
     create_new_excel(excel_report_location, args.base, args.head)
     valid_repositories = []
 
-    # Cleanup action
-    delete_action(args.nc, args.boost)
-
-    if not args.use_docker:
+    if not args.use_docker and not args.joern_update:
         # build the Privado binary for both branches
         build(args.base, args.head, args.boost)
 
