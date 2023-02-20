@@ -124,7 +124,7 @@ def generate_scan_status_data(scan_report, first_branch, second_branch):
     cwd = os.getcwd()
 
     # create the empty excel file
-    create_new_excel(f"{cwd}/output.xlsx", first_branch, second_branch)
+    create_new_excel(f"{cwd}/output.xlsx", first_branch.replace('/', '-'), second_branch.replace('/', '-'))
 
     for repo in scan_report.keys():
         parse_flows_data(repo, first_branch, scan_report)
