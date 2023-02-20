@@ -37,6 +37,9 @@ def workflow():
     # Cleanup action
     delete_action(args.nc, args.boost)
 
+    base_worksheet_name = args.base.replace('/', '-')
+    head_worksheet_name = args.head.replace('/', '-')
+
     if os.path.isfile(f'{os.getcwd()}/slack_summary.txt'):
         os.system(f'rm {os.getcwd()}/slack_summary.txt')
 
@@ -71,7 +74,7 @@ def workflow():
         compare_files(args.base, args.head)
         return
 
-    create_new_excel(excel_report_location, args.base.replace('/', '-'), args.head.replace('/', '-'))
+    create_new_excel(excel_report_location, base_worksheet_name, head_worksheet_name)
     valid_repositories = []
 
     if not args.use_docker and not args.joern_update:
@@ -131,12 +134,14 @@ def workflow():
                     print("File not loaded")
                     print(e)
 
+
+
                 try:
                     source_data = process_sources(base_data['sources'], head_data['sources'], repo_name, detected_language) # Get the source data from the process_sources function
                     storage_data = process_sinks(base_data['dataFlow'], head_data['dataFlow'], repo_name,scan_status ,detected_language, key='storages')
                     third_parties_data = process_sinks(base_data['dataFlow'], head_data['dataFlow'], repo_name,scan_status ,detected_language, key='third_parties')
                     leakages_data = process_sinks(base_data['dataFlow'], head_data['dataFlow'], repo_name,scan_status ,detected_language, key='leakages')
-                    flow_report = process_path_analysis(f'{args.head}-{args.base}-flow-report', base_data, head_data, repo_name, args.base, args.head, detected_language, False)
+                    flow_report = process_path_analysis(f'{head_worksheet_name}-{base_worksheet_name}-flow-report', base_data, head_data, repo_name, args.base, args.head, detected_language, False)
                     missing_flow_head = flow_report[0][-4]
                     additional_flow_head = flow_report[0][-5]
                     matching_flows = 0
