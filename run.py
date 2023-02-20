@@ -101,7 +101,7 @@ def workflow():
             clone_repo_with_location(repo_link, location, is_git_url)
             valid_repositories.append(repo_name)
 
-        scan_status = scan_repo_report(args.base, args.head, valid_repositories, args.use_docker, args.generate_unique_flow,rules_branch_base, rules_branch_head)
+        scan_status = scan_repo_report(args.base, args.head, valid_repositories, args.use_docker, args.generate_unique_flow,args.rules_branch_base, args.rules_branch_head)
         source_count = dict()
         flow_data = dict()
 
