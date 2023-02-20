@@ -80,7 +80,7 @@ def workflow():
 
     if not args.use_docker and not args.joern_update:
         # build the Privado binary for both branches
-        build(args.base, args.head, args.boost, args.rules_branch)
+        build(args.base, args.head, args.rules_branch,args.boost)
 
     # Remove slack summary if already present
     if (os.path.isfile(f"{cwd}/slack_summary.txt")):
