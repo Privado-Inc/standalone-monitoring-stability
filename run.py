@@ -37,6 +37,9 @@ def workflow():
     # Cleanup action
     delete_action(args.nc, args.boost)
 
+    base_worksheet_name = args.base.replace('/', '-')
+    head_worksheet_name = args.head.replace('/', '-')
+
     if os.path.isfile(f'{os.getcwd()}/slack_summary.txt'):
         os.system(f'rm {os.getcwd()}/slack_summary.txt')
 
@@ -54,8 +57,6 @@ def workflow():
             args.base = versions[0]
             args.head = versions[1]
 
-    args.base = args.base.replace('/', '-')
-    args.head = args.head.replace('/', '-')
     # check if branch name present in args
     if args.base is None or args.head is None:
         print("Please provide flags '-h' and '-b' followed by value")
@@ -73,12 +74,16 @@ def workflow():
         compare_files(args.base, args.head)
         return
 
-    create_new_excel(excel_report_location, args.base, args.head)
+    create_new_excel(excel_report_location, base_worksheet_name, head_worksheet_name)
     valid_repositories = []
 
     if not args.use_docker and not args.joern_update:
         # build the Privado binary for both branches
         build(args.base, args.head, args.boost)
+
+    # Remove slack summary if already present
+    if (os.path.isfile(f"{cwd}/slack_summary.txt")):
+        os.remove(f"{cwd}/slack_summary.txt")
 
     try:
         for repo_link in utils.repo_link_generator.generate_repo_link(args.repos):
@@ -129,25 +134,27 @@ def workflow():
                     print("File not loaded")
                     print(e)
 
+
+
                 try:
                     source_data = process_sources(base_data['sources'], head_data['sources'], repo_name, detected_language) # Get the source data from the process_sources function
                     storage_data = process_sinks(base_data['dataFlow'], head_data['dataFlow'], repo_name,scan_status ,detected_language, key='storages')
                     third_parties_data = process_sinks(base_data['dataFlow'], head_data['dataFlow'], repo_name,scan_status ,detected_language, key='third_parties')
                     leakages_data = process_sinks(base_data['dataFlow'], head_data['dataFlow'], repo_name,scan_status ,detected_language, key='leakages')
-                    flow_report = process_path_analysis(f'{args.head}-{args.base}-flow-report', base_data, head_data, repo_name, args.base, args.head, detected_language, False)
+                    flow_report = process_path_analysis(f'{head_worksheet_name}-{base_worksheet_name}-flow-report', base_data, head_data, repo_name, args.base, args.head, detected_language, False)
                     missing_flow_head = flow_report[0][-4]
                     additional_flow_head = flow_report[0][-5]
                     matching_flows = 0
 
-                    hundred_percent_missing_repos = set()
+                    hundred_percent_missing_repos = 0
                     for flow in flow_report:
                         if (flow[-3] == '-100%' or flow[-3] == '-100'):
-                            hundred_percent_missing_repos.add(flow[0])
+                            hundred_percent_missing_repos += 1
 
                 except Exception as e: 
                     print(e)
 
-                flow_data[repo_name] = dict({'missing': missing_flow_head, 'additional': additional_flow_head, 'hundred_missing': len(hundred_percent_missing_repos), 'matching_flows': True if flow_report[0][-3] == '0' else False})
+                flow_data[repo_name] = dict({'missing': missing_flow_head, 'additional': additional_flow_head, 'hundred_missing': hundred_percent_missing_repos, 'matching_flows': True if flow_report[0][-3] == '0' else False})
                 source_count[repo_name] = dict({args.base: source_data[5], args.head: source_data[4]})
                 missing_sink_count[repo_name] = sum([storage_data[-1], third_parties_data[-1], leakages_data[-1]])
                 
