@@ -103,9 +103,7 @@ def workflow():
         scan_status = scan_repo_report(args.base, args.head, valid_repositories, use_docker=args.use_docker,
                                        generate_unique_flow=args.generate_unique_flow)
         source_count = dict()
-        missing_sink_count = dict()
         flow_data = dict()
-        print(scan_status)
 
         # Used to add header for only one time in report
         header_flag = True
@@ -142,8 +140,8 @@ def workflow():
                     third_parties_data = process_sinks(base_data['dataFlow'], head_data['dataFlow'], repo_name,scan_status ,detected_language, key='third_parties')
                     leakages_data = process_sinks(base_data['dataFlow'], head_data['dataFlow'], repo_name,scan_status ,detected_language, key='leakages')
                     flow_report = process_path_analysis(f'{head_worksheet_name}-{base_worksheet_name}-flow-report', base_data, head_data, repo_name, args.base, args.head, detected_language, False)
-                    missing_flow_head = flow_report[0][-4]
-                    additional_flow_head = flow_report[0][-5]
+                    missing_flow_head = flow_report[0][-2]
+                    additional_flow_head = flow_report[0][-3]
                     matching_flows = 0
 
                     hundred_percent_missing_repos = 0
@@ -156,8 +154,7 @@ def workflow():
 
                 flow_data[repo_name] = dict({'missing': missing_flow_head, 'additional': additional_flow_head, 'hundred_missing': hundred_percent_missing_repos, 'matching_flows': True if flow_report[0][-3] == '0' else False})
                 source_count[repo_name] = dict({args.base: source_data[5], args.head: source_data[4]})
-                missing_sink_count[repo_name] = sum([storage_data[-1], third_parties_data[-1], leakages_data[-1]])
-                
+
                 base_file.close()
                 head_file.close()
             except Exception as e:
@@ -169,7 +166,7 @@ def workflow():
             header_flag = False
 
         write_scan_status_report(f'{cwd}/output.xlsx', args.base, args.head, scan_status)
-        write_summary_data(f'{cwd}/output.xlsx', args.base, args.head, scan_status, source_count, missing_sink_count, flow_data)
+        write_summary_data(f'{cwd}/output.xlsx', args.base, args.head, scan_status, source_count, flow_data)
 
         if args.upload or args.joern_update:
             post_report_to_slack(True)
