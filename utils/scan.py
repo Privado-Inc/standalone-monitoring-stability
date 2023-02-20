@@ -1,7 +1,6 @@
 import os
 import shutil
-import subprocess
-import platform
+from utils.build_binary import checkout_repo
 from utils.write_to_file import write_scan_status_report, create_new_excel, create_new_excel_for_file
 import re
 
@@ -41,6 +40,12 @@ def scan_repo_report(first_branch, second_branch, valid_repos, use_docker, gener
             if use_docker:
                 first_command = f'{get_docker_commands(first_branch, scan_dir)} | tee {cwd}/temp/result/{first_branch}/{repo}-output.txt'
             else:
+                if first_branch == 'main':
+                    print(f'Using privado main branch for building privado-core main branch')
+                    checkout_repo("main")
+                else:
+                    print(f'Using privado dev branch for building privado-core {first_branch} branch')
+                    checkout_repo("dev")
                 if generate_unique_flow:
                     first_command = f'cd {cwd}/temp/binary/{first_branch}/bin && ./privado-core scan {scan_dir} -ic {cwd}/temp/privado --skip-upload --test-output -Dlog4j.configurationFile=log4j2.xml | tee {cwd}/temp/result/{first_branch}/{repo}-output.txt'
                 else:
@@ -71,6 +76,12 @@ def scan_repo_report(first_branch, second_branch, valid_repos, use_docker, gener
             if use_docker:
                 second_command = f'{get_docker_commands(second_branch, scan_dir)} | tee {cwd}/temp/result/{second_branch}/{repo}-output.txt'
             else:
+                if second_branch == 'main':
+                    print(f'Using privado main branch for building privado-core main branch')
+                    checkout_repo("main")
+                else:
+                    print(f'Using privado dev branch for building privado-core {second_branch} branch')
+                    checkout_repo("dev")
                 if generate_unique_flow:
                     second_command = f'cd {cwd}/temp/binary/{second_branch}/bin && ./privado-core scan {scan_dir} -ic {cwd}/temp/privado --skip-upload --test-output -Dlog4j.configurationFile=log4j2.xml | tee {cwd}/temp/result/{second_branch}/{repo}-output.txt'
                 else:
