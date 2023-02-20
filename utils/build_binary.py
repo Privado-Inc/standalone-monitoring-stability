@@ -2,7 +2,8 @@ import os
 from git import Repo
 from utils.clone_repo import clone_repo_with_name
 
-def build(first_branch, second_branch,rules_branch ,skip_build = False):
+
+def build(first_branch, second_branch, skip_build = False):
     if skip_build and os.path.exists(f"{os.getcwd()}/temp/binary"):
         return
     pwd = os.getcwd()
@@ -14,10 +15,10 @@ def build(first_branch, second_branch,rules_branch ,skip_build = False):
 
     if not os.path.isdir(f'{temp_dir}/privado'):
         privado_repo = clone_repo_with_name("https://github.com/Privado-Inc/privado", f'{temp_dir}/privado', "privado")
-    
-    privado_repo.git.checkout(rules_branch)
+
     build_binary_and_move(repo, first_branch)
     build_binary_and_move(repo, second_branch)
+
 
 def build_binary_and_move(repo, branch_name):
     path = os.getcwd()
@@ -55,3 +56,15 @@ def build_binary_and_move_for_joern(branch_name, core_dir):
     os.system("mv " + binary_dir + " " + final_dir)
     print("Build Completed")
     return True
+
+
+def checkout_repo(branch_name):
+    cwd = os.getcwd()
+    repo = Repo(f'{cwd}/temp/privado')
+    try:
+        repo.git.checkout(branch_name)
+        o = repo.remotes.origin
+        o.pull()
+        print(f'Privado branch changed to {branch_name}')
+    except Exception as e:
+        print(f'{branch_name} + " doesn\'t exist: {e}')

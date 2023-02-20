@@ -27,7 +27,8 @@ parser.add_argument('-m', action='store_true')
 parser.add_argument('-d', '--use-docker', action='store_true')
 parser.add_argument('-guf', '--generate-unique-flow', action='store_true')
 parser.add_argument('-ju', '--joern-update', action='store_true')
-parser.add_argument('-rb', '--rules-branch' , default="main")
+parser.add_argument('-rbb', '--rules-branch-base', default=None)
+parser.add_argument('-rbh', '--rules-branch-head', default=None)
 parser.set_defaults(feature=True)
 
 args: argparse.Namespace = parser.parse_args()
@@ -101,8 +102,7 @@ def workflow():
             clone_repo_with_location(repo_link, location, is_git_url)
             valid_repositories.append(repo_name)
 
-        scan_status = scan_repo_report(args.base, args.head, valid_repositories, use_docker=args.use_docker,
-                                       generate_unique_flow=args.generate_unique_flow)
+        scan_status = scan_repo_report(args.base, args.head, valid_repositories, args.use_docker, args.generate_unique_flow,rules_branch_base, rules_branch_head)
         source_count = dict()
         flow_data = dict()
 
