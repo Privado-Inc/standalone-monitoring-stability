@@ -139,15 +139,15 @@ def workflow():
                     additional_flow_head = flow_report[0][-5]
                     matching_flows = 0
 
-                    hundred_percent_missing_repos = set()
+                    hundred_percent_missing_repos = 0
                     for flow in flow_report:
-                        if (flow[-3] == '-100%' or flow[-3] == '-100'):
-                            hundred_percent_missing_repos.add(flow[0])
+                        if (flow[-3] == '100%' or flow[-3] == '100'):
+                            hundred_percent_missing_repos += 1
 
                 except Exception as e: 
                     print(e)
 
-                flow_data[repo_name] = dict({'missing': missing_flow_head, 'additional': additional_flow_head, 'hundred_missing': len(hundred_percent_missing_repos), 'matching_flows': True if flow_report[0][-3] == '0' else False})
+                flow_data[repo_name] = dict({'missing': missing_flow_head, 'additional': additional_flow_head, 'hundred_missing': hundred_percent_missing_repos, 'matching_flows': True if flow_report[0][-3] == '0' else False})
                 source_count[repo_name] = dict({args.base: source_data[5], args.head: source_data[4]})
                 missing_sink_count[repo_name] = sum([storage_data[-1], third_parties_data[-1], leakages_data[-1]])
                 

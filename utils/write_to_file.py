@@ -109,7 +109,7 @@ def write_summary_data(workbook_location, base_branch_name, head_branch_name, re
     workbook = openpyxl.load_workbook(filename=workbook_location)
     worksheet = workbook['summary']
 
-    worksheet.append(["Repo", "language" ,"scan status", f"{base_branch_name} Scan status <Base - head> (ms)", f"{head_branch_name} scan time (ms)",
+    worksheet.append(["Repo", "language" ,"scan status", f"{base_branch_name} Scan status (ms)", f"{head_branch_name} scan time (ms)",
                       "scan time diff (ms)", "Reachable by flow diff (ms)", f"{base_branch_name} unique flows",
                       f"{head_branch_name} unique flows", "unique flows diff",  
                       f"{base_branch_name} No of data elements",
@@ -164,6 +164,8 @@ def write_summary_data(workbook_location, base_branch_name, head_branch_name, re
             unique_source_diff = '--' if data_elements[repo][base_branch_name] == '--' or data_elements[repo][head_branch_name] == '--' else int(data_elements[repo][head_branch_name]) - int(data_elements[repo][base_branch_name])
             unique_flow_diff = '--' if report[repo][base_branch_name]['unique_flows'] == '--' or report[repo][head_branch_name]['unique_flows'] == '--' else int(report[repo][head_branch_name]['unique_flows']) - int(report[repo][base_branch_name]['unique_flows'])
             reachable_flow_time_diff = '--' if report[repo][base_branch_name]['reachable_flow_time'] == '--' or report[repo][head_branch_name]['reachable_flow_time'] == '--' else int(report[repo][head_branch_name]['reachable_flow_time']) - int(report[repo][base_branch_name]['reachable_flow_time'])
+            number_hundred_missing_for_repo = flow_report[repo]['hundred_missing']
+
 
             if (scan_time_diff != '--'):
                 if (scan_time_diff > 0): # Head branch took more time
@@ -211,7 +213,7 @@ def write_summary_data(workbook_location, base_branch_name, head_branch_name, re
                             data_elements[repo][base_branch_name],
                             data_elements[repo][head_branch_name], unique_source_diff,
                             report[repo]['missing_sink'],
-                            "---"])
+                            number_hundred_missing_for_repo])
         except Exception as e:
             print(f"Scan failed for repo {repo}" , e)
             worksheet.append([repo ,language , scan_status, "--", "--", "--",
@@ -221,7 +223,7 @@ def write_summary_data(workbook_location, base_branch_name, head_branch_name, re
                             "--",
                             "--", "--",
                             "--",
-                            "---"])
+                            "--"])
 
     # cannot divide by zero
     scan_time_positive_average = scan_time_positive_average / scan_time_positive if scan_time_positive > 0 else 0 # Average of more time repos
