@@ -141,7 +141,7 @@ def workflow():
 
                     hundred_percent_missing_repos = 0
                     for flow in flow_report:
-                        if (flow[-3] == '100%' or flow[-3] == '100'):
+                        if (flow[-3] == '-100%' or flow[-3] == '-100'):
                             hundred_percent_missing_repos += 1
 
                 except Exception as e: 
