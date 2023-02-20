@@ -54,8 +54,6 @@ def workflow():
             args.base = versions[0]
             args.head = versions[1]
 
-    args.base = args.base.replace('/', '-')
-    args.head = args.head.replace('/', '-')
     # check if branch name present in args
     if args.base is None or args.head is None:
         print("Please provide flags '-h' and '-b' followed by value")
@@ -73,7 +71,7 @@ def workflow():
         compare_files(args.base, args.head)
         return
 
-    create_new_excel(excel_report_location, args.base, args.head)
+    create_new_excel(excel_report_location, args.base.replace('/', '-'), args.head.replace('/', '-'))
     valid_repositories = []
 
     if not args.use_docker and not args.joern_update:
