@@ -27,6 +27,7 @@ parser.add_argument('-m', action='store_true')
 parser.add_argument('-d', '--use-docker', action='store_true')
 parser.add_argument('-guf', '--generate-unique-flow', action='store_true')
 parser.add_argument('-ju', '--joern-update', action='store_true')
+parser.add_argument('-rb', '--rules-branch' ,default="main" ,action='store_true')
 parser.set_defaults(feature=True)
 
 args: argparse.Namespace = parser.parse_args()
@@ -79,7 +80,7 @@ def workflow():
 
     if not args.use_docker and not args.joern_update:
         # build the Privado binary for both branches
-        build(args.base, args.head, args.boost)
+        build(args.base, args.head, args.boost, args.rules_branch)
 
     # Remove slack summary if already present
     if (os.path.isfile(f"{cwd}/slack_summary.txt")):
