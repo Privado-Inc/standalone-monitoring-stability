@@ -27,7 +27,7 @@ parser.add_argument('-m', action='store_true')
 parser.add_argument('-d', '--use-docker', action='store_true')
 parser.add_argument('-guf', '--generate-unique-flow', action='store_true')
 parser.add_argument('-ju', '--joern-update', action='store_true')
-parser.add_argument('-rb', '--rules-branch' ,default="main" ,action='store_true')
+parser.add_argument('-rb', '--rules-branch' , default="main")
 parser.set_defaults(feature=True)
 
 args: argparse.Namespace = parser.parse_args()
