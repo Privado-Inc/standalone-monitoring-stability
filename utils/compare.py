@@ -24,12 +24,15 @@ def main(base_file, head_file,base_branch_name, head_branch_name, base_intermedi
 
     repo_name = base_data['repoName']
 
-    process_source_sink_and_collection_data(f'{head_branch_name}-{base_branch_name}-source-&-sink-report', base_data,
+    head_branch_worksheet_name = head_branch_name.replace('/', '-')
+    base_branch_worksheet_name = base_branch_name.replace('/', '-')
+
+    process_source_sink_and_collection_data(f'{head_branch_worksheet_name}-{base_branch_worksheet_name}-source-&-sink-report', base_data,
                                             head_data, base_branch_name, head_branch_name, repo_name, header_flag,
                                             scan_status, language)
 
 
-    process_path_analysis(f'{head_branch_name}-{base_branch_name}-flow-report', base_data, head_data, repo_name,
+    process_path_analysis(f'{head_branch_worksheet_name}-{base_branch_worksheet_name}-flow-report', base_data, head_data, repo_name,
                           base_branch_name, head_branch_name, language, header_flag)
 
     if os.path.isfile(base_intermediate_file) and os.path.isfile(head_intermediate_file):
@@ -39,13 +42,13 @@ def main(base_file, head_file,base_branch_name, head_branch_name, base_intermedi
         base_intermediate_data = json.load(base_intermediate_file)
         head_intermediate_data = json.load(head_intermediate_file)
 
-        process_unique_path_analysis(f'{head_branch_name}-{base_branch_name}-unique-flow-report', base_intermediate_data,
+        process_unique_path_analysis(f'{head_branch_worksheet_name}-{base_branch_worksheet_name}-unique-flow-report', base_intermediate_data,
                                      head_intermediate_data, repo_name, base_branch_name, head_branch_name, header_flag, language)
 
         base_intermediate_file.close()
         head_intermediate_file.close()
 
-    process_performance_data(f'{head_branch_name}-{base_branch_name}-performance-report', base_branch_name,
+    process_performance_data(f'{head_branch_worksheet_name}-{base_branch_worksheet_name}-performance-report', base_branch_name,
                              head_branch_name, repo_name, language ,header_flag)
 
     base_file.close()
