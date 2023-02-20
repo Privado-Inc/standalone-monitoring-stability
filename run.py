@@ -80,6 +80,10 @@ def workflow():
         # build the Privado binary for both branches
         build(args.base, args.head, args.boost)
 
+    # Remove slack summary if already present
+    if (os.path.isfile(f"{cwd}/slack_summary.txt")):
+        os.remove(f"{cwd}/slack_summary.txt")
+
     try:
         for repo_link in utils.repo_link_generator.generate_repo_link(args.repos):
             try:
