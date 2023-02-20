@@ -35,7 +35,6 @@ args: argparse.Namespace = parser.parse_args()
 
 
 def workflow():
-    print(args.rules_branch)
     # Cleanup action
     delete_action(args.nc, args.boost)
 
