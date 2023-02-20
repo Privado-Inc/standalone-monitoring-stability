@@ -14,8 +14,8 @@ def build(first_branch, second_branch, skip_build = False):
         repo = Repo(f'{temp_dir}/privado-core')
 
     if not os.path.isdir(f'{temp_dir}/privado'):
-        clone_repo_with_name("https://github.com/Privado-Inc/privado", f'{temp_dir}/privado', "privado")
-    
+        privado_repo = clone_repo_with_name("https://github.com/Privado-Inc/privado", f'{temp_dir}/privado', "privado")
+
     build_binary_and_move(repo, first_branch)
     build_binary_and_move(repo, second_branch)
 

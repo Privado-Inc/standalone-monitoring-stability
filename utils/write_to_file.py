@@ -105,7 +105,7 @@ def write_scan_status_report(workbook_location, base_branch_name, head_branch_na
     workbook.save(workbook_location)
 
 
-def write_summary_data(workbook_location, base_branch_name, head_branch_name, report, data_elements, missing_sinks, flow_report):
+def write_summary_data(workbook_location, base_branch_name, head_branch_name, report, data_elements, flow_report):
     workbook = openpyxl.load_workbook(filename=workbook_location)
     worksheet = workbook['summary']
 
@@ -133,8 +133,8 @@ def write_summary_data(workbook_location, base_branch_name, head_branch_name, re
     less_sources = 0
     matching_sources = 0
 
-    missing_sink_repo_count = len(list(filter(lambda x: x > 0, missing_sinks.values())))
-    missing_sink_average = sum(missing_sinks.values()) / missing_sink_repo_count if missing_sink_repo_count > 0 else 0
+    missing_sink_repo_count = 0
+    total_missing_sinks = 0
 
     additional_not_zero = len(list(filter(lambda x: x['additional'] > 0, flow_report.values())))
     try:
@@ -205,6 +205,9 @@ def write_summary_data(workbook_location, base_branch_name, head_branch_name, re
                 else:
                     reachable_by_flow_time_negative_average += (reachable_flow_time_diff*-1)
 
+            if (int(report[repo]['missing_sink']) > 0):
+                missing_sink_repo_count += 1
+                total_missing_sinks += int(report[repo]['missing_sink'])
 
             worksheet.append([repo ,language , scan_status, base_scan_time, head_scan_time, scan_time_diff,
                             reachable_flow_time_diff,
@@ -232,6 +235,8 @@ def write_summary_data(workbook_location, base_branch_name, head_branch_name, re
     reachable_by_flow_time_positive_average = reachable_by_flow_time_positive_average / reachable_by_flow_time_positive if reachable_by_flow_time_positive > 0 else 0 # Average of more time repos
     reachable_by_flow_time_negative_average = reachable_by_flow_time_negative_average / (len(report.keys()) - reachable_by_flow_time_positive) if (len(report.keys()) - reachable_by_flow_time_positive) > 0 else 0 # Average of less time repos
 
+    missing_sink_average = total_missing_sinks // missing_sink_repo_count if missing_sink_repo_count > 0 else 0
+    
     write_slack_summary(f'''
         A. Scantime difference.
         {scan_time_positive} repos took an average {floor(scan_time_positive_average)} ms more.
@@ -252,7 +257,7 @@ def write_summary_data(workbook_location, base_branch_name, head_branch_name, re
         {more_sources} repositories have additional elements.
 
         E. Missing sinks.
-        {missing_sink_repo_count} repositories have an average {floor(missing_sink_average)} missing sinks.
+        {missing_sink_repo_count} repositories have an average {missing_sink_average} missing sinks.
 
         F. Source to Sink Flow data
         {hundred_percent_missing} repositories have hundred percent missing flows.
