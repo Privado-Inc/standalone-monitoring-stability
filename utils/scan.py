@@ -1,7 +1,6 @@
 import os
 import shutil
-import subprocess
-import platform
+from utils.build_binary import checkout_repo
 from utils.write_to_file import write_scan_status_report, create_new_excel, create_new_excel_for_file
 import re
 
@@ -22,12 +21,23 @@ def get_docker_commands(tag, repo_path):
         return f'PRIVADO_DEV=1 PRIVADO_TAG={tag} privado  {repo_path}'
 
 
-def scan_repo_report(first_branch, second_branch, valid_repos, use_docker, generate_unique_flow):
+def get_rules_branch(base_branch, head_branch, rules_branch_base, rules_branch_head):
+    if (rules_branch_base == None and rules_branch_head == None):
+        if (base_branch == 'main'):
+            return ['main', 'dev']
+        elif head_branch == 'main':
+            return ['dev', 'main']
+        return ['dev', 'dev']
+    else:
+        return [rules_branch_base, rules_branch_head]
+
+def scan_repo_report(first_branch, second_branch, valid_repos, use_docker, generate_unique_flow, rules_branch_base, rules_branch_head):
     cwd = os.getcwd()
 
     # To store  status - if it failed or completed, and for which branch
     scan_report = dict()
 
+    rules_branches = get_rules_branch(first_branch, second_branch, rules_branch_base, rules_branch_head)
     # create dirs for results if not exist
     if not os.path.isdir(cwd + '/temp/result/' + first_branch):
         os.system('mkdir -p ' + cwd + '/temp/result/' + first_branch)
@@ -41,6 +51,7 @@ def scan_repo_report(first_branch, second_branch, valid_repos, use_docker, gener
             if use_docker:
                 first_command = f'{get_docker_commands(first_branch, scan_dir)} | tee {cwd}/temp/result/{first_branch}/{repo}-output.txt'
             else:
+                checkout_repo(rules_branches[0])
                 if generate_unique_flow:
                     first_command = f'cd {cwd}/temp/binary/{first_branch}/bin && ./privado-core scan {scan_dir} -ic {cwd}/temp/privado --skip-upload --test-output -Dlog4j.configurationFile=log4j2.xml | tee {cwd}/temp/result/{first_branch}/{repo}-output.txt'
                 else:
@@ -71,6 +82,7 @@ def scan_repo_report(first_branch, second_branch, valid_repos, use_docker, gener
             if use_docker:
                 second_command = f'{get_docker_commands(second_branch, scan_dir)} | tee {cwd}/temp/result/{second_branch}/{repo}-output.txt'
             else:
+                checkout_repo(rules_branches[1])
                 if generate_unique_flow:
                     second_command = f'cd {cwd}/temp/binary/{second_branch}/bin && ./privado-core scan {scan_dir} -ic {cwd}/temp/privado --skip-upload --test-output -Dlog4j.configurationFile=log4j2.xml | tee {cwd}/temp/result/{second_branch}/{repo}-output.txt'
                 else:
