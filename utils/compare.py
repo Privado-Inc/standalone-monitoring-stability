@@ -333,6 +333,8 @@ def sub_process_path(base_source, head_source, sink_type, base_branch_name, head
             for path in j['paths']:
                 temp = [path['path'][0], path['path'][len(path['path']) - 1]]
                 value = json_to_hash(temp)
+                if (repo_name == 'privado-accounts-api'):
+                    print(value)
                 hash_path[value] = path['pathId']
             sink_data[j['id']] = hash_path
         # Check if sourceID present in dict, If yes then append the sink data in sourceId 
@@ -350,6 +352,8 @@ def sub_process_path(base_source, head_source, sink_type, base_branch_name, head
             for path in j['paths']:
                 temp = [path['path'][0], path['path'][len(path['path']) - 1]]
                 value = json_to_hash(temp)
+                if (repo_name == 'privado-accounts-api'):
+                    print(value)
                 hash_path[value] = path['pathId']
             sink_data[j['id']] = hash_path
         # Check if sourceID present in dict, If yes then append the sink data in sourceId 
