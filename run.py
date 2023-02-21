@@ -6,7 +6,7 @@ from utils.build_binary import build
 from utils.delete import delete_action, clean_after_scan
 from utils.clone_repo import clone_repo_with_location
 from utils.write_to_file import create_new_excel, write_scan_status_report, write_summary_data
-from utils.scan import get_detected_language
+from utils.scan import get_detected_language, get_core_branch
 from utils.version_flow import check_update, build_binary_for_joern
 from utils.write_to_file import write_slack_summary
 import os
@@ -29,6 +29,7 @@ parser.add_argument('-guf', '--generate-unique-flow', action='store_true')
 parser.add_argument('-ju', '--joern-update', action='store_true')
 parser.add_argument('-rbb', '--rules-branch-base', default=None)
 parser.add_argument('-rbh', '--rules-branch-head', default=None)
+parser.add_argument('-urc', '--use-rule-compare',action='store_true')
 parser.set_defaults(feature=True)
 
 args: argparse.Namespace = parser.parse_args()
@@ -57,6 +58,15 @@ def workflow():
                 return
             args.base = versions[0]
             args.head = versions[1]
+
+    if args.use_rule_compare:
+        if args.rules_branch_base is None or args.rules_branch_head is None:
+            print("Please provide flags \"-rbb=\" and \"-rbh\" while using \"-urc\" flag")
+            return
+        else:
+            branch_name = get_core_branch(args.base, args.head, args.rules_branch_base, args.rules_branch_head)
+            args.base = branch_name[0]
+            args.head = branch_name[1]
 
     # check if branch name present in args
     if args.base is None or args.head is None:
@@ -116,7 +126,7 @@ def workflow():
                 base_intermediate_file = f'{cwd}/temp/result/{args.base}/{repo_name}-intermediate.json'
                 head_intermediate_file = f'{cwd}/temp/result/{args.head}/{repo_name}-intermediate.json'
                 compare_and_generate_report(base_file, head_file, args.base, args.head, base_intermediate_file, head_intermediate_file, header_flag, scan_status, detected_language)
-                
+
                 scan_status[repo_name][args.base]['comparison_status'] = 'done'
                 scan_status[repo_name][args.base]['comparison_error_message'] = '--'
                 scan_status[repo_name][args.head]['comparison_status'] = 'done'
@@ -127,7 +137,7 @@ def workflow():
                     head_file = open(head_file)
 
                     base_data = json.load(base_file)
-                    head_data = json.load(head_file)                
+                    head_data = json.load(head_file)
                 except Exception as e:
                     print("File not loaded")
                     print(e)
@@ -149,7 +159,7 @@ def workflow():
                         if (flow[-3] == '-100%' or flow[-3] == '-100'):
                             hundred_percent_missing_repos += 1
 
-                except Exception as e: 
+                except Exception as e:
                     print(e)
 
                 flow_data[repo_name] = dict({'missing': missing_flow_head, 'additional': additional_flow_head, 'hundred_missing': hundred_percent_missing_repos, 'matching_flows': True if flow_report[0][-3] == '0' else False})

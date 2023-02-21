@@ -4,6 +4,7 @@ from utils.build_binary import checkout_repo
 from utils.write_to_file import write_scan_status_report, create_new_excel, create_new_excel_for_file
 import re
 
+
 def get_detected_language(repo, branch):
     cwd = os.getcwd()
     with open(f'{cwd}/temp/result/{branch}/{repo}-output.txt') as scan_time_output:
@@ -11,6 +12,7 @@ def get_detected_language(repo, branch):
             if re.search(r".*(Detected language).*", line):
                 detected_language = line.split(' ')[-1].replace("'", "")
                 return detected_language
+
 
 def get_docker_commands(tag, repo_path):
     if tag == 'main':
@@ -21,15 +23,26 @@ def get_docker_commands(tag, repo_path):
         return f'PRIVADO_DEV=1 PRIVADO_TAG={tag} privado  {repo_path}'
 
 
+def get_core_branch(base_branch, head_branch, rules_branch_base, rules_branch_head):
+    if base_branch is None and head_branch is None:
+        if rules_branch_base == 'main' and rules_branch_head == 'dev':
+            return ['main', 'main']
+        else:
+            return ['dev', 'dev']
+    else:
+        return [base_branch, head_branch]
+
+
 def get_rules_branch(base_branch, head_branch, rules_branch_base, rules_branch_head):
-    if (rules_branch_base == None and rules_branch_head == None):
-        if (base_branch == 'main'):
+    if rules_branch_base is None and rules_branch_head is None:
+        if base_branch == 'main':
             return ['main', 'dev']
         elif head_branch == 'main':
             return ['dev', 'main']
         return ['dev', 'dev']
     else:
         return [rules_branch_base, rules_branch_head]
+
 
 def scan_repo_report(first_branch, second_branch, valid_repos, use_docker, generate_unique_flow, rules_branch_base, rules_branch_head):
     cwd = os.getcwd()
