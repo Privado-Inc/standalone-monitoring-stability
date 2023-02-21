@@ -29,7 +29,7 @@ parser.add_argument('-guf', '--generate-unique-flow', action='store_true')
 parser.add_argument('-ju', '--joern-update', action='store_true')
 parser.add_argument('-rbb', '--rules-branch-base', default=None)
 parser.add_argument('-rbh', '--rules-branch-head', default=None)
-parser.add_argument('-urc', '--use-rule-compare',action='store_true')
+parser.add_argument('-urc', '--use-rule-compare', action='store_true')
 parser.set_defaults(feature=True)
 
 args: argparse.Namespace = parser.parse_args()
@@ -38,9 +38,6 @@ args: argparse.Namespace = parser.parse_args()
 def workflow():
     # Cleanup action
     delete_action(args.nc, args.boost)
-
-    base_worksheet_name = args.base.replace('/', '-')
-    head_worksheet_name = args.head.replace('/', '-')
 
     if os.path.isfile(f'{os.getcwd()}/slack_summary.txt'):
         os.system(f'rm {os.getcwd()}/slack_summary.txt')
@@ -67,6 +64,9 @@ def workflow():
             branch_name = get_core_branch(args.base, args.head, args.rules_branch_base, args.rules_branch_head)
             args.base = branch_name[0]
             args.head = branch_name[1]
+
+    base_worksheet_name = args.base.replace('/', '-')
+    head_worksheet_name = args.head.replace('/', '-')
 
     # check if branch name present in args
     if args.base is None or args.head is None:
