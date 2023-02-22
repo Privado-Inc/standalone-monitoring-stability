@@ -337,7 +337,8 @@ def sub_process_path(base_source, head_source, sink_type, base_branch_name, head
             sink_data[j['id']] = hash_path
         # Check if sourceID present in dict, If yes then append the sink data in sourceId 
         if process_source_base_data.__contains__(source_id):
-            process_source_base_data[source_id][j['id']] = hash_path
+            temp_source_data = {**process_source_base_data[source_id], **sink_data}
+            process_source_base_data[source_id] = temp_source_data
         else:
             process_source_base_data[source_id] = sink_data
 
@@ -354,7 +355,8 @@ def sub_process_path(base_source, head_source, sink_type, base_branch_name, head
             sink_data[j['id']] = hash_path
         # Check if sourceID present in dict, If yes then append the sink data in sourceId 
         if process_source_head_data.__contains__(source_id):
-            process_source_head_data[source_id][j['id']] = hash_path
+            temp_source_data = {**process_source_head_data[source_id], **sink_data}
+            process_source_head_data[source_id] = temp_source_data
         else:
             process_source_head_data[source_id] = sink_data
 
