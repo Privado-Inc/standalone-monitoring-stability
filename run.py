@@ -65,8 +65,9 @@ def workflow():
             args.base = branch_name[0]
             args.head = branch_name[1]
 
-    base_worksheet_name = args.base.replace('/', '-')
-    head_worksheet_name = args.head.replace('/', '-')
+    if not args.m:
+        base_worksheet_name = args.base.replace('/', '-')
+        head_worksheet_name = args.head.replace('/', '-')
 
     # check if branch name present in args
     if args.base is None or args.head is None:
