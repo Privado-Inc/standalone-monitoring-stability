@@ -163,7 +163,7 @@ def workflow():
                 except Exception as e:
                     print(e)
 
-                flow_data[repo_name] = dict({'missing': missing_flow_head, 'additional': additional_flow_head, 'hundred_missing': hundred_percent_missing_repos, 'matching_flows': True if flow_report[0][-3] == '0' else False})
+                flow_data[repo_name] = dict({'missing': missing_flow_head, 'additional': additional_flow_head, 'hundred_missing': hundred_percent_missing_repos, 'matching_flows': True if flow_report[0][-3] == 0 else False})
                 source_count[repo_name] = dict({args.base: source_data[5], args.head: source_data[4]})
 
                 base_file.close()
