@@ -355,6 +355,8 @@ def sub_process_path(base_source, head_source, sink_type, base_branch_name, head
         else:
             process_source_head_data[source_id] = sink_data
 
+    print(process_source_base_data)
+    print(process_source_head_data)
     source_union = set(process_source_head_data.keys()).union(set(process_source_base_data.keys()))
 
     # Process source data sequentially for every sourceId present in head and base branch
