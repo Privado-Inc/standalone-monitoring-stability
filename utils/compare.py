@@ -335,7 +335,7 @@ def sub_process_path(base_source, head_source, sink_type, base_branch_name, head
         # Check if sourceID present in dict, If yes then append the sink data in sourceId 
         if process_source_base_data.__contains__(source_id):
             temp_source_data = {**process_source_base_data[source_id], **sink_data}
-            process_source_base_data[source_id][j['id']] = temp_source_data
+            process_source_base_data[source_id] = temp_source_data
         else:
             process_source_base_data[source_id] = sink_data
 
@@ -358,9 +358,6 @@ def sub_process_path(base_source, head_source, sink_type, base_branch_name, head
             process_source_head_data[source_id] = sink_data
     source_union = set(process_source_head_data.keys()).union(set(process_source_base_data.keys()))
 
-    print(process_source_base_data)
-    print("000000000000000000000")
-    print(process_source_head_data)
     # Process source data sequentially for every sourceId present in head and base branch
     for i in source_union:
 
@@ -439,15 +436,9 @@ def sub_process_path(base_source, head_source, sink_type, base_branch_name, head
 
             path_union = set(base_sink_data[j].keys()).union(set(head_sink_data[j].keys()))
 
-            print("Base sink data")
-            print(base_sink_data[j])
-            print("head sink")
-            print(head_sink_data[j])
-
             absolute_path_change = 0
             total_path_count = len(path_union)
-            print("Path union")
-            print(path_union)
+
             # Process path data sequentially for every pathID
             for k in path_union:
 
