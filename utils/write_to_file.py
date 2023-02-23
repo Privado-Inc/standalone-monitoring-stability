@@ -105,9 +105,11 @@ def write_scan_status_report(workbook_location, base_branch_name, head_branch_na
     workbook.save(workbook_location)
 
 
-def write_summary_data(workbook_location, base_branch_name, head_branch_name, report, data_elements, flow_report):
+def write_summary_data(workbook_location, base_branch_name, head_branch_name, report, data_elements, flow_report, joern_message):
     workbook = openpyxl.load_workbook(filename=workbook_location)
     worksheet = workbook['summary']
+    
+    if len(joern_message): write_slack_summary(joern_message)
 
     worksheet.append(["Repo", "language" ,"scan status", f"{base_branch_name} Scan status (ms)", f"{head_branch_name} scan time (ms)",
                       "scan time diff (ms)", "Reachable by flow diff (ms)", f"{base_branch_name} unique flows",

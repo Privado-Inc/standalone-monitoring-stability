@@ -59,7 +59,6 @@ def get_updated_version(output):
 
 def build_binary_for_joern(versions):
     # Build binary for current version
-    write_slack_summary(f'Current version: {versions[0]} \n Updated Version: {versions[1]} \n')
     try:
         build_binary_and_move_for_joern(versions[0], f'{os.getcwd()}/temp/joern/first/privado-core')
     except Exception as e:

@@ -42,11 +42,13 @@ def workflow():
     if os.path.isfile(f'{os.getcwd()}/slack_summary.txt'):
         os.system(f'rm {os.getcwd()}/slack_summary.txt')
 
+    joern_message = ""
+
     if args.joern_update:
         versions = check_update()
         if versions == 'updated':
             print("No Update Available")
-            write_slack_summary(f"Current version: {versions[0]} \n Updated Version: {versions[1]} \n No Update Available for Comparison")
+            joern_message += f"Current version: {versions[0]} \n Updated Version: {versions[1]} \n No Update Available for Comparison\n"
             post_report_to_slack(False)
             return
         else:
@@ -55,6 +57,7 @@ def workflow():
                 return
             args.base = versions[0]
             args.head = versions[1]
+            joern_message += f'Current version: {versions[0]} \n Updated Version: {versions[1]} \n'
 
     if args.use_rule_compare:
         if args.rules_branch_base is None or args.rules_branch_head is None:
@@ -177,7 +180,7 @@ def workflow():
             header_flag = False
 
         write_scan_status_report(f'{cwd}/output.xlsx', args.base, args.head, scan_status)
-        write_summary_data(f'{cwd}/output.xlsx', args.base, args.head, scan_status, source_count, flow_data)
+        write_summary_data(f'{cwd}/output.xlsx', args.base, args.head, scan_status, source_count, flow_data, joern_message)
 
         if args.upload or args.joern_update:
             post_report_to_slack(True)
