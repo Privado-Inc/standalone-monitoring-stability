@@ -17,3 +17,4 @@ https://github.com/OSSpk/Library-Management-System-JAVA.git
 https://github.com/sadatrafsanjani/JavaFX-Point-of-Sales.git
 https://github.com/galibBd/OnlineSchoolManagementSystem.git
 https://github.com/Privado-Demo/privado-accounts-api
+https://github.com/dbMundada/privado-python-test
