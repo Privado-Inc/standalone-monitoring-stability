@@ -1,9 +1,11 @@
 import csv
 import os
 import openpyxl
+import datetime
 from openpyxl.styles import PatternFill, Font
 import functools
 from math import floor
+
 
 def create_new_excel_for_file(location, first_file, second_file):
     wb = openpyxl.Workbook()
@@ -153,7 +155,6 @@ def write_summary_data(workbook_location, base_branch_name, head_branch_name, re
     matching_flow_repo_count = len(list(filter(lambda x: x['matching_flows'], flow_report.values())))
     hundred_percent_missing = len(list(filter(lambda x: x['hundred_missing'] > 0, flow_report.values())))    
 
-
     for repo in report.keys():
         try:
             scan_status = 'done' if report[repo][head_branch_name]['comparison_error_message'] == '--' and report[repo][base_branch_name]['comparison_error_message'] == '--' else 'failed'
@@ -166,67 +167,60 @@ def write_summary_data(workbook_location, base_branch_name, head_branch_name, re
             reachable_flow_time_diff = '--' if report[repo][base_branch_name]['reachable_flow_time'] == '--' or report[repo][head_branch_name]['reachable_flow_time'] == '--' else int(report[repo][head_branch_name]['reachable_flow_time']) - int(report[repo][base_branch_name]['reachable_flow_time'])
             number_hundred_missing_for_repo = flow_report[repo]['hundred_missing']
 
-
-            if (scan_time_diff != '--'):
-                if (scan_time_diff > 0): # Head branch took more time
+            if scan_time_diff != '--':
+                if scan_time_diff > 0: # Head branch took more time
                     scan_time_positive += 1
                     scan_time_positive_average += scan_time_diff
                 else:
                     scan_time_negative_average += (scan_time_diff*-1)
 
-
-
-
-            if (unique_flow_diff != '--'):
-                if (unique_flow_diff > 0):
+            if unique_flow_diff != '--':
+                if unique_flow_diff > 0:
                     more_flows += 1
                 elif unique_flow_diff < 0:
                     less_flows += 1
                 else:
                     matching_flows += 1
 
-
-            
-            if (unique_source_diff != '--'):
-                if (unique_source_diff > 0):
+            if unique_source_diff != '--':
+                if unique_source_diff > 0:
                     more_sources += 1
                 elif unique_source_diff < 0:
                     less_sources += 1
                 else:
                     matching_sources += 1
 
-            
-
-
-            if (reachable_flow_time_diff != '--'):
-                if (reachable_flow_time_diff > 0): # Head branch took more time
+            if reachable_flow_time_diff != '--':
+                if reachable_flow_time_diff > 0: # Head branch took more time
                     reachable_by_flow_time_positive += 1
                     reachable_by_flow_time_positive_average += reachable_flow_time_diff
                 else:
                     reachable_by_flow_time_negative_average += (reachable_flow_time_diff*-1)
 
-            if (int(report[repo]['missing_sink']) > 0):
+            if int(report[repo]['missing_sink']) > 0:
                 missing_sink_repo_count += 1
                 total_missing_sinks += int(report[repo]['missing_sink'])
 
-            worksheet.append([repo ,language , scan_status, base_scan_time, head_scan_time, scan_time_diff,
-                            reachable_flow_time_diff,
-                            report[repo][base_branch_name]['unique_flows'],
-                            report[repo][head_branch_name]['unique_flows'], unique_flow_diff,
-                            data_elements[repo][base_branch_name],
-                            data_elements[repo][head_branch_name], unique_source_diff,
-                            report[repo]['missing_sink'],
-                            number_hundred_missing_for_repo])
+            worksheet.append([repo, language, scan_status, base_scan_time, head_scan_time, scan_time_diff,
+                              reachable_flow_time_diff,
+                              report[repo][base_branch_name]['unique_flows'],
+                              report[repo][head_branch_name]['unique_flows'], unique_flow_diff,
+                              data_elements[repo][base_branch_name],
+                              data_elements[repo][head_branch_name], unique_source_diff,
+                              report[repo]['missing_sink'],
+                              number_hundred_missing_for_repo])
         except Exception as e:
-            print(f"Scan failed for repo {repo}" , e)
-            worksheet.append([repo ,language , scan_status, "--", "--", "--",
-                            "--",
-                            "--",
-                            "--", "--",
-                            "--",
-                            "--", "--",
-                            "--",
-                            "--"])
+            print(f'{datetime.datetime.now()} - Scan failed for repo {repo} : {str(e)}')
+            worksheet.append([repo, language, scan_status, "--", "--", "--",
+                              "--",
+                              "--",
+                              "--",
+                              "--",
+                              "--",
+                              "--",
+                              "--",
+                              "--",
+                              "--"])
 
     # cannot divide by zero
     scan_time_positive_average = scan_time_positive_average / scan_time_positive if scan_time_positive > 0 else 0 # Average of more time repos
@@ -286,7 +280,6 @@ def highlight_summary_cell(worksheet):
                 pass
                 
 
-    
 def write_slack_summary(statement):
     with open(f"{os.getcwd()}/slack_summary.txt", "a") as slack_summary:
         slack_summary.writelines(statement)
