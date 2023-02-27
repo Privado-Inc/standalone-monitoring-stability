@@ -1,3 +1,4 @@
+import datetime
 import os
 from git import Repo
 from utils.clone_repo import clone_repo_with_name
@@ -31,30 +32,28 @@ def build_binary_and_move(repo, branch_name):
         o = repo.remotes.origin
         o.pull()
     except Exception:
-        print(branch_name + " doesn't exist")
-    print("Buliding Privado Binary for " + branch_name)
+        print(f'{datetime.datetime.now()} - branch_name + " doesn\'t exist')
+    print(f'{datetime.datetime.now()} - Buliding Privado Binary for {branch_name}')
     os.system("cd " + core_dir + " && sbt clean && sbt stage")
     os.system("mkdir -p " + final_dir)
     os.system("mv " + binary_dir + " " + final_dir)
-    print("Build Completed")
+    print(f'{datetime.datetime.now()} -Build Completed')
 
 
 def build_binary_and_move_for_joern(branch_name, core_dir):
     path = os.getcwd()
     binary_dir = f'{core_dir}/target/universal/stage/*'
     final_dir = f'{path}/temp/binary/{branch_name}'
-    print("Buliding Privado Binary for " + branch_name)
+    print(f'{datetime.datetime.now()} - Buliding Privado Binary for {branch_name}')
     build_output = os.popen("cd " + core_dir + " && sbt clean && sbt stage").read()
 
     for line in build_output.split('\n'):
         if '[error]' in line:
             raise Exception('Getting sbt error')
 
-    print(build_output)
-
     os.system("mkdir -p " + final_dir)
     os.system("mv " + binary_dir + " " + final_dir)
-    print("Build Completed")
+    print(f'{datetime.datetime.now()} - Build Completed for {branch_name}')
     return True
 
 
@@ -65,6 +64,6 @@ def checkout_repo(branch_name):
         repo.git.checkout(branch_name)
         o = repo.remotes.origin
         o.pull()
-        print(f'Privado branch changed to {branch_name}')
+        print(f'{datetime.datetime.now()} - Privado branch changed to {branch_name}')
     except Exception as e:
-        print(f'{branch_name} + " doesn\'t exist: {e}')
+        print(f'{datetime.datetime.now()} - {branch_name} + " doesn\'t exist: {e}')
