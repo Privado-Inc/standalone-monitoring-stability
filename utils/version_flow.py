@@ -1,4 +1,5 @@
 import os
+import datetime
 from utils.clone_repo import clone_repo_with_name
 from utils.build_binary import build_binary_and_move_for_joern
 from utils.write_to_file import write_slack_summary
@@ -37,7 +38,6 @@ def check_update():
 
 
 def is_update_require(output):
-    print(output)
     for line in output.split('\n'):
         if 'joern' in line:
             if 'unchanged' in line:
@@ -63,14 +63,14 @@ def build_binary_for_joern(versions):
     try:
         build_binary_and_move_for_joern(versions[0], f'{os.getcwd()}/temp/joern/first/privado-core')
     except Exception as e:
-        print(f'Binary generation failed for joern version {versions[0]}: ', e)
+        print(f'{datetime.datetime.now()} - Binary generation failed for joern version {versions[0]}: ', e)
         write_slack_summary(f' Binary generation failed for joern version {versions[0]} \n {str(e)}')
         return False 
 
     try:
         build_binary_and_move_for_joern(versions[1], f'{os.getcwd()}/temp/joern/second/privado-core')
     except Exception as e:
-        print(f'Binary generation failed for joern version {versions[1]}: ', e)
+        print(f'{datetime.datetime.now()} - Binary generation failed for joern version {versions[1]}: ', e)
         write_slack_summary(f'Binary generation failed for joern version {versions[1]} \n {str(e)}')
         return False
 

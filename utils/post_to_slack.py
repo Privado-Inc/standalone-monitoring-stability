@@ -1,4 +1,5 @@
 import os
+import datetime
 from dotenv import load_dotenv
 from slack_sdk import WebClient
 
@@ -49,13 +50,10 @@ def post_report_to_slack(zip_require):
             )
 
         if response.status_code == 200:
-            print("Report sent to slack channel")
+            print(f'{datetime.datetime.now()} - Report sent to slack channel')
         else:
-            print("Report not sent", response.data)
+            print(f'{datetime.datetime.now()} - Report not sent: {response.data}')
 
     except Exception as e:
-        print("Error in sending the report to slack", e)
+        print(f'{datetime.datetime.now()} - Error in sending the report to slack: {str(e)}')
 
-
-if __name__ == '__main__':
-    post_report_to_slack(False)

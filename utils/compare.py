@@ -2,6 +2,7 @@ import csv
 import json
 import os
 import hashlib
+import datetime
 from utils.write_to_file import write_source_sink_data, write_path_data, write_performance_data, write_scan_status_report_for_file
 from utils.scan_metadata import get_subscan_metadata
 from utils.scan import generate_scan_status_data_for_file
@@ -13,7 +14,7 @@ def main(base_file, head_file,base_branch_name, head_branch_name, base_intermedi
     try:
         base_file.split('/')[-1].split('.')[0]
     except Exception as e:
-        print(f'Please enter a valid file: {e}')
+        print(f'{datetime.datetime.now()} - Please enter a valid file: {e}')
         return
 
     base_file = open(base_file)
@@ -58,11 +59,11 @@ def main(base_file, head_file,base_branch_name, head_branch_name, base_intermedi
 # when only need to compare the Privado.json file
 def compare_files(base_file_uri, head_file_uri):
     if not os.path.isfile(base_file_uri):
-        print(f'Please provide complete valid base file: {base_file_uri}')
+        print(f'{datetime.datetime.now()} - Please provide complete valid base file: {base_file_uri}')
         return
 
     if not os.path.isfile(head_file_uri):
-        print(f'Please provide complete valid head file: {head_file_uri}')
+        print(f'{datetime.datetime.now()} - Please provide complete valid head file: {head_file_uri}')
         return
 
     base_file = open(base_file_uri)
@@ -158,7 +159,7 @@ def create_csv(data):
         for i in data:
             report.writerow(i)
 
-    print(f'Report written and exported to: {cwd}/comparison_report.csv')
+    print(f'{datetime.datetime.now()} - Report written and exported to: {cwd}/comparison_report.csv')
 
 
 def process_source_sink_and_collection_data(worksheet_name, base_data, head_data, base_branch_name, head_branch_name, repo_name, header_flag, scan_status, language):

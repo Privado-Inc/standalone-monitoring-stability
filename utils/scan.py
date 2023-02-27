@@ -1,5 +1,6 @@
 import os
 import shutil
+import datetime
 from utils.build_binary import checkout_repo
 from utils.write_to_file import write_scan_status_report, create_new_excel, create_new_excel_for_file
 import re
@@ -180,33 +181,33 @@ def parse_flows_data(repo_name, branch_name, scan_report):
         unique_flows = scan_metadata_values[0].split('-')[-1]
         scan_report[repo_name][branch_name]['unique_flows'] = unique_flows
     except Exception as e:
-        print(f'Error while parsing unique flow data: {e}')
+        print(f'{datetime.datetime.now()} - Error while parsing unique flow data: {e}')
         scan_report[repo_name][branch_name]['unique_flows'] = '--'
 
     try:
         code_scan_time = scan_metadata_values[1].split('-')[-2]
         scan_report[repo_name][branch_name]['code_scan_time'] = code_scan_time
     except Exception as e:
-        print(f'Error while parsing code  time data: {e}')
+        print(f'{datetime.datetime.now()} - Error while parsing code  time data: {e}')
         scan_report[repo_name][branch_name]['code_scan_time'] = '--'
 
     try:
         binary_file_size = scan_metadata_values[2].split('-')[-1]
         scan_report[repo_name][branch_name]['binary_file_size'] = binary_file_size
     except Exception as e:
-        print(f'Error while parsing binary file size data: {e}')
+        print(f'{datetime.datetime.now()} - Error while parsing binary file size data: {e}')
         scan_report[repo_name][branch_name]['binary_file_size'] = '--'
 
     try:
         source_count = source_metadata_values[0].split()[-1]
         scan_report[repo_name][branch_name]['unique_source'] = source_count
     except Exception as e:
-        print(f'Error while parsing unique source data: {e}')
+        print(f'{datetime.datetime.now()} - Error while parsing unique source data: {e}')
         scan_report[repo_name][branch_name]['unique_source'] = '--'
 
     try:
         reachable_by_flow_time = reachable_by_flow_values[0].split('ms')[0].split('-')[-1]
         scan_report[repo_name][branch_name]['reachable_flow_time'] = reachable_by_flow_time
     except Exception as e:
-        print(f'Error while parsing reachable flow time data: {e}')
+        print(f'{datetime.datetime.now()} - Error while parsing reachable flow time data: {e}')
         scan_report[repo_name][branch_name]['reachable_flow_time'] = '--'

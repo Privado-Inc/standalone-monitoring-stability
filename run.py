@@ -1,3 +1,4 @@
+import datetime
 import utils.repo_link_generator
 from utils.scan import scan_repo_report
 from utils.compare import main as compare_and_generate_report, compare_files, process_sources, process_sinks, process_path_analysis
@@ -36,16 +37,20 @@ args: argparse.Namespace = parser.parse_args()
 
 
 def workflow():
+
+    print(f"Comparison script started at - {datetime.datetime.now()}")
+
     # Cleanup action
     delete_action(args.nc, args.boost)
 
+    # Remove slack summary if already present
     if os.path.isfile(f'{os.getcwd()}/slack_summary.txt'):
         os.system(f'rm {os.getcwd()}/slack_summary.txt')
 
     if args.joern_update:
         versions = check_update()
         if versions == 'updated':
-            print("No Update Available")
+            print(f"{datetime.datetime.now()} - No Update Available")
             write_slack_summary(f"Current version: {versions[0]} \n Updated Version: {versions[1]} \n No Update Available for Comparison")
             post_report_to_slack(False)
             return
@@ -71,7 +76,7 @@ def workflow():
 
     # check if branch name present in args
     if args.base is None or args.head is None:
-        print("Please provide flags '-h' and '-b' followed by value")
+        print(f"{datetime.datetime.now()} : Please provide flags '-h' and '-b' followed by value")
         return
 
     cwd = os.getcwd()
@@ -92,10 +97,6 @@ def workflow():
     if not args.use_docker and not args.joern_update:
         # build the Privado binary for both branches
         build(args.base, args.head,args.boost)
-
-    # Remove slack summary if already present
-    if (os.path.isfile(f"{cwd}/slack_summary.txt")):
-        os.remove(f"{cwd}/slack_summary.txt")
 
     try:
         for repo_link in utils.repo_link_generator.generate_repo_link(args.repos):
@@ -169,7 +170,7 @@ def workflow():
                 base_file.close()
                 head_file.close()
             except Exception as e:
-                print(f'{repo_name}: comparison report not generating: {e}')
+                print(f'{datetime.datetime.now()} - {repo_name}: comparison report not generating: {e}')
                 scan_status[repo_name][args.base]['comparison_status'] = 'failed'
                 scan_status[repo_name][args.base]['comparison_error_message'] = str(e)
                 scan_status[repo_name][args.head]['comparison_status'] = 'failed'
@@ -183,7 +184,7 @@ def workflow():
             post_report_to_slack(True)
     except Exception as e:
         traceback.print_exc()
-        print(f"An exception occurred {str(e)}")
+        print(f"{datetime.datetime.now()} - An exception occurred {str(e)}")
 
     finally:
         clean_after_scan(args.boost)
