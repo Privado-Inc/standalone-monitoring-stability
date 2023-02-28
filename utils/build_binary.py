@@ -81,6 +81,6 @@ def move_log_rule_file(branch_name):
         return
     else:
         os.system(f'mkdir -p {dir_location}')
-    shutil.move(log_path, final_path)
+    shutil.copy(log_path, final_path)
     print(f'{datetime.datetime.now()} - privado-core log rule moved')
 
