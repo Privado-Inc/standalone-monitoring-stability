@@ -40,7 +40,7 @@ def build_binary_and_move(repo, branch_name):
     os.system("cd " + core_dir + " && sbt clean && sbt stage")
     os.system("mkdir -p " + final_dir)
     os.system("mv " + binary_dir + " " + final_dir)
-    print(f'{datetime.datetime.now()} -Build Completed')
+    print(f'{datetime.datetime.now()} - Build Completed')
 
 
 def build_binary_and_move_for_joern(branch_name, core_dir):
