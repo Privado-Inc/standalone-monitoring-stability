@@ -67,9 +67,9 @@ def scan_repo_report(first_branch, second_branch, valid_repos, use_docker, gener
             else:
                 checkout_repo(rules_branches[0])
                 if generate_unique_flow:
-                    first_command = f'cd {cwd}/temp/binary/{first_branch}/bin && ./privado-core scan {scan_dir} -ic {cwd}/temp/privado --skip-upload --test-output -Dlog4j.configurationFile={cwd}/temp/log-rule/{first_branch}/log4j2.xml | tee -a {cwd}/temp/result/{first_branch}/{repo}-output.txt'
+                    first_command = f'cd {cwd}/temp/binary/{first_branch}/bin && ./privado-core scan {scan_dir} -ic {cwd}/temp/privado --skip-upload --test-output -Dlog4j.configurationFile={cwd}/temp/log-rule/{first_branch}/log4j2.xml 2>&1 | tee -a {cwd}/temp/result/{first_branch}/{repo}-output.txt'
                 else:
-                    first_command = f'cd {cwd}/temp/binary/{first_branch}/bin && ./privado-core scan {scan_dir} -ic {cwd}/temp/privado --skip-upload -Dlog4j.configurationFile={cwd}/temp/log-rule/{first_branch}/log4j2.xml | tee -a {cwd}/temp/result/{first_branch}/{repo}-output.txt'
+                    first_command = f'cd {cwd}/temp/binary/{first_branch}/bin && ./privado-core scan {scan_dir} -ic {cwd}/temp/privado --skip-upload -Dlog4j.configurationFile={cwd}/temp/log-rule/{first_branch}/log4j2.xml 2>&1 | tee -a {cwd}/temp/result/{first_branch}/{repo}-output.txt'
             
             # Execute the command to generate the binary file for first branch
             os.system(first_command)
@@ -98,9 +98,9 @@ def scan_repo_report(first_branch, second_branch, valid_repos, use_docker, gener
             else:
                 checkout_repo(rules_branches[1])
                 if generate_unique_flow:
-                    second_command = f'cd {cwd}/temp/binary/{second_branch}/bin && ./privado-core scan {scan_dir} -ic {cwd}/temp/privado --skip-upload --test-output -Dlog4j.configurationFile={cwd}/temp/log-rule/{second_branch}/log4j2.xml | tee -a {cwd}/temp/result/{second_branch}/{repo}-output.txt'
+                    second_command = f'cd {cwd}/temp/binary/{second_branch}/bin && ./privado-core scan {scan_dir} -ic {cwd}/temp/privado --skip-upload --test-output -Dlog4j.configurationFile={cwd}/temp/log-rule/{second_branch}/log4j2.xml 2>&1 | tee -a {cwd}/temp/result/{second_branch}/{repo}-output.txt'
                 else:
-                    second_command = f'cd {cwd}/temp/binary/{second_branch}/bin && ./privado-core scan {scan_dir} -ic {cwd}/temp/privado --skip-upload -Dlog4j.configurationFile={cwd}/temp/log-rule/{second_branch}/log4j2.xml | tee -a {cwd}/temp/result/{second_branch}/{repo}-output.txt'
+                    second_command = f'cd {cwd}/temp/binary/{second_branch}/bin && ./privado-core scan {scan_dir} -ic {cwd}/temp/privado --skip-upload -Dlog4j.configurationFile={cwd}/temp/log-rule/{second_branch}/log4j2.xml 2>&1 | tee -a {cwd}/temp/result/{second_branch}/{repo}-output.txt'
             
             language = get_detected_language(repo, first_branch)
             report["language"] = language
