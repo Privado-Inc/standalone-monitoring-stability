@@ -19,9 +19,9 @@ def build(first_branch, second_branch, skip_build = False):
         privado_repo = clone_repo_with_name("https://github.com/Privado-Inc/privado", f'{temp_dir}/privado', "privado")
 
     build_binary_and_move(repo, first_branch)
-    move_log_rule_file(first_branch)
+    move_log_rule_file(f'{pwd}/temp/privado-core/log4j2.xml', first_branch)
     build_binary_and_move(repo, second_branch)
-    move_log_rule_file(second_branch)
+    move_log_rule_file(f'{pwd}/temp/privado-core/log4j2.xml', second_branch)
 
 
 def build_binary_and_move(repo, branch_name):
@@ -72,9 +72,8 @@ def checkout_repo(branch_name):
         print(f'{datetime.datetime.now()} - {branch_name} + " doesn\'t exist: {e}')
 
 
-def move_log_rule_file(branch_name):
+def move_log_rule_file(log_path, branch_name):
     pwd = os.getcwd()
-    log_path = f'{pwd}/temp/privado-core/log4j2.xml'
     final_path = f'{pwd}/temp/log-rule/{branch_name}/log4j2.xml'
     dir_location = f'{pwd}/temp/log-rule/{branch_name}'
     if os.path.isfile(dir_location):
