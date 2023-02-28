@@ -31,7 +31,7 @@ parser.add_argument('-ju', '--joern-update', action='store_true')
 parser.add_argument('-rbb', '--rules-branch-base', default=None)
 parser.add_argument('-rbh', '--rules-branch-head', default=None)
 parser.add_argument('-urc', '--use-rule-compare', action='store_true')
-parser.add_argument('-dm', '--debug-mode')
+parser.add_argument('-dm', '--debug-mode', action='store_true')
 parser.set_defaults(feature=True)
 
 args: argparse.Namespace = parser.parse_args()
