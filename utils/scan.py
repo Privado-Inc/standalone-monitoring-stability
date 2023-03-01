@@ -45,7 +45,7 @@ def get_rules_branch(base_branch, head_branch, rules_branch_base, rules_branch_h
         return [rules_branch_base, rules_branch_head]
 
 
-def scan_repo_report(first_branch, second_branch, valid_repos, use_docker, generate_unique_flow, rules_branch_base, rules_branch_head):
+def scan_repo_report(first_branch, second_branch, valid_repos, use_docker, generate_unique_flow, rules_branch_base, rules_branch_head, debug_mode):
     cwd = os.getcwd()
 
     # To store  status - if it failed or completed, and for which branch
@@ -62,15 +62,9 @@ def scan_repo_report(first_branch, second_branch, valid_repos, use_docker, gener
         scan_dir = cwd + '/temp/repos/' + repo
         try:
             # Scan the cloned repo with first branch and push output to a file
-            if use_docker:
-                first_command = f'{get_docker_commands(first_branch, scan_dir)} | tee {cwd}/temp/result/{first_branch}/{repo}-output.txt'
-            else:
-                checkout_repo(rules_branches[0])
-                if generate_unique_flow:
-                    first_command = f'cd {cwd}/temp/binary/{first_branch}/bin && ./privado-core scan {scan_dir} -ic {cwd}/temp/privado --skip-upload --test-output -Dlog4j.configurationFile=log4j2.xml | tee {cwd}/temp/result/{first_branch}/{repo}-output.txt'
-                else:
-                    first_command = f'cd {cwd}/temp/binary/{first_branch}/bin && ./privado-core scan {scan_dir} -ic {cwd}/temp/privado --skip-upload -Dlog4j.configurationFile=log4j2.xml | tee {cwd}/temp/result/{first_branch}/{repo}-output.txt'
-            
+            first_command = build_command(cwd, first_branch, scan_dir, repo, generate_unique_flow, debug_mode,
+                                          use_docker, rules_branches[0])
+
             # Execute the command to generate the binary file for first branch
             os.system(first_command)
 
@@ -93,17 +87,12 @@ def scan_repo_report(first_branch, second_branch, valid_repos, use_docker, gener
                 report[first_branch] = {'scan_status': 'failed', 'scan_error_message': str(e)}
 
             # Scan the cloned repo with second branch and push output to a file with debug logs
-            if use_docker:
-                second_command = f'{get_docker_commands(second_branch, scan_dir)} | tee {cwd}/temp/result/{second_branch}/{repo}-output.txt'
-            else:
-                checkout_repo(rules_branches[1])
-                if generate_unique_flow:
-                    second_command = f'cd {cwd}/temp/binary/{second_branch}/bin && ./privado-core scan {scan_dir} -ic {cwd}/temp/privado --skip-upload --test-output -Dlog4j.configurationFile=log4j2.xml | tee {cwd}/temp/result/{second_branch}/{repo}-output.txt'
-                else:
-                    second_command = f'cd {cwd}/temp/binary/{second_branch}/bin && ./privado-core scan {scan_dir} -ic {cwd}/temp/privado --skip-upload -Dlog4j.configurationFile=log4j2.xml | tee {cwd}/temp/result/{second_branch}/{repo}-output.txt'
-            
+            second_command = build_command(cwd, second_branch, scan_dir, repo, generate_unique_flow, debug_mode,
+                                           use_docker, rules_branches[1])
+
             language = get_detected_language(repo, first_branch)
             report["language"] = language
+
             # Execute the command to generate the binary file for second branch
             os.system(second_command)
 
@@ -211,3 +200,21 @@ def parse_flows_data(repo_name, branch_name, scan_report):
     except Exception as e:
         print(f'{datetime.datetime.now()} - Error while parsing reachable flow time data: {e}')
         scan_report[repo_name][branch_name]['reachable_flow_time'] = '--'
+
+
+# Build the scan command
+def build_command(cwd, branch_name, scan_dir, repo, unique_flow, debug_mode, use_docker, checkout_branch):
+    if use_docker:
+        return f'{get_docker_commands(branch_name, scan_dir)} | tee {cwd}/temp/result/{branch_name}/{repo}-output.txt'
+
+    checkout_repo(checkout_branch)
+    command = [f'cd {cwd}/temp/binary/{branch_name}/bin && ./privado-core scan', scan_dir,
+               f'-ic {cwd}/temp/privado --skip-upload']
+
+    if unique_flow:
+        command.append('--test-output')
+    if debug_mode:
+        command.append(f'-Dlog4j.configurationFile={cwd}/temp/log-rule/{branch_name}/log4j2.xml')
+    command.append(f'2>&1 | tee -a {cwd}/temp/result/{branch_name}/{repo}-output.txt')
+
+    return ' '.join(command)
