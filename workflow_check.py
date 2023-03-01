@@ -60,7 +60,7 @@ def main(filepath):
         file = open(output_path, 'w')
 
         if len(results) == 0:
-            file.write("True")
+            file.write("true")
         else:
             file.writelines('\n'.join(results))
 
