@@ -29,7 +29,7 @@ def main(filepath):
                 values = line.split(" ")
                 print(values)
                 check = False
-                if int(values[5]) > 1000:
+                if int(values[-3]) > 1000:
                     results.append("Average scan time differance more than 1000 ms")
 
             if re.search(reachable_regex, line):
@@ -44,12 +44,12 @@ def main(filepath):
 
             if re.search(sink_regex, line):
                 values = line.split(" ")
-                if int(values[0]) != 0 or int(values[5]) != 0:
+                if int(values[0]) != 0 or int(values[-3]) != 0:
                     results.append("Missing Sink Detected")
 
             if re.search(source_sink_regex, line):
                 values = line.split(" ")
-                if int(values[0]) != 0 or int(values[6]) != 0:
+                if int(values[0]) != 0 or int(values[-3]) != 0:
                     results.append("Source to sink flow missing Detected")
 
         output_path = f'{os.getcwd()}/action_result.txt'
