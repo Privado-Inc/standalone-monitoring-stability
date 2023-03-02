@@ -3,6 +3,7 @@ import json
 import os
 import hashlib
 import datetime
+import config
 from utils.write_to_file import write_source_sink_data, write_path_data, write_performance_data, write_scan_status_report_for_file
 from utils.scan_metadata import get_subscan_metadata
 from utils.scan import generate_scan_status_data_for_file
@@ -95,16 +96,14 @@ def compare_files(base_file_uri, head_file_uri):
 
 def process_performance_data(worksheet_name, base_branch_name, head_branch_name, repo_name, language ,header_flag):
     result = []
-    subscan_headers = list(get_subscan_metadata(repo_name, head_branch_name, language).keys())
+    subscan_headers = list(get_subscan_metadata(repo_name, head_branch_name, config.HEAD_BRANCH_FILE_NAME, language).keys())
     if header_flag:
         result.append(subscan_headers)
     else:
         result.append([])
 
-
-
-    head_values = get_subscan_metadata(repo_name, head_branch_name, language)
-    base_values = get_subscan_metadata(repo_name, base_branch_name, language)
+    head_values = get_subscan_metadata(repo_name, head_branch_name, config.BASE_BRANCH_FILE_NAME, language)
+    base_values = get_subscan_metadata(repo_name, base_branch_name, config.HEAD_BRANCH_FILE_NAME, language)
 
     result.append(list(map(lambda x: head_values[x], subscan_headers)))
     result.append(list(map(lambda x: base_values[x], subscan_headers)))

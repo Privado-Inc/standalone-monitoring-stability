@@ -2,8 +2,6 @@ import os
 import re
 
 
-
-
 def get_metadata_pair(filepath):
     # Match all lines which contain WWh:XXm:YYs:ZZZms
     time_filter_regex = r".*(\d{1,2}h:\d{1,2}m:\d{1,2}s:\d{1,3}ms).*"
@@ -50,10 +48,10 @@ def get_metadata_pair(filepath):
                 yield tuple(tag_time_pair) # Generate output for each line
 
 
-def get_subscan_metadata(repo_name, branch, language):
+def get_subscan_metadata(repo_name, branch, branch_file_name, language):
     subscan_map = dict()
     cwd = os.getcwd()
-    filepath = f"{cwd}/temp/result/{branch}/{repo_name}-output.txt"
+    filepath = f"{cwd}/temp/result/{branch_file_name}/{repo_name}-output.txt"
 
     subscan_map["RepoName"] = repo_name
     subscan_map["language"] = language
@@ -85,7 +83,6 @@ def get_subscan_metadata(repo_name, branch, language):
         if (flow_count is not None):
             subscan_map[tag + " (time) "] = time # Changing key to avoid confusion between flow counts and time required for flow counts, and also to prevent overrides
             subscan_map[tag] = flow_count
-    
 
     # Moved down to sync values with headers
     if (re.search(r".*(Java).*", language)):

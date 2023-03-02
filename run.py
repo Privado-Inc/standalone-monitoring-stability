@@ -10,6 +10,7 @@ from utils.write_to_file import create_new_excel, write_scan_status_report, writ
 from utils.scan import get_detected_language, get_core_branch
 from utils.version_flow import check_update, build_binary_for_joern
 from utils.write_to_file import write_slack_summary
+import config
 import os
 import argparse
 import traceback
@@ -39,7 +40,7 @@ args: argparse.Namespace = parser.parse_args()
 
 def workflow():
 
-    print(f"Comparison script started at - {datetime.datetime.now()}")
+    print(f"{datetime.datetime.now()} - Comparison script started")
 
     # Cleanup action
     delete_action(args.nc, args.boost)
@@ -66,19 +67,28 @@ def workflow():
         if args.rules_branch_base is None or args.rules_branch_head is None:
             print("Please provide flags \"-rbb=\" and \"-rbh\" while using \"-urc\" flag")
             return
-        else:
-            branch_name = get_core_branch(args.base, args.head, args.rules_branch_base, args.rules_branch_head)
-            args.base = branch_name[0]
-            args.head = branch_name[1]
+        # else:
+        #     branch_name = get_core_branch(args.base, args.head, args.rules_branch_base, args.rules_branch_head)
+        #     args.base = branch_name[0]
+        #     args.head = branch_name[1]
+
+    config.init(args)
+
+    print(config.BASE_CORE_BRANCH_NAME)
+    print(config.HEAD_CORE_BRANCH_NAME)
+    print(config.BASE_RULE_BRANCH_NAME)
+    print(config.HEAD_RULE_BRANCH_NAME)
+    print(config.BASE_BRANCH_FILE_NAME)
+    print(config.HEAD_BRANCH_FILE_NAME)
 
     if not args.m:
-        base_worksheet_name = args.base.replace('/', '-')
-        head_worksheet_name = args.head.replace('/', '-')
+        base_worksheet_name = config.BASE_CORE_BRANCH_NAME.replace('/', '-')
+        head_worksheet_name = config.HEAD_CORE_BRANCH_NAME.replace('/', '-')
 
-    # check if branch name present in args
-    if args.base is None or args.head is None:
-        print(f"{datetime.datetime.now()} : Please provide flags '-h' and '-b' followed by value")
-        return
+    # # check if branch name present in args
+    # if args.base is None or args.head is None:
+    #     print(f"{datetime.datetime.now()} : Please provide flags '-h' and '-b' followed by value")
+    #     return
 
     cwd = os.getcwd()
 
@@ -97,7 +107,7 @@ def workflow():
 
     if not args.use_docker and not args.joern_update:
         # build the Privado binary for both branches
-        build(args.base, args.head,args.boost)
+        build(config.BASE_CORE_BRANCH_NAME, config.HEAD_RULE_BRANCH_NAME, args.boost)
 
     try:
         for repo_link in utils.repo_link_generator.generate_repo_link(args.repos):
@@ -123,12 +133,12 @@ def workflow():
 
         for repo_name in valid_repositories:
             try:
-                base_file = f'{cwd}/temp/result/{args.base}/{repo_name}.json'
-                head_file = f'{cwd}/temp/result/{args.head}/{repo_name}.json'
-                detected_language = get_detected_language(repo_name, args.base)
-                base_intermediate_file = f'{cwd}/temp/result/{args.base}/{repo_name}-intermediate.json'
-                head_intermediate_file = f'{cwd}/temp/result/{args.head}/{repo_name}-intermediate.json'
-                compare_and_generate_report(base_file, head_file, args.base, args.head, base_intermediate_file, head_intermediate_file, header_flag, scan_status, detected_language)
+                base_file = f'{cwd}/temp/result/{config.BASE_BRANCH_FILE_NAME}/{repo_name}.json'
+                head_file = f'{cwd}/temp/result/{config.HEAD_BRANCH_FILE_NAME}/{repo_name}.json'
+                detected_language = get_detected_language(repo_name, config.BASE_BRANCH_FILE_NAME)
+                base_intermediate_file = f'{cwd}/temp/result/{config.BASE_BRANCH_FILE_NAME}/{repo_name}-intermediate.json'
+                head_intermediate_file = f'{cwd}/temp/result/{config.HEAD_BRANCH_FILE_NAME}/{repo_name}-intermediate.json'
+                compare_and_generate_report(base_file, head_file, config.BASE_CORE_BRANCH_NAME, config.HEAD_CORE_BRANCH_NAME, base_intermediate_file, head_intermediate_file, header_flag, scan_status, detected_language)
 
                 scan_status[repo_name][args.base]['comparison_status'] = 'done'
                 scan_status[repo_name][args.base]['comparison_error_message'] = '--'
@@ -144,8 +154,6 @@ def workflow():
                 except Exception as e:
                     print("File not loaded")
                     print(e)
-
-
 
                 try:
                     source_data = process_sources(base_data['sources'], head_data['sources'], repo_name, detected_language) # Get the source data from the process_sources function

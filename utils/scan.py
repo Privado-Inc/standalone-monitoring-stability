@@ -4,6 +4,7 @@ import datetime
 from utils.build_binary import checkout_repo
 from utils.write_to_file import write_scan_status_report, create_new_excel, create_new_excel_for_file
 import re
+import config
 
 
 def get_detected_language(repo, branch):
@@ -24,25 +25,25 @@ def get_docker_commands(tag, repo_path):
         return f'PRIVADO_DEV=1 PRIVADO_TAG={tag} privado  {repo_path}'
 
 
-def get_core_branch(base_branch, head_branch, rules_branch_base, rules_branch_head):
-    if base_branch is None and head_branch is None:
-        if rules_branch_base == 'main' and rules_branch_head == 'dev':
-            return ['main', 'main']
-        else:
-            return ['dev', 'dev']
-    else:
-        return [base_branch, head_branch]
+# def get_core_branch(base_branch, head_branch, rules_branch_base, rules_branch_head):
+#     if base_branch is None and head_branch is None:
+#         if rules_branch_base == 'main' and rules_branch_head == 'dev':
+#             return ['main', 'main']
+#         else:
+#             return ['dev', 'dev']
+#     else:
+#         return [base_branch, head_branch]
 
 
-def get_rules_branch(base_branch, head_branch, rules_branch_base, rules_branch_head):
-    if rules_branch_base is None and rules_branch_head is None:
-        if base_branch == 'main':
-            return ['main', 'dev']
-        elif head_branch == 'main':
-            return ['dev', 'main']
-        return ['dev', 'dev']
-    else:
-        return [rules_branch_base, rules_branch_head]
+# def get_rules_branch(base_branch, head_branch, rules_branch_base, rules_branch_head):
+#     if rules_branch_base is None and rules_branch_head is None:
+#         if base_branch == 'main':
+#             return ['main', 'dev']
+#         elif head_branch == 'main':
+#             return ['dev', 'main']
+#         return ['dev', 'dev']
+#     else:
+#         return [rules_branch_base, rules_branch_head]
 
 
 def scan_repo_report(first_branch, second_branch, valid_repos, use_docker, generate_unique_flow, rules_branch_base, rules_branch_head, debug_mode):
@@ -50,29 +51,29 @@ def scan_repo_report(first_branch, second_branch, valid_repos, use_docker, gener
 
     # To store  status - if it failed or completed, and for which branch
     scan_report = dict()
-
-    rules_branches = get_rules_branch(first_branch, second_branch, rules_branch_base, rules_branch_head)
+    #
+    # rules_branches = get_rules_branch(first_branch, second_branch, rules_branch_base, rules_branch_head)
     # create dirs for results if not exist
-    if not os.path.isdir(cwd + '/temp/result/' + first_branch):
-        os.system('mkdir -p ' + cwd + '/temp/result/' + first_branch)
-    if not os.path.isdir(cwd + '/temp/result/' + second_branch):
-        os.system('mkdir -p ' + cwd + '/temp/result/' + second_branch)
+    if not os.path.isdir(cwd + '/temp/result/' + config.BASE_BRANCH_FILE_NAME):
+        os.system('mkdir -p ' + cwd + '/temp/result/' + config.BASE_BRANCH_FILE_NAME)
+    if not os.path.isdir(cwd + '/temp/result/' + config.HEAD_BRANCH_FILE_NAME):
+        os.system('mkdir -p ' + cwd + '/temp/result/' + config.HEAD_BRANCH_FILE_NAME)
 
     for repo in valid_repos:
         scan_dir = cwd + '/temp/repos/' + repo
         try:
             # Scan the cloned repo with first branch and push output to a file
             first_command = build_command(cwd, first_branch, scan_dir, repo, generate_unique_flow, debug_mode,
-                                          use_docker, rules_branches[0])
+                                          use_docker, config.BASE_RULE_BRANCH_NAME)
 
             # Execute the command to generate the binary file for first branch
             os.system(first_command)
 
             src_path = f'{scan_dir}/.privado/privado.json'
-            dest_path = f'{cwd}/temp/result/{first_branch}/{repo}.json'
+            dest_path = f'{cwd}/temp/result/{config.BASE_BRANCH_FILE_NAME}/{repo}.json'
 
             src_path_intermediate = f'{scan_dir}/.privado/intermediate.json'
-            dest_path_intermediate = f'{cwd}/temp/result/{first_branch}/{repo}-intermediate.json'
+            dest_path_intermediate = f'{cwd}/temp/result/{config.BASE_BRANCH_FILE_NAME}/{repo}-intermediate.json'
 
             if os.path.isfile(src_path_intermediate):
                 shutil.move(src_path_intermediate, dest_path_intermediate)
@@ -88,16 +89,16 @@ def scan_repo_report(first_branch, second_branch, valid_repos, use_docker, gener
 
             # Scan the cloned repo with second branch and push output to a file with debug logs
             second_command = build_command(cwd, second_branch, scan_dir, repo, generate_unique_flow, debug_mode,
-                                           use_docker, rules_branches[1])
+                                           use_docker, config.HEAD_RULE_BRANCH_NAME)
 
-            language = get_detected_language(repo, first_branch)
+            language = get_detected_language(repo, config.BASE_BRANCH_FILE_NAME)
             report["language"] = language
 
             # Execute the command to generate the binary file for second branch
             os.system(second_command)
 
-            dest_path = f'{cwd}/temp/result/{second_branch}/{repo}.json'
-            dest_path_intermediate = f'{cwd}/temp/result/{second_branch}/{repo}-intermediate.json'
+            dest_path = f'{cwd}/temp/result/{config.HEAD_BRANCH_FILE_NAME}/{repo}.json'
+            dest_path_intermediate = f'{cwd}/temp/result/{config.HEAD_BRANCH_FILE_NAME}/{repo}-intermediate.json'
 
             # move the intermediate result if exist
             if os.path.isfile(src_path_intermediate):
@@ -142,11 +143,11 @@ def generate_scan_status_data(scan_report, first_branch, second_branch):
     create_new_excel(f"{cwd}/output.xlsx", first_branch.replace('/', '-'), second_branch.replace('/', '-'))
 
     for repo in scan_report.keys():
-        parse_flows_data(repo, first_branch, scan_report)
-        parse_flows_data(repo, second_branch, scan_report)
+        parse_flows_data(repo, first_branch, config.BASE_BRANCH_FILE_NAME, scan_report)
+        parse_flows_data(repo, second_branch, config.HEAD_BRANCH_FILE_NAME, scan_report)
 
 
-def parse_flows_data(repo_name, branch_name, scan_report):
+def parse_flows_data(repo_name, branch_name, branch_file_name, scan_report):
 
     cwd = os.getcwd()
 
@@ -157,7 +158,7 @@ def parse_flows_data(repo_name, branch_name, scan_report):
     source_metadata_values = []
     reachable_by_flow_values = []
 
-    with open(f"{cwd}/temp/result/{branch_name}/{repo_name}-output.txt") as scan_time_output:
+    with open(f"{cwd}/temp/result/{branch_file_name}/{repo_name}-output.txt") as scan_time_output:
         for line in scan_time_output.readlines():
             if re.search(scan_metadata_regex, line):
                 scan_metadata_values.append(line)
@@ -203,18 +204,18 @@ def parse_flows_data(repo_name, branch_name, scan_report):
 
 
 # Build the scan command
-def build_command(cwd, branch_name, scan_dir, repo, unique_flow, debug_mode, use_docker, checkout_branch):
+def build_command(cwd, branch_name, branch_file_name, scan_dir, repo, unique_flow, debug_mode, use_docker, checkout_branch):
     if use_docker:
-        return f'{get_docker_commands(branch_name, scan_dir)} | tee {cwd}/temp/result/{branch_name}/{repo}-output.txt'
+        return f'{get_docker_commands(branch_name, scan_dir)} | tee {cwd}/temp/result/{branch_file_name}/{repo}-output.txt'
 
     checkout_repo(checkout_branch)
-    command = [f'cd {cwd}/temp/binary/{branch_name}/bin && ./privado-core scan', scan_dir,
+    command = [f'cd {cwd}/temp/binary/{branch_file_name}/bin && ./privado-core scan', scan_dir,
                f'-ic {cwd}/temp/privado --skip-upload']
 
     if unique_flow:
         command.append('--test-output')
     if debug_mode:
-        command.append(f'-Dlog4j.configurationFile={cwd}/temp/log-rule/{branch_name}/log4j2.xml')
-    command.append(f'2>&1 | tee -a {cwd}/temp/result/{branch_name}/{repo}-output.txt')
+        command.append(f'-Dlog4j.configurationFile={cwd}/temp/log-rule/{branch_file_name}/log4j2.xml')
+    command.append(f'2>&1 | tee -a {cwd}/temp/result/{branch_file_name}/{repo}-output.txt')
 
     return ' '.join(command)

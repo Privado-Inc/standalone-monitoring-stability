@@ -65,7 +65,7 @@ def build_binary_for_joern(versions):
         move_log_rule_file(f'{os.getcwd()}/temp/joern/first/privado-core/log4j2.xml', versions[0])
     except Exception as e:
         print(f'{datetime.datetime.now()} - Binary generation failed for joern version {versions[0]}: ', e)
-        write_slack_summary(f' Binary generation failed for joern version {versions[0]} \n {str(e)}')
+        write_slack_summary(f'Binary generation failed for joern version {versions[0]} \n {str(e)}')
         return False 
 
     try:
