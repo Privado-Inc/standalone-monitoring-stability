@@ -63,7 +63,7 @@ def scan_repo_report(first_branch, second_branch, valid_repos, use_docker, gener
         scan_dir = cwd + '/temp/repos/' + repo
         try:
             # Scan the cloned repo with first branch and push output to a file
-            first_command = build_command(cwd, first_branch, scan_dir, repo, generate_unique_flow, debug_mode,
+            first_command = build_command(cwd, first_branch, config.BASE_BRANCH_FILE_NAME, scan_dir, repo, generate_unique_flow, debug_mode,
                                           use_docker, config.BASE_RULE_BRANCH_NAME)
 
             # Execute the command to generate the binary file for first branch
@@ -88,7 +88,7 @@ def scan_repo_report(first_branch, second_branch, valid_repos, use_docker, gener
                 report[first_branch] = {'scan_status': 'failed', 'scan_error_message': str(e)}
 
             # Scan the cloned repo with second branch and push output to a file with debug logs
-            second_command = build_command(cwd, second_branch, scan_dir, repo, generate_unique_flow, debug_mode,
+            second_command = build_command(cwd, second_branch, config.HEAD_BRANCH_FILE_NAME, scan_dir, repo, generate_unique_flow, debug_mode,
                                            use_docker, config.HEAD_RULE_BRANCH_NAME)
 
             language = get_detected_language(repo, config.BASE_BRANCH_FILE_NAME)
