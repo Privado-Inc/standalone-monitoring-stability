@@ -180,14 +180,16 @@ def workflow():
                 head_file.close()
             except Exception as e:
                 print(f'{datetime.datetime.now()} - {repo_name}: comparison report not generating: {e}')
-                scan_status[repo_name][args.base]['comparison_status'] = 'failed'
-                scan_status[repo_name][args.base]['comparison_error_message'] = str(e)
-                scan_status[repo_name][args.head]['comparison_status'] = 'failed'
-                scan_status[repo_name][args.head]['comparison_error_message'] = str(e)
+                scan_status[repo_name][config.BASE_CORE_BRANCH_NAME]['comparison_status'] = 'failed'
+                scan_status[repo_name][config.BASE_CORE_BRANCH_NAME]['comparison_error_message'] = str(e)
+                scan_status[repo_name][config.HEAD_CORE_BRANCH_NAME]['comparison_status'] = 'failed'
+                scan_status[repo_name][config.HEAD_CORE_BRANCH_NAME]['comparison_error_message'] = str(e)
             header_flag = False
 
-        write_scan_status_report(f'{cwd}/output.xlsx', args.base, args.head, scan_status)
-        write_summary_data(f'{cwd}/output.xlsx', args.base, args.head, scan_status, source_count, flow_data)
+        write_scan_status_report(f'{cwd}/output.xlsx', config.BASE_CORE_BRANCH_NAME, config.HEAD_CORE_BRANCH_NAME,
+                                 scan_status)
+        write_summary_data(f'{cwd}/output.xlsx', config.BASE_CORE_BRANCH_NAME, config.HEAD_CORE_BRANCH_NAME,
+                           scan_status, source_count, flow_data)
 
         if args.upload or args.joern_update:
             post_report_to_slack(True)
