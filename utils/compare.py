@@ -9,12 +9,24 @@ from utils.scan_metadata import get_subscan_metadata
 from utils.scan import generate_scan_status_data_for_file
 
 
-def main(base_file, head_file,base_branch_name, head_branch_name, base_intermediate_file, head_intermediate_file, header_flag, scan_status, language):
+def main(base_file, head_file, base_branch_name, head_branch_name, base_intermediate_file, head_intermediate_file, header_flag, scan_status, language):
     try:
         base_file.split('/')[-1].split('.')[0]
     except Exception as e:
         print(f'{datetime.datetime.now()} - Please enter a valid file: {e}')
         return
+
+    print("-------")
+    print(base_file)
+    print(head_file)
+    print(base_branch_name)
+    print(head_branch_name)
+    print(base_intermediate_file)
+    print(head_intermediate_file)
+    print(header_flag)
+    print(scan_status)
+    print(language)
+    print("-----")
 
     base_file = open(base_file)
     head_file = open(head_file)
