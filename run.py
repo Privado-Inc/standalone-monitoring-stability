@@ -140,10 +140,10 @@ def workflow():
                 head_intermediate_file = f'{cwd}/temp/result/{config.HEAD_BRANCH_FILE_NAME}/{repo_name}-intermediate.json'
                 compare_and_generate_report(base_file, head_file, config.BASE_CORE_BRANCH_NAME, config.HEAD_CORE_BRANCH_NAME, base_intermediate_file, head_intermediate_file, header_flag, scan_status, detected_language)
 
-                scan_status[repo_name][args.base]['comparison_status'] = 'done'
-                scan_status[repo_name][args.base]['comparison_error_message'] = '--'
-                scan_status[repo_name][args.head]['comparison_status'] = 'done'
-                scan_status[repo_name][args.head]['comparison_error_message'] = '--'
+                scan_status[repo_name][config.BASE_CORE_BRANCH_NAME]['comparison_status'] = 'done'
+                scan_status[repo_name][config.BASE_CORE_BRANCH_NAME]['comparison_error_message'] = '--'
+                scan_status[repo_name][config.HEAD_CORE_BRANCH_NAME]['comparison_status'] = 'done'
+                scan_status[repo_name][config.HEAD_CORE_BRANCH_NAME]['comparison_error_message'] = '--'
 
                 try:
                     base_file = open(base_file)
@@ -160,7 +160,7 @@ def workflow():
                     storage_data = process_sinks(base_data['dataFlow'], head_data['dataFlow'], repo_name,scan_status ,detected_language, key='storages')
                     third_parties_data = process_sinks(base_data['dataFlow'], head_data['dataFlow'], repo_name,scan_status ,detected_language, key='third_parties')
                     leakages_data = process_sinks(base_data['dataFlow'], head_data['dataFlow'], repo_name,scan_status ,detected_language, key='leakages')
-                    flow_report = process_path_analysis(f'{head_worksheet_name}-{base_worksheet_name}-flow-report', base_data, head_data, repo_name, args.base, args.head, detected_language, False)
+                    flow_report = process_path_analysis(f'{head_worksheet_name}-{base_worksheet_name}-flow-report', base_data, head_data, repo_name, config.BASE_CORE_BRANCH_NAME, config.HEAD_CORE_BRANCH_NAME, detected_language, False)
                     missing_flow_head = flow_report[0][-2]
                     additional_flow_head = flow_report[0][-3]
                     matching_flows = 0
@@ -174,7 +174,7 @@ def workflow():
                     print(e)
 
                 flow_data[repo_name] = dict({'missing': missing_flow_head, 'additional': additional_flow_head, 'hundred_missing': hundred_percent_missing_repos, 'matching_flows': True if flow_report[0][-3] == 0 else False})
-                source_count[repo_name] = dict({args.base: source_data[5], args.head: source_data[4]})
+                source_count[repo_name] = dict({config.BASE_CORE_BRANCH_NAME: source_data[5], config.HEAD_CORE_BRANCH_NAME: source_data[4]})
 
                 base_file.close()
                 head_file.close()
