@@ -1,1 +1,4 @@
 https://github.com/afsalashyana/Library-Assistant.git
+https://github.com/hiteshbedre/BookStoreApp-Distributed-Application.git
+https://github.com/ShiftLeftSecurity/shiftleft-java-demo.git
+https://github.com/shashirajraja/shopping-cart.git
