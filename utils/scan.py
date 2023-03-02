@@ -46,7 +46,7 @@ def get_docker_commands(tag, repo_path):
 #         return [rules_branch_base, rules_branch_head]
 
 
-def scan_repo_report(first_branch, second_branch, valid_repos, use_docker, generate_unique_flow, rules_branch_base, rules_branch_head, debug_mode):
+def scan_repo_report(first_branch, second_branch, valid_repos, use_docker, generate_unique_flow, debug_mode):
     cwd = os.getcwd()
 
     # To store  status - if it failed or completed, and for which branch
