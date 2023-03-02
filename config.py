@@ -27,7 +27,7 @@ def init(args):
     HEAD_RULE_BRANCH_NAME = rule_branch_name[1]
 
     resolve_core_branch_file_name(BASE_CORE_BRANCH_NAME, HEAD_CORE_BRANCH_NAME, BASE_RULE_BRANCH_NAME,
-                                  HEAD_RULE_BRANCH_NAME)
+                                  HEAD_RULE_BRANCH_NAME, args.use_rule_compare)
 
 
 def resolve_core_branch_file_name(core_base_branch_name, core_head_branch_name, rules_base_branch_name, rules_head_branch_name, rule_compare):
