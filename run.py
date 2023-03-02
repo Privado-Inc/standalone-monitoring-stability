@@ -7,7 +7,7 @@ from utils.build_binary import build
 from utils.delete import delete_action, clean_after_scan
 from utils.clone_repo import clone_repo_with_location
 from utils.write_to_file import create_new_excel, write_scan_status_report, write_summary_data
-from utils.scan import get_detected_language, get_core_branch
+from utils.scan import get_detected_language
 from utils.version_flow import check_update, build_binary_for_joern
 from utils.write_to_file import write_slack_summary
 import config
