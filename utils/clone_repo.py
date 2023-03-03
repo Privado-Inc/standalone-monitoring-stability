@@ -21,7 +21,7 @@ def clone_repo_with_name(repo_path, location, name):
         print(f'{datetime.datetime.now()} - Cloned Successfully for {name}')
         return repo
     except Exception as e:
-        print(f'{datetime.datetime.now()} - Error While Cloning {repo_path} : str(e)')
+        print(f'{datetime.datetime.now()} - Error While Cloning {repo_path} : {str(e)}')
 
 
 def copy_directory(src, dst):
