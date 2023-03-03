@@ -85,7 +85,7 @@ def workflow():
     #     return
 
     # Delete previously scanned Excel report if exist
-    excel_report_location = builder.get_output_path()
+    excel_report_location = config.OUTPUT_FILE_NAME
     if os.path.isfile(excel_report_location):
         os.remove(excel_report_location)
 
