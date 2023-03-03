@@ -12,6 +12,9 @@ def clone_repo_with_location(repo_path, location, git_url: bool):
 
 
 def clone_repo_with_name(repo_path, location, name):
+    print(repo_path)
+    print(location)
+    print(name)
     try:
         print(f'{datetime.datetime.now()} - Cloning {name}')
         repo = Repo.clone_from(repo_path, location)
