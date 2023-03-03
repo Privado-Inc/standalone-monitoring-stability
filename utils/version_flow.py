@@ -1,5 +1,7 @@
 import os
 import datetime
+import builder
+import config
 from utils.clone_repo import clone_repo_with_name
 from utils.build_binary import build_binary_and_move_for_joern, move_log_rule_file
 from utils.write_to_file import write_slack_summary
@@ -13,18 +15,18 @@ def check_update():
         os.mkdir(temp_dir)
 
     # clone the first privado-core
-    clone_repo_with_name("https://github.com/Privado-Inc/privado-core", f'{temp_dir}/joern/first/privado-core', "privado-core")
+    clone_repo_with_name(config.PRIVADO_CORE_URL, builder.get_joern_privado_path("first"), "privado-core")
 
     # clone second privado-core, used for updating the dependencies
-    clone_repo_with_name("https://github.com/Privado-Inc/privado-core", f'{temp_dir}/joern/second/privado-core', "privado-core")
+    clone_repo_with_name(config.PRIVADO_CORE_URL, builder.get_joern_privado_path("second"), "privado-core")
 
     # clone privado for rules
-    clone_repo_with_name("https://github.com/Privado-Inc/privado", f'{temp_dir}/privado', "privado")
+    clone_repo_with_name(config.PRIVADO_URL, builder.get_privado_path(), "privado")
 
     # change the permission
-    os.system(f'chmod 777 {temp_dir}/joern/second/privado-core/updateDependencies.sh')
+    os.system(f'chmod 777 {builder.get_joern_update_file_path("second")}')
 
-    check_command = f'cd {temp_dir}/joern/second/privado-core/ && ./updateDependencies.sh --non-interactive'
+    check_command = f'cd {builder.get_joern_privado_path("second")} && ./updateDependencies.sh --non-interactive'
     output = os.popen(check_command).read()
     update_require = is_update_require(output)
 

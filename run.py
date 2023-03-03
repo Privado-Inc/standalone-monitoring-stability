@@ -10,6 +10,7 @@ from utils.write_to_file import create_new_excel, write_scan_status_report, writ
 from utils.scan import get_detected_language
 from utils.version_flow import check_update, build_binary_for_joern
 from utils.write_to_file import write_slack_summary
+import builder
 import config
 import os
 import argparse
@@ -46,8 +47,8 @@ def workflow():
     delete_action(args.nc, args.boost)
 
     # Remove slack summary if already present
-    if os.path.isfile(f'{os.getcwd()}/slack_summary.txt'):
-        os.system(f'rm {os.getcwd()}/slack_summary.txt')
+    if os.path.isfile(builder.SLACK_SUMMARY_PATH):
+        os.system(f'rm {builder.SLACK_SUMMARY_PATH}')
 
     if args.joern_update:
         versions = check_update()
@@ -74,13 +75,6 @@ def workflow():
 
     config.init(args)
 
-    print(config.BASE_CORE_BRANCH_NAME)
-    print(config.HEAD_CORE_BRANCH_NAME)
-    print(config.BASE_RULE_BRANCH_NAME)
-    print(config.HEAD_RULE_BRANCH_NAME)
-    print(config.BASE_BRANCH_FILE_NAME)
-    print(config.HEAD_BRANCH_FILE_NAME)
-
     if not args.m:
         base_worksheet_name = config.BASE_CORE_BRANCH_NAME.replace('/', '-')
         head_worksheet_name = config.HEAD_CORE_BRANCH_NAME.replace('/', '-')
@@ -90,10 +84,8 @@ def workflow():
     #     print(f"{datetime.datetime.now()} : Please provide flags '-h' and '-b' followed by value")
     #     return
 
-    cwd = os.getcwd()
-
     # Delete previously scanned Excel report if exist
-    excel_report_location = f'{cwd}/output.xlsx'
+    excel_report_location = builder.get_output_path()
     if os.path.isfile(excel_report_location):
         os.remove(excel_report_location)
 
@@ -119,7 +111,7 @@ def workflow():
                 traceback.print_exc()
                 continue
 
-            location = cwd + "/temp/repos/" + repo_name
+            location = builder.get_repo_path(repo_name)
             os.system("mkdir -p " + location)
             clone_repo_with_location(repo_link, location, is_git_url)
             valid_repositories.append(repo_name)
@@ -133,11 +125,11 @@ def workflow():
 
         for repo_name in valid_repositories:
             try:
-                base_file = f'{cwd}/temp/result/{config.BASE_BRANCH_FILE_NAME}/{repo_name}.json'
-                head_file = f'{cwd}/temp/result/{config.HEAD_BRANCH_FILE_NAME}/{repo_name}.json'
+                base_file = builder.get_result_path(config.BASE_BRANCH_FILE_NAME, repo_name)
+                head_file = builder.get_result_path(config.HEAD_BRANCH_FILE_NAME, repo_name)
                 detected_language = get_detected_language(repo_name, config.BASE_BRANCH_FILE_NAME)
-                base_intermediate_file = f'{cwd}/temp/result/{config.BASE_BRANCH_FILE_NAME}/{repo_name}-intermediate.json'
-                head_intermediate_file = f'{cwd}/temp/result/{config.HEAD_BRANCH_FILE_NAME}/{repo_name}-intermediate.json'
+                base_intermediate_file = builder.get_intermediate_path(config.BASE_BRANCH_FILE_NAME, repo_name)
+                head_intermediate_file = builder.get_intermediate_path(config.HEAD_BRANCH_FILE_NAME, repo_name)
                 compare_and_generate_report(base_file, head_file, config.BASE_CORE_BRANCH_NAME, config.HEAD_CORE_BRANCH_NAME, base_intermediate_file, head_intermediate_file, header_flag, scan_status, detected_language)
 
                 scan_status[repo_name][config.BASE_CORE_BRANCH_NAME]['comparison_status'] = 'done'
@@ -186,9 +178,9 @@ def workflow():
                 scan_status[repo_name][config.HEAD_CORE_BRANCH_NAME]['comparison_error_message'] = str(e)
             header_flag = False
 
-        write_scan_status_report(f'{cwd}/output.xlsx', config.BASE_CORE_BRANCH_NAME, config.HEAD_CORE_BRANCH_NAME,
+        write_scan_status_report(builder.OUTPUT_PATH, config.BASE_CORE_BRANCH_NAME, config.HEAD_CORE_BRANCH_NAME,
                                  scan_status)
-        write_summary_data(f'{cwd}/output.xlsx', config.BASE_CORE_BRANCH_NAME, config.HEAD_CORE_BRANCH_NAME,
+        write_summary_data(builder.OUTPUT_PATH, config.BASE_CORE_BRANCH_NAME, config.HEAD_CORE_BRANCH_NAME,
                            scan_status, source_count, flow_data)
 
         if args.upload or args.joern_update:

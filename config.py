@@ -1,4 +1,3 @@
-
 BASE_CORE_BRANCH_NAME = None
 HEAD_CORE_BRANCH_NAME = None
 
@@ -7,6 +6,13 @@ HEAD_RULE_BRANCH_NAME = None
 
 BASE_BRANCH_FILE_NAME = None
 HEAD_BRANCH_FILE_NAME = None
+
+SLACK_SUMMARY_FILE_NAME = "slack_summary.txt"
+OUTPUT_FILE_NAME = "output.xlsx"
+PRIVADO_CORE_URL = "https://github.com/Privado-Inc/privado-core"
+PRIVADO_URL = "https://github.com/Privado-Inc/privado"
+
+
 
 def init(args):
     global BASE_CORE_BRANCH_NAME, HEAD_CORE_BRANCH_NAME, BASE_RULE_BRANCH_NAME, HEAD_RULE_BRANCH_NAME
