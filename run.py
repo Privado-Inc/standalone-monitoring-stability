@@ -197,7 +197,8 @@ def workflow():
         print(f"{datetime.datetime.now()} - An exception occurred {str(e)}")
 
     finally:
-        clean_after_scan(args.boost)
+        print("DONE")
+        # clean_after_scan(args.boost)
 
 
 workflow()
