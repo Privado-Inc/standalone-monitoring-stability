@@ -198,7 +198,7 @@ def workflow():
 
     finally:
         print("DONE")
-        # clean_after_scan(args.boost)
+        clean_after_scan(args.boost)
 
 
 workflow()
