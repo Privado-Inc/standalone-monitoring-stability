@@ -6,7 +6,7 @@ from utils.clone_repo import clone_repo_with_name
 import config
 
 
-def build(first_branch, second_branch, skip_build = False):
+def build(skip_build = False):
     if skip_build and os.path.exists(f"{os.getcwd()}/temp/binary"):
         return
     pwd = os.getcwd()
@@ -19,10 +19,10 @@ def build(first_branch, second_branch, skip_build = False):
     if not os.path.isdir(f'{temp_dir}/privado'):
         privado_repo = clone_repo_with_name("https://github.com/Privado-Inc/privado", f'{temp_dir}/privado', "privado")
 
-    build_binary_and_move(repo, first_branch, config.BASE_BRANCH_FILE_NAME)
-    move_log_rule_file(f'{pwd}/temp/privado-core/log4j2.xml', config.BASE_BRANCH_FILE_NAME)
-    build_binary_and_move(repo, second_branch, config.HEAD_BRANCH_FILE_NAME)
-    move_log_rule_file(f'{pwd}/temp/privado-core/log4j2.xml', config.HEAD_BRANCH_FILE_NAME)
+    build_binary_and_move(repo, config.BASE_CORE_BRANCH_NAME, config.BASE_CORE_BRANCH_KEY)
+    move_log_rule_file(f'{pwd}/temp/privado-core/log4j2.xml', config.BASE_CORE_BRANCH_KEY)
+    build_binary_and_move(repo, config.BASE_CORE_BRANCH_NAME, config.HEAD_CORE_BRANCH_KEY)
+    move_log_rule_file(f'{pwd}/temp/privado-core/log4j2.xml', config.HEAD_CORE_BRANCH_KEY)
 
 
 def build_binary_and_move(repo, branch_name, branch_file_name):
@@ -35,8 +35,8 @@ def build_binary_and_move(repo, branch_name, branch_file_name):
         repo.git.checkout(branch_name)
         o = repo.remotes.origin
         o.pull()
-    except Exception:
-        print(f'{datetime.datetime.now()} - branch_name + " doesn\'t exist')
+    except Exception as e:
+        print(f'{datetime.datetime.now()} - branch_name + " doesn\'t exist: {str(e)}')
     print(f'{datetime.datetime.now()} - Buliding Privado Binary for {branch_name}')
     os.system("cd " + core_dir + " && sbt clean && sbt stage")
     os.system("mkdir -p " + final_dir)

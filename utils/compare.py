@@ -3,24 +3,25 @@ import json
 import os
 import hashlib
 import datetime
+import builder
 import config
 from utils.write_to_file import write_source_sink_data, write_path_data, write_performance_data, write_scan_status_report_for_file
 from utils.scan_metadata import get_subscan_metadata
 from utils.scan import generate_scan_status_data_for_file
 
 
-def main(base_file, head_file, base_branch_name, head_branch_name, base_intermediate_file, head_intermediate_file, header_flag, scan_status, language):
+def main(base_file, head_file, base_intermediate_file, head_intermediate_file, header_flag, scan_status, language):
     try:
         base_file.split('/')[-1].split('.')[0]
     except Exception as e:
-        print(f'{datetime.datetime.now()} - Please enter a valid file: {e}')
+        print(f'{builder.get_current_time()} - Please enter a valid file: {e}')
         return
 
     print("-------")
     print(base_file)
     print(head_file)
-    print(base_branch_name)
-    print(head_branch_name)
+    # print(base_branch_name)
+    # print(head_branch_name)
     print(base_intermediate_file)
     print(head_intermediate_file)
     print(header_flag)
@@ -36,16 +37,15 @@ def main(base_file, head_file, base_branch_name, head_branch_name, base_intermed
 
     repo_name = base_data['repoName']
 
-    head_branch_worksheet_name = head_branch_name.replace('/', '-')
-    base_branch_worksheet_name = base_branch_name.replace('/', '-')
+    head_branch_worksheet_name = config.HEAD_CORE_BRANCH_KEY.replace('/', '-')
+    base_branch_worksheet_name = config.BASE_CORE_BRANCH_KEY.replace('/', '-')
 
-    process_source_sink_and_collection_data(f'{head_branch_worksheet_name}-{base_branch_worksheet_name}-source-&-sink-report', base_data,
-                                            head_data, base_branch_name, head_branch_name, repo_name, header_flag,
-                                            scan_status, language)
+    process_source_sink_and_collection_data(f'{head_branch_worksheet_name}-{base_branch_worksheet_name}-source-&-sink-report',
+                                            base_data, head_data, repo_name,
+                                            header_flag, scan_status, language)
 
-
-    process_path_analysis(f'{head_branch_worksheet_name}-{base_branch_worksheet_name}-flow-report', base_data, head_data, repo_name,
-                          base_branch_name, head_branch_name, language, header_flag)
+    process_path_analysis(f'{head_branch_worksheet_name}-{base_branch_worksheet_name}-flow-report', base_data,
+                          head_data, repo_name, language, header_flag)
 
     if os.path.isfile(base_intermediate_file) and os.path.isfile(head_intermediate_file):
         base_intermediate_file = open(base_intermediate_file)
@@ -54,14 +54,14 @@ def main(base_file, head_file, base_branch_name, head_branch_name, base_intermed
         base_intermediate_data = json.load(base_intermediate_file)
         head_intermediate_data = json.load(head_intermediate_file)
 
-        process_unique_path_analysis(f'{head_branch_worksheet_name}-{base_branch_worksheet_name}-unique-flow-report', base_intermediate_data,
-                                     head_intermediate_data, repo_name, base_branch_name, head_branch_name, header_flag, language)
+        process_unique_path_analysis(f'{head_branch_worksheet_name}-{base_branch_worksheet_name}-unique-flow-report',
+                                     base_intermediate_data, head_intermediate_data, repo_name, header_flag, language)
 
         base_intermediate_file.close()
         head_intermediate_file.close()
 
-    process_performance_data(f'{head_branch_worksheet_name}-{base_branch_worksheet_name}-performance-report', base_branch_name,
-                             head_branch_name, repo_name, language ,header_flag)
+    process_performance_data(f'{head_branch_worksheet_name}-{base_branch_worksheet_name}-performance-report', repo_name,
+                             language, header_flag)
 
     base_file.close()
     head_file.close()
@@ -70,11 +70,11 @@ def main(base_file, head_file, base_branch_name, head_branch_name, base_intermed
 # when only need to compare the Privado.json file
 def compare_files(base_file_uri, head_file_uri):
     if not os.path.isfile(base_file_uri):
-        print(f'{datetime.datetime.now()} - Please provide complete valid base file: {base_file_uri}')
+        print(f'{builder.get_current_time()} - Please provide complete valid base file: {base_file_uri}')
         return
 
     if not os.path.isfile(head_file_uri):
-        print(f'{datetime.datetime.now()} - Please provide complete valid head file: {head_file_uri}')
+        print(f'{builder.get_current_time()} - Please provide complete valid head file: {head_file_uri}')
         return
 
     base_file = open(base_file_uri)
@@ -91,29 +91,26 @@ def compare_files(base_file_uri, head_file_uri):
     status_report_data = generate_scan_status_data_for_file(repo_name, base_file_uri, head_file_uri)
     write_scan_status_report_for_file(f'{os.getcwd()}/output.xlsx', "First", "Second", status_report_data)
 
-    # Create empty Excel file
-    excel_report_location = f'{os.getcwd()}/output.xlsx'
-    # create_new_excel(excel_report_location, "First", "Second")
-
-    process_source_sink_and_collection_data('source-&-sink-report', base_data, head_data, "First", "Second", repo_name,
+    process_source_sink_and_collection_data('source-&-sink-report', base_data, head_data, repo_name,
                                             True, None, None)
 
-    process_path_analysis('flow-report', base_data, head_data, repo_name, "First", "Second", True, None)
+    process_path_analysis('flow-report', base_data, head_data, repo_name, "NA", True, True)
 
     base_file.close()
     head_file.close()
 
 
-def process_performance_data(worksheet_name, base_branch_name, head_branch_name, repo_name, language ,header_flag):
+def process_performance_data(worksheet_name, repo_name, language, header_flag):
     result = []
-    subscan_headers = list(get_subscan_metadata(repo_name, head_branch_name, config.HEAD_BRANCH_FILE_NAME, language).keys())
+    subscan_headers = list(get_subscan_metadata(repo_name, config.HEAD_CORE_BRANCH_NAME, config.HEAD_CORE_BRANCH_KEY,
+                                                language).keys())
     if header_flag:
         result.append(subscan_headers)
     else:
         result.append([])
 
-    head_values = get_subscan_metadata(repo_name, head_branch_name, config.BASE_BRANCH_FILE_NAME, language)
-    base_values = get_subscan_metadata(repo_name, base_branch_name, config.HEAD_BRANCH_FILE_NAME, language)
+    head_values = get_subscan_metadata(repo_name, config.BASE_CORE_BRANCH_NAME, config.BASE_CORE_BRANCH_KEY, language)
+    base_values = get_subscan_metadata(repo_name, config.HEAD_CORE_BRANCH_NAME, config.HEAD_CORE_BRANCH_KEY, language)
 
     result.append(list(map(lambda x: head_values[x], subscan_headers)))
     result.append(list(map(lambda x: base_values[x], subscan_headers)))
@@ -147,7 +144,6 @@ def process_collection(collections_base, collections_head, collection_name, repo
     collection_set_base = set(collections_sources_base)
     collection_set_head = set(collections_sources_head)
 
-
     latest = '\n'.join(list(collection_set_head.difference(collection_set_base)))
     removed = '\n'.join(list(collection_set_base.difference(collection_set_head)))
 
@@ -157,8 +153,8 @@ def process_collection(collections_base, collections_head, collection_name, repo
     # No of nodes in base, but not in head
     missing_head = len(collection_set_base.union(collection_set_head).difference(collection_set_head))
 
-    return [repo_name, language ,'Collection', collection_name, head_collections, base_collections, collections_sources_head,
-            collections_sources_base, '0', latest, removed, missing_head]
+    return [repo_name, language, 'Collection', collection_name, head_collections, base_collections,
+            collections_sources_head, collections_sources_base, '0', latest, removed, missing_head]
 
 
 def create_csv(data):
@@ -171,25 +167,33 @@ def create_csv(data):
     print(f'{datetime.datetime.now()} - Report written and exported to: {cwd}/comparison_report.csv')
 
 
-def process_source_sink_and_collection_data(worksheet_name, base_data, head_data, base_branch_name, head_branch_name, repo_name, header_flag, scan_status, language):
+def process_source_sink_and_collection_data(worksheet_name, base_data, head_data, repo_name, header_flag, scan_status,
+                                            language):
     result = []
 
     if header_flag:
-        result.append(['Repo', 'language' ,'Category', 'Sub Category', f'Number of Node ( {head_branch_name} )',
-                       f'Number of Node ( {base_branch_name} )', f'List of Node {head_branch_name}',
-                       f'List of Node {base_branch_name}', '% Change', f'New Node added in {head_branch_name}',
-                       f'List of Node Missing in {head_branch_name}', f'Number of missing nodes in {head_branch_name}'])
+        result.append(['Repo', 'language', 'Category', 'Sub Category',
+                       f'Number of Node ( {config.HEAD_SHEET_BRANCH_NAME} )',
+                       f'Number of Node ( {config.BASE_SHEET_BRANCH_NAME} )',
+                       f'List of Node {config.HEAD_SHEET_BRANCH_NAME}',
+                       f'List of Node {config.HEAD_SHEET_BRANCH_NAME}',
+                       '% Change', f'New Node added in {config.HEAD_SHEET_BRANCH_NAME}',
+                       f'List of Node Missing in {config.HEAD_SHEET_BRANCH_NAME}',
+                       f'Number of missing nodes in {config.HEAD_SHEET_BRANCH_NAME}'])
 
     # Analysis for the Source
     result.append(process_sources(base_data['sources'], head_data['sources'], repo_name, language))
     # Analysis for the storages sink
-    result.append(process_sinks(base_data['dataFlow'], head_data['dataFlow'], repo_name, scan_status,language ,key='storages'))
+    result.append(process_sinks(base_data['dataFlow'], head_data['dataFlow'], repo_name, scan_status, language,
+                                key='storages'))
     # Analysis for the third party sink
-    result.append(process_sinks(base_data['dataFlow'], head_data['dataFlow'], repo_name, scan_status,language ,key='third_parties'))
+    result.append(process_sinks(base_data['dataFlow'], head_data['dataFlow'], repo_name, scan_status, language,
+                                key='third_parties'))
     # Analysis for the leakage sink
-    result.append(process_sinks(base_data['dataFlow'], head_data['dataFlow'], repo_name, scan_status,language ,key='leakages'))
+    result.append(process_sinks(base_data['dataFlow'], head_data['dataFlow'], repo_name, scan_status, language,
+                                key='leakages'))
     # Analysis for the collections
-    for row in top_level_collection_processor(base_data['collections'], head_data['collections'],repo_name, language):
+    for row in top_level_collection_processor(base_data['collections'], head_data['collections'], repo_name, language):
         result.append(row)
 
     # Export the result in new sheet Excel sheet
@@ -261,12 +265,9 @@ def process_sinks(base_dataflows, head_dataflows, repo_name, scan_status, langua
     return [repo_name, language ,'Sink', key, head_sink_count, base_sink_count, sink_names_head, sink_names_base, '0',
             added, removed, missing_in_head]
 
-    # return result
 
-
-def process_path_analysis(worksheet_name, base_source, head_source, repo_name, base_branch_name, head_branch_name, language ,header_flag, write_report=True):
+def process_path_analysis(worksheet_name, base_source, head_source, repo_name, language, header_flag, write_report=True):
     result = []
-
 
     total_flow_head = 0
     total_flow_base = 0
@@ -274,8 +275,7 @@ def process_path_analysis(worksheet_name, base_source, head_source, repo_name, b
     total_missing_flow = 0
 
     for i in ['storages', 'leakages', 'third_parties']:
-        value = sub_process_path(base_source['dataFlow'][i], head_source['dataFlow'][i], i, base_branch_name,
-                                 head_branch_name, repo_name, language)
+        value = sub_process_path(base_source['dataFlow'][i], head_source['dataFlow'][i], i, repo_name, language)
         for j in value[0]:
             result.append(j)
 
@@ -290,37 +290,42 @@ def process_path_analysis(worksheet_name, base_source, head_source, repo_name, b
     else:
         percent_delta = f"{round((((total_additional_flow + total_missing_flow) / (total_flow_head + total_missing_flow)) * 100), 2)}%"
 
-    result.insert(0, [repo_name, language , 'Total', 'All', 'All', total_flow_head, total_flow_base, total_additional_flow,
-                      total_missing_flow, percent_delta])
+    result.insert(0, [repo_name, language, 'Total', 'All', 'All', total_flow_head, total_flow_base,
+                      total_additional_flow, total_missing_flow, percent_delta])
 
     if header_flag:
-        result.insert(0, ['Repo Name', 'language' ,'Sink Category', 'Source', 'Sink', head_branch_name, base_branch_name,
-                       f'Additional in {head_branch_name}', f'Missing in {head_branch_name}', 'Delta in %',
-                       f'Additional Path Id in {head_branch_name}', f'Missing Path ID in {head_branch_name}'])
+        result.insert(0, ['Repo Name', 'language', 'Sink Category', 'Source', 'Sink', config.HEAD_SHEET_BRANCH_NAME,
+                          config.BASE_SHEET_BRANCH_NAME, f'Additional in {config.HEAD_SHEET_BRANCH_NAME}',
+                          f'Missing in {config.HEAD_SHEET_BRANCH_NAME}', 'Delta in %',
+                          f'Additional Path Id in {config.HEAD_SHEET_BRANCH_NAME}',
+                          f'Missing Path ID in {config.HEAD_SHEET_BRANCH_NAME}'])
 
-    # Export to the excel file
-    if (write_report): write_path_data(f'{os.getcwd()}/output.xlsx', worksheet_name, result)
+    # Export to the Excel file
+    if write_report:
+        write_path_data(f'{os.getcwd()}/output.xlsx', worksheet_name, result)
     return result
 
 
-def process_unique_path_analysis(worksheet_name, base_source, head_source, repo_name, base_branch_name, head_branch_name, header_flag, language):
+def process_unique_path_analysis(worksheet_name, base_source, head_source, repo_name, header_flag, language):
     result = []
 
-    value = sub_process_path(base_source['dataFlow'], head_source['dataFlow'], '---', base_branch_name, head_branch_name, repo_name, language)
+    value = sub_process_path(base_source['dataFlow'], head_source['dataFlow'], '---', repo_name, language)
 
     for j in value[0]:
         result.append(j)
 
     if header_flag:
-        result.insert(0, ['Repo Name', 'Sink Category', 'Source', 'Sink', head_branch_name, base_branch_name,
-                       f'Additional in {head_branch_name}', f'Missing in {head_branch_name}', 'Delta in %',
-                       f'Additional Path Id in {head_branch_name}', f'Missing Path ID in {head_branch_name}'])
+        result.insert(0, ['Repo Name', 'Sink Category', 'Source', 'Sink', config.HEAD_SHEET_BRANCH_NAME,
+                          config.BASE_SHEET_BRANCH_NAME, f'Additional in {config.HEAD_SHEET_BRANCH_NAME}',
+                          f'Missing in {config.HEAD_SHEET_BRANCH_NAME}', 'Delta in %',
+                          f'Additional Path Id in {config.HEAD_SHEET_BRANCH_NAME}',
+                          f'Missing Path ID in {config.HEAD_SHEET_BRANCH_NAME}'])
 
     # Export to the Excel file
     write_path_data(f'{os.getcwd()}/output.xlsx', worksheet_name, result)
 
 
-def sub_process_path(base_source, head_source, sink_type, base_branch_name, head_branch_name, repo_name, language):
+def sub_process_path(base_source, head_source, sink_type, repo_name, language):
     final_result_list = []
 
     # variable used to store the dataflow data
@@ -476,7 +481,6 @@ def sub_process_path(base_source, head_source, sink_type, base_branch_name, head
                  f'{round(((absolute_path_change / (2 * total_path_count)) * 100), 2)}%', '\n'.join(new_path),
                  '\n'.join(missing_path)])
 
-
     if total_flow_head + total_missing_flow == 0:
         percent_delta = "0%"
     else:
@@ -493,28 +497,3 @@ def json_to_hash(json_obj):
     hash_object = hashlib.sha256(json_str.encode())
     hex_dig = hash_object.hexdigest()
     return hex_dig
-
-
-# def process_cpu_data(cpu_utilization_data):
-#     final_result_list = []
-#
-#     for i in range(0, len(cpu_utilization_data)):
-#         cpu_data = cpu_utilization_data[i].split(',')
-#         value = []
-#         for j in range(0, len(cpu_data)):
-#             if j == 0:
-#                 v = cpu_data[j].split(':')
-#                 value.append(v[0])
-#                 value.append(v[1])
-#             else:
-#                 value.append(cpu_data[j])
-#         final_result_list.append(value)
-#
-#         if i % 2 == 1:
-#             final_result_list.append([])
-#
-#     return final_result_list
-#
-#
-# if __name__ == "__main__":
-#     main("/utils/privado.json", "/utils/privado1.json", 0, 0, 0, "ankit", "kk")

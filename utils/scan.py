@@ -25,28 +25,7 @@ def get_docker_commands(tag, repo_path):
         return f'PRIVADO_DEV=1 PRIVADO_TAG={tag} privado  {repo_path}'
 
 
-# def get_core_branch(base_branch, head_branch, rules_branch_base, rules_branch_head):
-#     if base_branch is None and head_branch is None:
-#         if rules_branch_base == 'main' and rules_branch_head == 'dev':
-#             return ['main', 'main']
-#         else:
-#             return ['dev', 'dev']
-#     else:
-#         return [base_branch, head_branch]
-
-
-# def get_rules_branch(base_branch, head_branch, rules_branch_base, rules_branch_head):
-#     if rules_branch_base is None and rules_branch_head is None:
-#         if base_branch == 'main':
-#             return ['main', 'dev']
-#         elif head_branch == 'main':
-#             return ['dev', 'main']
-#         return ['dev', 'dev']
-#     else:
-#         return [rules_branch_base, rules_branch_head]
-
-
-def scan_repo_report(first_branch, second_branch, valid_repos, use_docker, generate_unique_flow, debug_mode):
+def scan_repo_report(valid_repos, args):
     cwd = os.getcwd()
 
     # To store  status - if it failed or completed, and for which branch
@@ -54,26 +33,27 @@ def scan_repo_report(first_branch, second_branch, valid_repos, use_docker, gener
     #
     # rules_branches = get_rules_branch(first_branch, second_branch, rules_branch_base, rules_branch_head)
     # create dirs for results if not exist
-    if not os.path.isdir(cwd + '/temp/result/' + config.BASE_BRANCH_FILE_NAME):
-        os.system('mkdir -p ' + cwd + '/temp/result/' + config.BASE_BRANCH_FILE_NAME)
-    if not os.path.isdir(cwd + '/temp/result/' + config.HEAD_BRANCH_FILE_NAME):
-        os.system('mkdir -p ' + cwd + '/temp/result/' + config.HEAD_BRANCH_FILE_NAME)
+    if not os.path.isdir(cwd + '/temp/result/' + config.BASE_CORE_BRANCH_KEY):
+        os.system('mkdir -p ' + cwd + '/temp/result/' + config.BASE_CORE_BRANCH_KEY)
+    if not os.path.isdir(cwd + '/temp/result/' + config.HEAD_CORE_BRANCH_KEY):
+        os.system('mkdir -p ' + cwd + '/temp/result/' + config.HEAD_CORE_BRANCH_KEY)
 
     for repo in valid_repos:
         scan_dir = cwd + '/temp/repos/' + repo
         try:
             # Scan the cloned repo with first branch and push output to a file
-            first_command = build_command(cwd, first_branch, config.BASE_BRANCH_FILE_NAME, scan_dir, repo, generate_unique_flow, debug_mode,
-                                          use_docker, config.BASE_RULE_BRANCH_NAME)
+            first_command = build_command(cwd, config.BASE_CORE_BRANCH_NAME, config.BASE_CORE_BRANCH_KEY, scan_dir,
+                                          repo, args.generate_unique_flow, args.debug_mode,
+                                          args.use_docker, config.BASE_RULE_BRANCH_NAME)
 
             # Execute the command to generate the binary file for first branch
             os.system(first_command)
 
             src_path = f'{scan_dir}/.privado/privado.json'
-            dest_path = f'{cwd}/temp/result/{config.BASE_BRANCH_FILE_NAME}/{repo}.json'
+            dest_path = f'{cwd}/temp/result/{config.BASE_CORE_BRANCH_KEY}/{repo}.json'
 
             src_path_intermediate = f'{scan_dir}/.privado/intermediate.json'
-            dest_path_intermediate = f'{cwd}/temp/result/{config.BASE_BRANCH_FILE_NAME}/{repo}-intermediate.json'
+            dest_path_intermediate = f'{cwd}/temp/result/{config.BASE_CORE_BRANCH_KEY}/{repo}-intermediate.json'
 
             if os.path.isfile(src_path_intermediate):
                 shutil.move(src_path_intermediate, dest_path_intermediate)
@@ -83,22 +63,23 @@ def scan_repo_report(first_branch, second_branch, valid_repos, use_docker, gener
             # Move the privado.json file to the result folder
             try:
                 shutil.move(src_path, dest_path)
-                report[first_branch] = {'scan_status': 'done', 'scan_error_message': '--'}
+                report[config.BASE_CORE_BRANCH_KEY] = {'scan_status': 'done', 'scan_error_message': '--'}
             except Exception as e:
-                report[first_branch] = {'scan_status': 'failed', 'scan_error_message': str(e)}
+                report[config.BASE_CORE_BRANCH_KEY] = {'scan_status': 'failed', 'scan_error_message': str(e)}
 
             # Scan the cloned repo with second branch and push output to a file with debug logs
-            second_command = build_command(cwd, second_branch, config.HEAD_BRANCH_FILE_NAME, scan_dir, repo, generate_unique_flow, debug_mode,
-                                           use_docker, config.HEAD_RULE_BRANCH_NAME)
+            second_command = build_command(cwd, config.HEAD_CORE_BRANCH_NAME, config.HEAD_CORE_BRANCH_KEY, scan_dir,
+                                           repo, args.generate_unique_flow, args.debug_mode, args.use_docker,
+                                           config.HEAD_RULE_BRANCH_NAME)
 
-            language = get_detected_language(repo, config.BASE_BRANCH_FILE_NAME)
+            language = get_detected_language(repo, config.BASE_CORE_BRANCH_KEY)
             report["language"] = language
 
             # Execute the command to generate the binary file for second branch
             os.system(second_command)
 
-            dest_path = f'{cwd}/temp/result/{config.HEAD_BRANCH_FILE_NAME}/{repo}.json'
-            dest_path_intermediate = f'{cwd}/temp/result/{config.HEAD_BRANCH_FILE_NAME}/{repo}-intermediate.json'
+            dest_path = f'{cwd}/temp/result/{config.HEAD_CORE_BRANCH_KEY}/{repo}.json'
+            dest_path_intermediate = f'{cwd}/temp/result/{config.HEAD_CORE_BRANCH_KEY}/{repo}-intermediate.json'
 
             # move the intermediate result if exist
             if os.path.isfile(src_path_intermediate):
@@ -106,15 +87,15 @@ def scan_repo_report(first_branch, second_branch, valid_repos, use_docker, gener
 
             try:
                 shutil.move(src_path, dest_path)
-                report[second_branch] = {'scan_status': 'done', 'scan_error_message': '--'}
+                report[config.HEAD_CORE_BRANCH_KEY] = {'scan_status': 'done', 'scan_error_message': '--'}
             except Exception as e:
-                report[second_branch] = {'scan_status': 'failed', 'scan_error_message': str(e)}
+                report[config.HEAD_CORE_BRANCH_KEY] = {'scan_status': 'failed', 'scan_error_message': str(e)}
             
             scan_report[repo] = report
 
         finally:
             # Generate and status and export into result
-            generate_scan_status_data(scan_report, config.BASE_BRANCH_FILE_NAME, config.HEAD_BRANCH_FILE_NAME)
+            generate_scan_status_data(scan_report)
 
     return scan_report
 
@@ -136,15 +117,16 @@ def generate_scan_status_data_for_file(repo_name, first_file, second_file):
     return scan_status_report_data
 
 
-def generate_scan_status_data(scan_report, first_branch, second_branch):
+def generate_scan_status_data(scan_report):
     cwd = os.getcwd()
 
-    # create the empty excel file
-    create_new_excel(f"{cwd}/output.xlsx", first_branch.replace('/', '-'), second_branch.replace('/', '-'))
+    # create the empty Excel file
+    create_new_excel(f"{cwd}/output.xlsx", config.BASE_SHEET_BRANCH_NAME.replace('/', '-'),
+                     config.HEAD_SHEET_BRANCH_NAME.replace('/', '-'))
 
     for repo in scan_report.keys():
-        parse_flows_data(repo, first_branch, config.BASE_BRANCH_FILE_NAME, scan_report)
-        parse_flows_data(repo, second_branch, config.HEAD_BRANCH_FILE_NAME, scan_report)
+        parse_flows_data(repo, config.BASE_CORE_BRANCH_NAME, config.BASE_CORE_BRANCH_KEY, scan_report)
+        parse_flows_data(repo, config.HEAD_CORE_BRANCH_NAME, config.HEAD_CORE_BRANCH_KEY, scan_report)
 
 
 def parse_flows_data(repo_name, branch_name, branch_file_name, scan_report):

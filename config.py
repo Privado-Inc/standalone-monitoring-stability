@@ -4,8 +4,11 @@ HEAD_CORE_BRANCH_NAME = None
 BASE_RULE_BRANCH_NAME = None
 HEAD_RULE_BRANCH_NAME = None
 
-BASE_BRANCH_FILE_NAME = None
-HEAD_BRANCH_FILE_NAME = None
+BASE_CORE_BRANCH_KEY = None
+HEAD_CORE_BRANCH_KEY = None
+
+BASE_SHEET_BRANCH_NAME = None
+HEAD_SHEET_BRANCH_NAME = None
 
 SLACK_SUMMARY_FILE_NAME = "slack_summary.txt"
 OUTPUT_FILE_NAME = "output.xlsx"
@@ -31,19 +34,22 @@ def init(args):
     BASE_RULE_BRANCH_NAME = rule_branch_name[0]
     HEAD_RULE_BRANCH_NAME = rule_branch_name[1]
 
-    resolve_core_branch_file_name(BASE_CORE_BRANCH_NAME, HEAD_CORE_BRANCH_NAME, BASE_RULE_BRANCH_NAME,
-                                  HEAD_RULE_BRANCH_NAME, args.use_rule_compare)
+    resolve_core_branch_key_name(BASE_CORE_BRANCH_NAME, HEAD_CORE_BRANCH_NAME, BASE_RULE_BRANCH_NAME,
+                                 HEAD_RULE_BRANCH_NAME, args.use_rule_compare)
 
 
-def resolve_core_branch_file_name(core_base_branch_name, core_head_branch_name, rules_base_branch_name, rules_head_branch_name, rule_compare):
-    global BASE_BRANCH_FILE_NAME, HEAD_BRANCH_FILE_NAME
+def resolve_core_branch_key_name(core_base_branch_name, core_head_branch_name, rules_base_branch_name, rules_head_branch_name, rule_compare):
+    global BASE_CORE_BRANCH_KEY, HEAD_CORE_BRANCH_KEY, BASE_SHEET_BRANCH_NAME, HEAD_SHEET_BRANCH_NAME
+
+    BASE_CORE_BRANCH_KEY = f'{core_base_branch_name}${rules_base_branch_name}'
+    HEAD_CORE_BRANCH_KEY = f'{core_head_branch_name}${rules_head_branch_name}'
 
     if rule_compare:
-        BASE_BRANCH_FILE_NAME = rules_base_branch_name
-        HEAD_BRANCH_FILE_NAME = rules_head_branch_name
+        BASE_SHEET_BRANCH_NAME = rules_base_branch_name
+        HEAD_SHEET_BRANCH_NAME = rules_head_branch_name
     else:
-        BASE_BRANCH_FILE_NAME = core_base_branch_name
-        HEAD_BRANCH_FILE_NAME = core_head_branch_name
+        BASE_SHEET_BRANCH_NAME = core_base_branch_name
+        HEAD_SHEET_BRANCH_NAME = core_head_branch_name
 
 
 def get_core_branch(base_branch, head_branch, rules_branch_base, rules_branch_head):
@@ -65,3 +71,11 @@ def get_rules_branch(base_branch, head_branch, rules_branch_base, rules_branch_h
         return ['dev', 'dev']
     else:
         return [rules_branch_base, rules_branch_head]
+
+
+def init_file():
+    global BASE_CORE_BRANCH_NAME, HEAD_CORE_BRANCH_NAME, BASE_CORE_BRANCH_KEY, HEAD_CORE_BRANCH_KEY, \
+        BASE_SHEET_BRANCH_NAME, HEAD_SHEET_BRANCH_NAME
+
+    BASE_CORE_BRANCH_NAME = BASE_CORE_BRANCH_KEY = BASE_SHEET_BRANCH_NAME = 'first'
+    HEAD_CORE_BRANCH_NAME = HEAD_CORE_BRANCH_KEY = HEAD_SHEET_BRANCH_NAME = 'second'
