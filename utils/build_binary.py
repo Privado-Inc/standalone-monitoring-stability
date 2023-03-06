@@ -2,6 +2,8 @@ import datetime
 import os
 import shutil
 from git import Repo
+
+import builder
 from utils.clone_repo import clone_repo_with_name
 import config
 
@@ -36,19 +38,19 @@ def build_binary_and_move(repo, branch_name, branch_file_name):
         o = repo.remotes.origin
         o.pull()
     except Exception as e:
-        print(f'{datetime.datetime.now()} - branch_name + " doesn\'t exist: {str(e)}')
-    print(f'{datetime.datetime.now()} - Buliding Privado Binary for {branch_name}')
+        print(f'{builder.get_current_time()} - branch_name + " doesn\'t exist: {str(e)}')
+    print(f'{builder.get_current_time()} - Buliding Privado Binary for {branch_name}')
     os.system("cd " + core_dir + " && sbt clean && sbt stage")
     os.system("mkdir -p " + final_dir)
     os.system("mv " + binary_dir + " " + final_dir)
     print(f'{datetime.datetime.now()} - Build Completed')
 
 
-def build_binary_and_move_for_joern(branch_name, core_dir):
+def build_binary_and_move_for_joern(branch_name, core_dir, branch_file_name):
     path = os.getcwd()
     binary_dir = f'{core_dir}/target/universal/stage/*'
-    final_dir = f'{path}/temp/binary/{branch_name}'
-    print(f'{datetime.datetime.now()} - Buliding Privado Binary for {branch_name}')
+    final_dir = f'{path}/temp/binary/{branch_file_name}'
+    print(f'{builder.get_current_time()} - Buliding Privado Binary for {branch_name}')
     build_output = os.popen("cd " + core_dir + " && sbt clean && sbt stage").read()
 
     for line in build_output.split('\n'):
