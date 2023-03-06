@@ -21,7 +21,7 @@ def build(skip_build = False):
 
     build_binary_and_move(repo, config.BASE_CORE_BRANCH_NAME, config.BASE_CORE_BRANCH_KEY)
     move_log_rule_file(f'{pwd}/temp/privado-core/log4j2.xml', config.BASE_CORE_BRANCH_KEY)
-    build_binary_and_move(repo, config.BASE_CORE_BRANCH_NAME, config.HEAD_CORE_BRANCH_KEY)
+    build_binary_and_move(repo, config.HEAD_CORE_BRANCH_NAME, config.HEAD_CORE_BRANCH_KEY)
     move_log_rule_file(f'{pwd}/temp/privado-core/log4j2.xml', config.HEAD_CORE_BRANCH_KEY)
 
 
