@@ -143,7 +143,7 @@ def workflow():
                 detected_language = get_detected_language(repo_name, config.BASE_CORE_BRANCH_KEY)
                 base_intermediate_file = builder.get_intermediate_path(config.BASE_CORE_BRANCH_KEY, repo_name)
                 head_intermediate_file = builder.get_intermediate_path(config.HEAD_CORE_BRANCH_KEY, repo_name)
-                compare_and_generate_report(base_file, head_file, config.BASE_CORE_BRANCH_NAME, config.HEAD_CORE_BRANCH_NAME, base_intermediate_file, head_intermediate_file, header_flag, scan_status, detected_language)
+                compare_and_generate_report(base_file, head_file, base_intermediate_file, head_intermediate_file, header_flag, scan_status, detected_language)
 
                 scan_status[repo_name][config.BASE_CORE_BRANCH_KEY]['comparison_status'] = 'done'
                 scan_status[repo_name][config.BASE_CORE_BRANCH_KEY]['comparison_error_message'] = '--'
