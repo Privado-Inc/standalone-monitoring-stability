@@ -51,6 +51,15 @@ def workflow():
 
     if args.joern_update:
         versions = check_update()
+        args.base = versions[0]
+        args.head = versions[1]
+
+    if not args.m:
+        config.init(args)
+    else:
+        config.init_file()
+
+    if args.joern_version:
         if versions == 'updated':
             print(f"{builder.get_current_time()} - No Update Available")
             write_slack_summary(f"Current version: {versions[0]} \n Updated Version: {versions[1]} \n No Update Available for Comparison")
@@ -71,11 +80,6 @@ def workflow():
         #     branch_name = get_core_branch(args.base, args.head, args.rules_branch_base, args.rules_branch_head)
         #     args.base = branch_name[0]
         #     args.head = branch_name[1]
-
-    if not args.m:
-        config.init(args)
-    else:
-        config.init_file()
 
     print(config.BASE_CORE_BRANCH_KEY)
     print(config.HEAD_CORE_BRANCH_KEY)
