@@ -77,6 +77,18 @@ def workflow():
     else:
         config.init_file()
 
+    print(config.BASE_CORE_BRANCH_KEY)
+    print(config.HEAD_CORE_BRANCH_KEY)
+
+    print(config.BASE_CORE_BRANCH_NAME)
+    print(config.HEAD_CORE_BRANCH_NAME)
+
+    print(config.BASE_SHEET_BRANCH_NAME)
+    print(config.HEAD_SHEET_BRANCH_NAME)
+
+    print(config.BASE_RULE_BRANCH_NAME)
+    print(config.HEAD_RULE_BRANCH_NAME)
+
     # # check if branch name present in args
     # if args.base is None or args.head is None:
     #     print(f"{datetime.datetime.now()} : Please provide flags '-h' and '-b' followed by value")
