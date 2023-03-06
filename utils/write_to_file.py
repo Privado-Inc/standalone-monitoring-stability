@@ -145,7 +145,7 @@ def write_summary_data(workbook_location, report, data_elements, flow_report):
 
     additional_not_zero = len(list(filter(lambda x: x['additional'] > 0, flow_report.values())))
     try:
-        additional_average = functools.reduce(lambda a,x: a + x['additional'], flow_report.values(), 0) / additional_not_zero
+        additional_average = functools.reduce(lambda a, x: a + x['additional'], flow_report.values(), 0) / additional_not_zero
     except Exception as e:
         print(e)
         additional_average = 0
@@ -161,6 +161,7 @@ def write_summary_data(workbook_location, report, data_elements, flow_report):
     hundred_percent_missing = len(list(filter(lambda x: x['hundred_missing'] > 0, flow_report.values())))    
 
     for repo in report.keys():
+        print(report[repo])
         try:
             print("llllll")
             scan_status = 'done' if report[repo][config.HEAD_CORE_BRANCH_KEY]['comparison_error_message'] == '--' and report[repo][config.BASE_CORE_BRANCH_KEY]['comparison_error_message'] == '--' else 'failed'
@@ -201,7 +202,8 @@ def write_summary_data(workbook_location, report, data_elements, flow_report):
             print("llllllrrrr")
 
             if reachable_flow_time_diff != '--':
-                if reachable_flow_time_diff > 0: # Head branch took more time
+                # Head branch took more time
+                if reachable_flow_time_diff > 0:
                     reachable_by_flow_time_positive += 1
                     reachable_by_flow_time_positive_average += reachable_flow_time_diff
                 else:
