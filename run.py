@@ -51,6 +51,11 @@ def workflow():
 
     if args.joern_update:
         versions = check_update()
+        if versions[0] == 'updated':
+            print(f"{builder.get_current_time()} - No Update Available for comparison")
+            write_slack_summary(
+                f"No Update Available for Comparison")
+            post_report_to_slack(False)
         args.base = versions[0]
         args.head = versions[1]
 
@@ -58,28 +63,6 @@ def workflow():
         config.init(args)
     else:
         config.init_file()
-
-    if args.joern_version:
-        if versions == 'updated':
-            print(f"{builder.get_current_time()} - No Update Available")
-            write_slack_summary(f"Current version: {versions[0]} \n Updated Version: {versions[1]} \n No Update Available for Comparison")
-            post_report_to_slack(False)
-            return
-        else:
-            if not build_binary_for_joern(versions):
-                post_report_to_slack(False)
-                return
-            args.base = versions[0]
-            args.head = versions[1]
-
-    if args.use_rule_compare:
-        if args.rules_branch_base is None or args.rules_branch_head is None:
-            print("Please provide flags \"-rbb=\" and \"-rbh\" while using \"-urc\" flag")
-            return
-        # else:
-        #     branch_name = get_core_branch(args.base, args.head, args.rules_branch_base, args.rules_branch_head)
-        #     args.base = branch_name[0]
-        #     args.head = branch_name[1]
 
     print(config.BASE_CORE_BRANCH_KEY)
     print(config.HEAD_CORE_BRANCH_KEY)
@@ -92,6 +75,22 @@ def workflow():
 
     print(config.BASE_RULE_BRANCH_NAME)
     print(config.HEAD_RULE_BRANCH_NAME)
+
+    if args.joern_update:
+        if not build_binary_for_joern(versions):
+            post_report_to_slack(False)
+            return
+        args.base = versions[0]
+        args.head = versions[1]
+
+    if args.use_rule_compare:
+        if args.rules_branch_base is None or args.rules_branch_head is None:
+            print("Please provide flags \"-rbb=\" and \"-rbh\" while using \"-urc\" flag")
+            return
+        # else:
+        #     branch_name = get_core_branch(args.base, args.head, args.rules_branch_base, args.rules_branch_head)
+        #     args.base = branch_name[0]
+        #     args.head = branch_name[1]
 
     # # check if branch name present in args
     # if args.base is None or args.head is None:
