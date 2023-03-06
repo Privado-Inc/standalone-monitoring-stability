@@ -114,7 +114,7 @@ def scan_repo_report(first_branch, second_branch, valid_repos, use_docker, gener
 
         finally:
             # Generate and status and export into result
-            generate_scan_status_data(scan_report, first_branch, second_branch)
+            generate_scan_status_data(scan_report, config.BASE_BRANCH_FILE_NAME, config.HEAD_BRANCH_FILE_NAME)
 
     return scan_report
 

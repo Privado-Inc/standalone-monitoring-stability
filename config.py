@@ -13,7 +13,6 @@ PRIVADO_CORE_URL = "https://github.com/Privado-Inc/privado-core"
 PRIVADO_URL = "https://github.com/Privado-Inc/privado"
 
 
-
 def init(args):
     global BASE_CORE_BRANCH_NAME, HEAD_CORE_BRANCH_NAME, BASE_RULE_BRANCH_NAME, HEAD_RULE_BRANCH_NAME
 

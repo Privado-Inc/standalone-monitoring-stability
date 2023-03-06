@@ -75,13 +75,6 @@ def workflow():
 
     config.init(args)
 
-    print(config.BASE_CORE_BRANCH_NAME)
-    print(config.HEAD_CORE_BRANCH_NAME)
-    print(config.BASE_RULE_BRANCH_NAME)
-    print(config.HEAD_RULE_BRANCH_NAME)
-    print(config.BASE_BRANCH_FILE_NAME)
-    print(config.HEAD_BRANCH_FILE_NAME)
-
     if not args.m:
         base_worksheet_name = config.BASE_CORE_BRANCH_NAME.replace('/', '-')
         head_worksheet_name = config.HEAD_CORE_BRANCH_NAME.replace('/', '-')
@@ -101,7 +94,7 @@ def workflow():
         compare_files(args.base, args.head)
         return
 
-    create_new_excel(excel_report_location, base_worksheet_name, head_worksheet_name)
+    create_new_excel(excel_report_location, config.BASE_BRANCH_FILE_NAME, config.HEAD_BRANCH_FILE_NAME)
     valid_repositories = []
 
     if not args.use_docker and not args.joern_update:
