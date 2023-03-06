@@ -1,6 +1,8 @@
 import os
 import shutil
 import datetime
+
+import builder
 from utils.build_binary import checkout_repo
 from utils.write_to_file import write_scan_status_report, create_new_excel, create_new_excel_for_file
 import re
@@ -129,7 +131,7 @@ def generate_scan_status_data(scan_report):
         parse_flows_data(repo, config.HEAD_CORE_BRANCH_NAME, config.HEAD_CORE_BRANCH_KEY, scan_report)
 
 
-def parse_flows_data(repo_name, branch_name, branch_file_name, scan_report):
+def parse_flows_data(repo_name, branch_name, branch_key, scan_report):
 
     cwd = os.getcwd()
 
@@ -140,7 +142,7 @@ def parse_flows_data(repo_name, branch_name, branch_file_name, scan_report):
     source_metadata_values = []
     reachable_by_flow_values = []
 
-    with open(f"{cwd}/temp/result/{branch_file_name}/{repo_name}-output.txt") as scan_time_output:
+    with open(f"{cwd}/temp/result/{branch_key}/{repo_name}-output.txt") as scan_time_output:
         for line in scan_time_output.readlines():
             if re.search(scan_metadata_regex, line):
                 scan_metadata_values.append(line)
@@ -151,38 +153,38 @@ def parse_flows_data(repo_name, branch_name, branch_file_name, scan_report):
 
     try:
         unique_flows = scan_metadata_values[0].split('-')[-1]
-        scan_report[repo_name][branch_name]['unique_flows'] = unique_flows
+        scan_report[repo_name][branch_key]['unique_flows'] = unique_flows
     except Exception as e:
-        print(f'{datetime.datetime.now()} - Error while parsing unique flow data: {e}')
-        scan_report[repo_name][branch_name]['unique_flows'] = '--'
+        print(f'{builder.get_current_time()} - Error while parsing unique flow data: {e}')
+        scan_report[repo_name][branch_key]['unique_flows'] = '--'
 
     try:
         code_scan_time = scan_metadata_values[1].split('-')[-2]
-        scan_report[repo_name][branch_name]['code_scan_time'] = code_scan_time
+        scan_report[repo_name][branch_key]['code_scan_time'] = code_scan_time
     except Exception as e:
         print(f'{datetime.datetime.now()} - Error while parsing code  time data: {e}')
-        scan_report[repo_name][branch_name]['code_scan_time'] = '--'
+        scan_report[repo_name][branch_key]['code_scan_time'] = '--'
 
     try:
         binary_file_size = scan_metadata_values[2].split('-')[-1]
-        scan_report[repo_name][branch_name]['binary_file_size'] = binary_file_size
+        scan_report[repo_name][branch_key]['binary_file_size'] = binary_file_size
     except Exception as e:
-        print(f'{datetime.datetime.now()} - Error while parsing binary file size data: {e}')
-        scan_report[repo_name][branch_name]['binary_file_size'] = '--'
+        print(f'{builder.get_current_time()} - Error while parsing binary file size data: {e}')
+        scan_report[repo_name][branch_key]['binary_file_size'] = '--'
 
     try:
         source_count = source_metadata_values[0].split()[-1]
-        scan_report[repo_name][branch_name]['unique_source'] = source_count
+        scan_report[repo_name][branch_key]['unique_source'] = source_count
     except Exception as e:
-        print(f'{datetime.datetime.now()} - Error while parsing unique source data: {e}')
-        scan_report[repo_name][branch_name]['unique_source'] = '--'
+        print(f'{builder.get_current_time()} - Error while parsing unique source data: {e}')
+        scan_report[repo_name][branch_key]['unique_source'] = '--'
 
     try:
         reachable_by_flow_time = reachable_by_flow_values[0].split('ms')[0].split('-')[-1]
-        scan_report[repo_name][branch_name]['reachable_flow_time'] = reachable_by_flow_time
+        scan_report[repo_name][branch_key]['reachable_flow_time'] = reachable_by_flow_time
     except Exception as e:
-        print(f'{datetime.datetime.now()} - Error while parsing reachable flow time data: {e}')
-        scan_report[repo_name][branch_name]['reachable_flow_time'] = '--'
+        print(f'{builder.get_current_time()} - Error while parsing reachable flow time data: {e}')
+        scan_report[repo_name][branch_key]['reachable_flow_time'] = '--'
 
 
 # Build the scan command
