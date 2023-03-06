@@ -37,8 +37,8 @@ def main(base_file, head_file, base_intermediate_file, head_intermediate_file, h
 
     repo_name = base_data['repoName']
 
-    head_branch_worksheet_name = config.HEAD_CORE_BRANCH_KEY.replace('/', '-')
-    base_branch_worksheet_name = config.BASE_CORE_BRANCH_KEY.replace('/', '-')
+    head_branch_worksheet_name = config.HEAD_SHEET_BRANCH_NAME.replace('/', '-')
+    base_branch_worksheet_name = config.BASE_SHEET_BRANCH_NAME.replace('/', '-')
 
     process_source_sink_and_collection_data(f'{head_branch_worksheet_name}-{base_branch_worksheet_name}-source-&-sink-report',
                                             base_data, head_data, repo_name,
