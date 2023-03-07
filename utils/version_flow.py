@@ -63,7 +63,7 @@ def build_binary_for_joern(versions):
     # Build binary for current version
     write_slack_summary(f'Current version: {versions[0]} \n Updated Version: {versions[1]} \n')
     try:
-        build_binary_and_move_for_joern(versions[0], f'{os.getcwd()}/temp/joern/first/privado-core')
+        build_binary_and_move_for_joern(versions[0], f'{os.getcwd()}/temp/joern/first/privado-core', config.BASE_CORE_BRANCH_KEY)
         move_log_rule_file(f'{os.getcwd()}/temp/joern/first/privado-core/log4j2.xml', versions[0])
     except Exception as e:
         print(f'{builder.get_current_time()} - Binary generation failed for joern version {versions[0]}: ', e)
@@ -71,7 +71,7 @@ def build_binary_for_joern(versions):
         return False 
 
     try:
-        build_binary_and_move_for_joern(versions[1], f'{os.getcwd()}/temp/joern/second/privado-core')
+        build_binary_and_move_for_joern(versions[1], f'{os.getcwd()}/temp/joern/second/privado-core', config.HEAD_CORE_BRANCH_KEY)
         move_log_rule_file(f'{os.getcwd()}/temp/joern/second/privado-core/log4j2.xml', versions[1])
     except Exception as e:
         print(f'{builder.get_current_time()} - Binary generation failed for joern version {versions[1]}: ', e)
