@@ -302,7 +302,7 @@ def process_unique_path_analysis(worksheet_name, base_source, head_source, repo_
         result.append(j)
 
     if header_flag:
-        result.insert(0, ['Repo Name', 'Sink Category', 'Source', 'Sink', config.HEAD_SHEET_BRANCH_NAME,
+        result.insert(0, ['Repo Name', 'language', 'Sink Category', 'Source', 'Sink', config.HEAD_SHEET_BRANCH_NAME,
                           config.BASE_SHEET_BRANCH_NAME, f'Additional in {config.HEAD_SHEET_BRANCH_NAME}',
                           f'Missing in {config.HEAD_SHEET_BRANCH_NAME}', 'Delta in %',
                           f'Additional Path Id in {config.HEAD_SHEET_BRANCH_NAME}',
@@ -473,7 +473,7 @@ def sub_process_path(base_source, head_source, sink_type, repo_name, language):
     else:
         percent_delta = f"{round((((total_additional_flow + total_missing_flow) / (total_flow_head + total_missing_flow)) * 100), 2)}%"
 
-    final_result_list.insert(0, [repo_name, language ,sink_type, 'All', 'All', total_flow_head, total_flow_base,
+    final_result_list.insert(0, [repo_name, language, sink_type, 'All', 'All', total_flow_head, total_flow_base,
                                  total_additional_flow, total_missing_flow, percent_delta])
 
     return [final_result_list, [total_flow_head, total_flow_base, total_additional_flow, total_missing_flow]]
