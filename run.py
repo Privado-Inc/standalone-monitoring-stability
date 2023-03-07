@@ -64,18 +64,6 @@ def workflow():
     else:
         config.init_file()
 
-    print(config.BASE_CORE_BRANCH_KEY)
-    print(config.HEAD_CORE_BRANCH_KEY)
-
-    print(config.BASE_CORE_BRANCH_NAME)
-    print(config.HEAD_CORE_BRANCH_NAME)
-
-    print(config.BASE_SHEET_BRANCH_NAME)
-    print(config.HEAD_SHEET_BRANCH_NAME)
-
-    print(config.BASE_RULE_BRANCH_NAME)
-    print(config.HEAD_RULE_BRANCH_NAME)
-
     if args.joern_update:
         if not build_binary_for_joern(versions):
             post_report_to_slack(False)
@@ -87,15 +75,6 @@ def workflow():
         if args.rules_branch_base is None or args.rules_branch_head is None:
             print("Please provide flags \"-rbb=\" and \"-rbh\" while using \"-urc\" flag")
             return
-        # else:
-        #     branch_name = get_core_branch(args.base, args.head, args.rules_branch_base, args.rules_branch_head)
-        #     args.base = branch_name[0]
-        #     args.head = branch_name[1]
-
-    # # check if branch name present in args
-    # if args.base is None or args.head is None:
-    #     print(f"{datetime.datetime.now()} : Please provide flags '-h' and '-b' followed by value")
-    #     return
 
     # Delete previously scanned Excel report if exist
     excel_report_location = config.OUTPUT_FILE_NAME
@@ -164,10 +143,8 @@ def workflow():
                     print(e)
 
                 try:
-                    source_data = process_sources(base_data['sources'], head_data['sources'], repo_name, detected_language) # Get the source data from the process_sources function
-                    # storage_data = process_sinks(base_data['dataFlow'], head_data['dataFlow'], repo_name,scan_status ,detected_language, key='storages')
-                    # third_parties_data = process_sinks(base_data['dataFlow'], head_data['dataFlow'], repo_name,scan_status ,detected_language, key='third_parties')
-                    # leakages_data = process_sinks(base_data['dataFlow'], head_data['dataFlow'], repo_name,scan_status ,detected_language, key='leakages')
+                    # Get the source data from the process_sources function
+                    source_data = process_sources(base_data['sources'], head_data['sources'], repo_name, detected_language)
                     flow_report = process_path_analysis(f'{head_worksheet_name}-{base_worksheet_name}-flow-report', base_data, head_data, repo_name, detected_language, False)
                     missing_flow_head = flow_report[0][-2]
                     additional_flow_head = flow_report[0][-3]
@@ -203,7 +180,7 @@ def workflow():
         print(f"{builder.get_current_time()} - An exception occurred {str(e)}")
 
     finally:
-        print("DONE")
+        print(f'{builder.get_current_time()} - Comparison script Ended')
         clean_after_scan(args.boost)
 
 

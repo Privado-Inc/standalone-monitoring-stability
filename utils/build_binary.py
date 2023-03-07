@@ -43,7 +43,7 @@ def build_binary_and_move(repo, branch_name, branch_file_name):
     os.system("cd " + core_dir + " && sbt clean && sbt stage")
     os.system("mkdir -p " + final_dir)
     os.system("mv " + binary_dir + " " + final_dir)
-    print(f'{datetime.datetime.now()} - Build Completed')
+    print(f'{builder.get_current_time()} - Build Completed')
 
 
 def build_binary_and_move_for_joern(branch_name, core_dir, branch_file_name):
@@ -59,7 +59,7 @@ def build_binary_and_move_for_joern(branch_name, core_dir, branch_file_name):
 
     os.system("mkdir -p " + final_dir)
     os.system("mv " + binary_dir + " " + final_dir)
-    print(f'{datetime.datetime.now()} - Build Completed for {branch_name}')
+    print(f'{builder.get_current_time()} - Build Completed for {branch_name}')
     return True
 
 
@@ -70,9 +70,9 @@ def checkout_repo(branch_name):
         repo.git.checkout(branch_name)
         o = repo.remotes.origin
         o.pull()
-        print(f'{datetime.datetime.now()} - Privado branch changed to {branch_name}')
+        print(f'{builder.get_current_time()} - Privado branch changed to {branch_name}')
     except Exception as e:
-        print(f'{datetime.datetime.now()} - {branch_name} + " doesn\'t exist: {e}')
+        print(f'{builder.get_current_time()} - {branch_name} + " doesn\'t exist: {e}')
 
 
 def move_log_rule_file(log_path, branch_file_name):
@@ -84,5 +84,5 @@ def move_log_rule_file(log_path, branch_file_name):
     else:
         os.system(f'mkdir -p {dir_location}')
     shutil.copy(log_path, final_path)
-    print(f'{datetime.datetime.now()} - privado-core log rule moved')
+    print(f'{builder.get_current_time()} - privado-core log rule moved')
 

@@ -2,7 +2,6 @@ import csv
 import json
 import os
 import hashlib
-import datetime
 import builder
 import config
 from utils.write_to_file import write_source_sink_data, write_path_data, write_performance_data, write_scan_status_report_for_file
@@ -16,18 +15,6 @@ def main(base_file, head_file, base_intermediate_file, head_intermediate_file, h
     except Exception as e:
         print(f'{builder.get_current_time()} - Please enter a valid file: {e}')
         return
-
-    print("-------")
-    print(base_file)
-    print(head_file)
-    # print(base_branch_name)
-    # print(head_branch_name)
-    print(base_intermediate_file)
-    print(head_intermediate_file)
-    print(header_flag)
-    print(scan_status)
-    print(language)
-    print("-----")
 
     base_file = open(base_file)
     head_file = open(head_file)
@@ -164,7 +151,7 @@ def create_csv(data):
         for i in data:
             report.writerow(i)
 
-    print(f'{datetime.datetime.now()} - Report written and exported to: {cwd}/comparison_report.csv')
+    print(f'{builder.get_current_time()} - Report written and exported to: {cwd}/comparison_report.csv')
 
 
 def process_source_sink_and_collection_data(worksheet_name, base_data, head_data, repo_name, header_flag, scan_status,

@@ -1,11 +1,9 @@
-import csv
 import os
 import openpyxl
-import datetime
 from openpyxl.styles import PatternFill, Font
 import functools
 from math import floor
-
+import builder
 import config
 
 
@@ -161,9 +159,7 @@ def write_summary_data(workbook_location, report, data_elements, flow_report):
     hundred_percent_missing = len(list(filter(lambda x: x['hundred_missing'] > 0, flow_report.values())))    
 
     for repo in report.keys():
-        print(report[repo])
         try:
-            print("llllll")
             scan_status = 'done' if report[repo][config.HEAD_CORE_BRANCH_KEY]['comparison_error_message'] == '--' and report[repo][config.BASE_CORE_BRANCH_KEY]['comparison_error_message'] == '--' else 'failed'
             head_scan_time = report[repo][config.HEAD_CORE_BRANCH_KEY]['code_scan_time'].split()[0]
             base_scan_time = report[repo][config.BASE_CORE_BRANCH_KEY]['code_scan_time'].split()[0]
@@ -173,8 +169,6 @@ def write_summary_data(workbook_location, report, data_elements, flow_report):
             unique_flow_diff = '--' if report[repo][config.BASE_CORE_BRANCH_KEY]['unique_flows'] == '--' or report[repo][config.HEAD_CORE_BRANCH_KEY]['unique_flows'] == '--' else int(report[repo][config.HEAD_CORE_BRANCH_KEY]['unique_flows']) - int(report[repo][config.BASE_CORE_BRANCH_KEY]['unique_flows'])
             reachable_flow_time_diff = '--' if report[repo][config.BASE_CORE_BRANCH_KEY]['reachable_flow_time'] == '--' or report[repo][config.HEAD_CORE_BRANCH_KEY]['reachable_flow_time'] == '--' else int(report[repo][config.HEAD_CORE_BRANCH_KEY]['reachable_flow_time']) - int(report[repo][config.BASE_CORE_BRANCH_KEY]['reachable_flow_time'])
             number_hundred_missing_for_repo = flow_report[repo]['hundred_missing']
-
-            print("lllllltt")
 
             if scan_time_diff != '--':
                 if scan_time_diff > 0: # Head branch took more time
@@ -199,8 +193,6 @@ def write_summary_data(workbook_location, report, data_elements, flow_report):
                 else:
                     matching_sources += 1
 
-            print("llllllrrrr")
-
             if reachable_flow_time_diff != '--':
                 # Head branch took more time
                 if reachable_flow_time_diff > 0:
@@ -222,10 +214,8 @@ def write_summary_data(workbook_location, report, data_elements, flow_report):
                               report[repo]['missing_sink'],
                               number_hundred_missing_for_repo])
 
-            print("llllllwww")
-
         except Exception as e:
-            print(f'{datetime.datetime.now()} - Scan failed for repo {repo} : {str(e)}')
+            print(f'{builder.get_current_time()} - Scan failed for repo {repo} : {str(e)}')
             worksheet.append([repo, language, scan_status, "--", "--", "--",
                               "--",
                               "--",

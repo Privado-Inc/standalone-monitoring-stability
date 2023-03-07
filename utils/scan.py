@@ -162,7 +162,7 @@ def parse_flows_data(repo_name, branch_name, branch_key, scan_report):
         code_scan_time = scan_metadata_values[1].split('-')[-2]
         scan_report[repo_name][branch_key]['code_scan_time'] = code_scan_time
     except Exception as e:
-        print(f'{datetime.datetime.now()} - Error while parsing code  time data: {e}')
+        print(f'{builder.get_current_time()} - Error while parsing code  time data: {e}')
         scan_report[repo_name][branch_key]['code_scan_time'] = '--'
 
     try:
