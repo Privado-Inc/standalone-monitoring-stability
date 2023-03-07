@@ -145,7 +145,7 @@ def workflow():
                 try:
                     # Get the source data from the process_sources function
                     source_data = process_sources(base_data['sources'], head_data['sources'], repo_name, detected_language)
-                    flow_report = process_path_analysis(f'{head_worksheet_name}-{base_worksheet_name}-flow-report', base_data, head_data, repo_name, detected_language, False)
+                    flow_report = process_path_analysis(f'{head_worksheet_name}-{base_worksheet_name}-flow-report', base_data, head_data, repo_name, detected_language, False, False)
                     missing_flow_head = flow_report[0][-2]
                     additional_flow_head = flow_report[0][-3]
 

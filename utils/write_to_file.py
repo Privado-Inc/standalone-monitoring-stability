@@ -114,12 +114,12 @@ def write_summary_data(workbook_location, report, data_elements, flow_report):
     workbook = openpyxl.load_workbook(filename=workbook_location)
     worksheet = workbook['summary']
 
-    worksheet.append(["Repo", "language", "scan status", f"{config.BASE_CORE_BRANCH_KEY} Scan status (ms)", f"{config.HEAD_CORE_BRANCH_KEY} scan time (ms)",
-                      "scan time diff (ms)", "Reachable by flow diff (ms)", f"{config.HEAD_CORE_BRANCH_KEY} unique flows",
-                      f"{config.HEAD_CORE_BRANCH_KEY} unique flows", "unique flows diff",
-                      f"{config.HEAD_CORE_BRANCH_KEY} No of data elements",
-                      f"{config.HEAD_CORE_BRANCH_KEY} No of data elements", "Data element diff",
-                      f"Missing sinks in {config.HEAD_CORE_BRANCH_KEY}",
+    worksheet.append(["Repo", "language", "scan status", f"{config.BASE_SHEET_BRANCH_NAME} Scan status (ms)", f"{config.HEAD_SHEET_BRANCH_NAME} scan time (ms)",
+                      "scan time diff (ms)", "Reachable by flow diff (ms)", f"{config.BASE_SHEET_BRANCH_NAME} unique flows",
+                      f"{config.HEAD_SHEET_BRANCH_NAME} unique flows", "unique flows diff",
+                      f"{config.BASE_SHEET_BRANCH_NAME} No of data elements",
+                      f"{config.HEAD_SHEET_BRANCH_NAME} No of data elements", "Data element diff",
+                      f"Missing sinks in {config.HEAD_SHEET_BRANCH_NAME}",
                       "No of 100% missing source to sink combinations"])
 
     scan_time_positive = 0
