@@ -1,10 +1,10 @@
-import csv
 import os
 import openpyxl
-import datetime
 from openpyxl.styles import PatternFill, Font
 import functools
 from math import floor
+import builder
+import config
 
 
 def create_new_excel_for_file(location, first_file, second_file):
@@ -76,7 +76,7 @@ def write_scan_status_report_for_file(workbook_location, base_branch_name, head_
     workbook.save(workbook_location)
 
 
-def write_scan_status_report(workbook_location, base_branch_name, head_branch_name, report):
+def write_scan_status_report(workbook_location, report):
     workbook = openpyxl.load_workbook(filename=workbook_location)
 
     worksheet = workbook['scan-status']
@@ -85,38 +85,41 @@ def write_scan_status_report(workbook_location, base_branch_name, head_branch_na
         ["Repo", "Branch", "language" ,"scan status", "scan error", "comparison status", "comparison error", "unique flow count",
          "scan time (ms)", "CPG size"])
 
-
     for repo in report.keys():
         repo_info = report[repo]
-        worksheet.append([repo, base_branch_name, report[repo]['language'] ,repo_info[base_branch_name]['scan_status'],
-                          repo_info[base_branch_name]['scan_error_message'],
-                          repo_info[base_branch_name]['comparison_status'],
-                          repo_info[base_branch_name]['comparison_error_message'],
-                          repo_info[base_branch_name]['unique_flows'],
-                          repo_info[base_branch_name]['code_scan_time'],
-                          repo_info[base_branch_name]['binary_file_size']])
+        worksheet.append([repo, config.BASE_CORE_BRANCH_KEY,
+                          report[repo]['language'],
+                          repo_info[config.BASE_CORE_BRANCH_KEY]['scan_status'],
+                          repo_info[config.BASE_CORE_BRANCH_KEY]['scan_error_message'],
+                          repo_info[config.BASE_CORE_BRANCH_KEY]['comparison_status'],
+                          repo_info[config.BASE_CORE_BRANCH_KEY]['comparison_error_message'],
+                          repo_info[config.BASE_CORE_BRANCH_KEY]['unique_flows'],
+                          repo_info[config.BASE_CORE_BRANCH_KEY]['code_scan_time'],
+                          repo_info[config.BASE_CORE_BRANCH_KEY]['binary_file_size']])
 
-        worksheet.append([repo, head_branch_name, report[repo]['language'],repo_info[head_branch_name]['scan_status'],
-                          repo_info[head_branch_name]['scan_error_message'],
-                          repo_info[head_branch_name]['comparison_status'],
-                          repo_info[head_branch_name]['comparison_error_message'],
-                          repo_info[head_branch_name]['unique_flows'],
-                          repo_info[head_branch_name]['code_scan_time'],
-                          repo_info[head_branch_name]['binary_file_size']])
+        worksheet.append([repo, config.HEAD_CORE_BRANCH_KEY,
+                          report[repo]['language'],
+                          repo_info[config.HEAD_CORE_BRANCH_KEY]['scan_status'],
+                          repo_info[config.HEAD_CORE_BRANCH_KEY]['scan_error_message'],
+                          repo_info[config.HEAD_CORE_BRANCH_KEY]['comparison_status'],
+                          repo_info[config.HEAD_CORE_BRANCH_KEY]['comparison_error_message'],
+                          repo_info[config.HEAD_CORE_BRANCH_KEY]['unique_flows'],
+                          repo_info[config.HEAD_CORE_BRANCH_KEY]['code_scan_time'],
+                          repo_info[config.HEAD_CORE_BRANCH_KEY]['binary_file_size']])
 
     workbook.save(workbook_location)
 
 
-def write_summary_data(workbook_location, base_branch_name, head_branch_name, report, data_elements, flow_report):
+def write_summary_data(workbook_location, report, data_elements, flow_report):
     workbook = openpyxl.load_workbook(filename=workbook_location)
     worksheet = workbook['summary']
 
-    worksheet.append(["Repo", "language" ,"scan status", f"{base_branch_name} Scan status (ms)", f"{head_branch_name} scan time (ms)",
-                      "scan time diff (ms)", "Reachable by flow diff (ms)", f"{base_branch_name} unique flows",
-                      f"{head_branch_name} unique flows", "unique flows diff",  
-                      f"{base_branch_name} No of data elements",
-                      f"{head_branch_name} No of data elements", "Data element diff",
-                      f"Missing sinks in {head_branch_name}",
+    worksheet.append(["Repo", "language", "scan status", f"{config.BASE_SHEET_BRANCH_NAME} Scan status (ms)", f"{config.HEAD_SHEET_BRANCH_NAME} scan time (ms)",
+                      "scan time diff (ms)", "Reachable by flow diff (ms)", f"{config.BASE_SHEET_BRANCH_NAME} unique flows",
+                      f"{config.HEAD_SHEET_BRANCH_NAME} unique flows", "unique flows diff",
+                      f"{config.BASE_SHEET_BRANCH_NAME} No of data elements",
+                      f"{config.HEAD_SHEET_BRANCH_NAME} No of data elements", "Data element diff",
+                      f"Missing sinks in {config.HEAD_SHEET_BRANCH_NAME}",
                       "No of 100% missing source to sink combinations"])
 
     scan_time_positive = 0
@@ -140,14 +143,14 @@ def write_summary_data(workbook_location, base_branch_name, head_branch_name, re
 
     additional_not_zero = len(list(filter(lambda x: x['additional'] > 0, flow_report.values())))
     try:
-        additional_average = functools.reduce(lambda a,x: a + x['additional'], flow_report.values(), 0) / additional_not_zero
+        additional_average = functools.reduce(lambda a, x: a + x['additional'], flow_report.values(), 0) / additional_not_zero
     except Exception as e:
         print(e)
         additional_average = 0
 
     missing_not_zero = len(list(filter(lambda x: x['missing'] > 0, flow_report.values())))
     try:
-        missing_average = functools.reduce(lambda a,x: a + x['missing'], flow_report.values(), 0) / missing_not_zero
+        missing_average = functools.reduce(lambda a, x: a + x['missing'], flow_report.values(), 0) / missing_not_zero
     except Exception as e:
         print(e)
         missing_average = 0
@@ -157,14 +160,14 @@ def write_summary_data(workbook_location, base_branch_name, head_branch_name, re
 
     for repo in report.keys():
         try:
-            scan_status = 'done' if report[repo][head_branch_name]['comparison_error_message'] == '--' and report[repo][base_branch_name]['comparison_error_message'] == '--' else 'failed'
-            head_scan_time = report[repo][head_branch_name]['code_scan_time'].split()[0]
-            base_scan_time = report[repo][base_branch_name]['code_scan_time'].split()[0]
+            scan_status = 'done' if report[repo][config.HEAD_CORE_BRANCH_KEY]['comparison_error_message'] == '--' and report[repo][config.BASE_CORE_BRANCH_KEY]['comparison_error_message'] == '--' else 'failed'
+            head_scan_time = report[repo][config.HEAD_CORE_BRANCH_KEY]['code_scan_time'].split()[0]
+            base_scan_time = report[repo][config.BASE_CORE_BRANCH_KEY]['code_scan_time'].split()[0]
             language = report[repo]['language']
             scan_time_diff = '--' if base_scan_time == '--' or head_scan_time == '--' else int(head_scan_time) - int(base_scan_time)
-            unique_source_diff = '--' if data_elements[repo][base_branch_name] == '--' or data_elements[repo][head_branch_name] == '--' else int(data_elements[repo][head_branch_name]) - int(data_elements[repo][base_branch_name])
-            unique_flow_diff = '--' if report[repo][base_branch_name]['unique_flows'] == '--' or report[repo][head_branch_name]['unique_flows'] == '--' else int(report[repo][head_branch_name]['unique_flows']) - int(report[repo][base_branch_name]['unique_flows'])
-            reachable_flow_time_diff = '--' if report[repo][base_branch_name]['reachable_flow_time'] == '--' or report[repo][head_branch_name]['reachable_flow_time'] == '--' else int(report[repo][head_branch_name]['reachable_flow_time']) - int(report[repo][base_branch_name]['reachable_flow_time'])
+            unique_source_diff = '--' if data_elements[repo][config.BASE_CORE_BRANCH_KEY] == '--' or data_elements[repo][config.HEAD_CORE_BRANCH_KEY] == '--' else int(data_elements[repo][config.HEAD_CORE_BRANCH_KEY]) - int(data_elements[repo][config.BASE_CORE_BRANCH_KEY])
+            unique_flow_diff = '--' if report[repo][config.BASE_CORE_BRANCH_KEY]['unique_flows'] == '--' or report[repo][config.HEAD_CORE_BRANCH_KEY]['unique_flows'] == '--' else int(report[repo][config.HEAD_CORE_BRANCH_KEY]['unique_flows']) - int(report[repo][config.BASE_CORE_BRANCH_KEY]['unique_flows'])
+            reachable_flow_time_diff = '--' if report[repo][config.BASE_CORE_BRANCH_KEY]['reachable_flow_time'] == '--' or report[repo][config.HEAD_CORE_BRANCH_KEY]['reachable_flow_time'] == '--' else int(report[repo][config.HEAD_CORE_BRANCH_KEY]['reachable_flow_time']) - int(report[repo][config.BASE_CORE_BRANCH_KEY]['reachable_flow_time'])
             number_hundred_missing_for_repo = flow_report[repo]['hundred_missing']
 
             if scan_time_diff != '--':
@@ -191,7 +194,8 @@ def write_summary_data(workbook_location, base_branch_name, head_branch_name, re
                     matching_sources += 1
 
             if reachable_flow_time_diff != '--':
-                if reachable_flow_time_diff > 0: # Head branch took more time
+                # Head branch took more time
+                if reachable_flow_time_diff > 0:
                     reachable_by_flow_time_positive += 1
                     reachable_by_flow_time_positive_average += reachable_flow_time_diff
                 else:
@@ -203,14 +207,15 @@ def write_summary_data(workbook_location, base_branch_name, head_branch_name, re
 
             worksheet.append([repo, language, scan_status, base_scan_time, head_scan_time, scan_time_diff,
                               reachable_flow_time_diff,
-                              report[repo][base_branch_name]['unique_flows'],
-                              report[repo][head_branch_name]['unique_flows'], unique_flow_diff,
-                              data_elements[repo][base_branch_name],
-                              data_elements[repo][head_branch_name], unique_source_diff,
+                              report[repo][config.BASE_CORE_BRANCH_KEY]['unique_flows'],
+                              report[repo][config.HEAD_CORE_BRANCH_KEY]['unique_flows'], unique_flow_diff,
+                              data_elements[repo][config.BASE_CORE_BRANCH_KEY],
+                              data_elements[repo][config.HEAD_CORE_BRANCH_KEY], unique_source_diff,
                               report[repo]['missing_sink'],
                               number_hundred_missing_for_repo])
+
         except Exception as e:
-            print(f'{datetime.datetime.now()} - Scan failed for repo {repo} : {str(e)}')
+            print(f'{builder.get_current_time()} - Scan failed for repo {repo} : {str(e)}')
             worksheet.append([repo, language, scan_status, "--", "--", "--",
                               "--",
                               "--",
