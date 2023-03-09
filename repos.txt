@@ -1,2 +1,1 @@
 https://github.com/dbMundada/privado-python-test
-https://github.com/larger5/Django_CRUD_Student
