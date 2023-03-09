@@ -275,14 +275,14 @@ def sub_process_occurrenaces(base_collection_data, head_collection_data, repo_na
             for source_id in process_collection_head_data[collection_id].keys():
                 head_total_occ += len(process_collection_head_data[collection_id][source_id])
                 total_additional_occ += len(process_collection_head_data[collection_id][source_id])
-                final_result_list.append([repo_name, collection_id, source_id, len(process_collection_head_data[collection_id][source_id]), 0, '100%', len(process_collection_head_data[collection_id][source_id]), 0])
+                final_result_list.append([repo_name, language, collection_id, source_id, len(process_collection_head_data[collection_id][source_id]), 0, '100%', len(process_collection_head_data[collection_id][source_id]), 0])
             continue
 
         if not process_collection_head_data.__contains__(collection_id):
             for source_id in process_collection_base_data[collection_id].keys():
                 base_total_occ += len(process_collection_base_data[collection_id][source_id])
                 total_missing_occ += len(process_collection_base_data[collection_id][source_id])
-                final_result_list.append([repo_name, collection_id, source_id, 0, len(process_collection_base_data[collection_id][source_id]), '-100%', 0, len(process_collection_base_data[collection_id][source_id])])
+                final_result_list.append([repo_name, language, collection_id, source_id, 0, len(process_collection_base_data[collection_id][source_id]), '-100%', 0, len(process_collection_base_data[collection_id][source_id])])
             continue
 
         base_source_data = process_collection_base_data[collection_id]
@@ -297,13 +297,13 @@ def sub_process_occurrenaces(base_collection_data, head_collection_data, repo_na
             if not process_collection_base_data.__contains__(source_id):
                 total_additional_occ += len(head_source_data[source_id])
                 head_total_occ += len(head_source_data[source_id])
-                final_result_list.append([repo_name, collection_id, source_id, len(head_source_data[source_id]), 0, '100%', len(head_source_data[source_id]), 0])
+                final_result_list.append([repo_name, language, collection_id, source_id, len(head_source_data[source_id]), 0, '100%', len(head_source_data[source_id]), 0])
                 continue
 
             if not process_collection_head_data.__contains__(source_id):
                 total_missing_occ += len(base_source_data[source_id])
                 base_total_occ += len(base_source_data[source_id])
-                final_result_list.append([repo_name, collection_id, source_id, 0, len(base_source_data[source_id]), '-100%', 0, len(base_source_data[source_id])])
+                final_result_list.append([repo_name, language, collection_id, source_id, 0, len(base_source_data[source_id]), '-100%', 0, len(base_source_data[source_id])])
                 continue
 
             print("qqqqqyyy")
