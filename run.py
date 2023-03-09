@@ -163,6 +163,7 @@ def workflow():
                 base_file.close()
                 head_file.close()
             except Exception as e:
+                traceback.print_exc()
                 print(f'{builder.get_current_time()} - {repo_name}: comparison report not generating: {e}')
                 scan_status[repo_name][config.BASE_CORE_BRANCH_KEY]['comparison_status'] = 'failed'
                 scan_status[repo_name][config.BASE_CORE_BRANCH_KEY]['comparison_error_message'] = str(e)
