@@ -239,8 +239,6 @@ def sub_process_occurrenaces(base_collection_data, head_collection_data, repo_na
     total_additional_occ = 0
     total_missing_occ = 0
 
-    print("qqqqq")
-
     for i in base_collection_data:
         collection_id = i['collectionId']
         source_data = {}
@@ -267,8 +265,6 @@ def sub_process_occurrenaces(base_collection_data, head_collection_data, repo_na
 
     collection_union = set(process_collection_base_data.keys()).union(set(process_collection_head_data.keys()))
 
-    print("qqqqtt")
-
     for collection_id in collection_union:
 
         if not process_collection_base_data.__contains__(collection_id):
@@ -288,8 +284,6 @@ def sub_process_occurrenaces(base_collection_data, head_collection_data, repo_na
         base_source_data = process_collection_base_data[collection_id]
         head_source_data = process_collection_head_data[collection_id]
 
-        print("qqqqqrrr")
-
         source_union = set(base_source_data.keys()).union(set(head_source_data.keys()))
 
         for source_id in source_union:
@@ -305,8 +299,6 @@ def sub_process_occurrenaces(base_collection_data, head_collection_data, repo_na
                 base_total_occ += len(base_source_data[source_id])
                 final_result_list.append([repo_name, language, collection_id, source_id, 0, len(base_source_data[source_id]), '-100%', 0, len(base_source_data[source_id])])
                 continue
-
-            print("qqqqqyyy")
 
             base_occurrence_data = base_source_data[source_id]
             head_occurrence_data = head_source_data[source_id]
@@ -337,8 +329,6 @@ def sub_process_occurrenaces(base_collection_data, head_collection_data, repo_na
                 final_result_list.append([repo_name, language, collection_id, source_id, len(head_occurrence_data),
                                           len(base_occurrence_data),
                                           percent_delta, additional_count, missing_count])
-
-    print("rr")
 
     return [final_result_list, [head_total_occ, base_total_occ, total_additional_occ, total_missing_occ]]
 
