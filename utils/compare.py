@@ -200,7 +200,7 @@ def process_collection_sheet_data(worksheet_name, base_collections, head_collect
     total_additional_occ = 0
     total_missing_occ = 0
 
-    value = sub_process_occurrenaces(base_collections['collections'], head_collections['collections'], repo_name)
+    value = sub_process_occurrenaces(base_collections['collections'], head_collections['collections'], repo_name, language)
     for i in value[0]:
         result.append(i)
 
@@ -214,10 +214,10 @@ def process_collection_sheet_data(worksheet_name, base_collections, head_collect
     else:
         percent_delta = f'{round(((total_additional_occ + total_missing_occ) / (head_total_occ + total_missing_occ)) * 100, 2)}%'
 
-    result.insert(0, [repo_name, 'Total', 'All', head_total_occ, base_total_occ, percent_delta, total_additional_occ, total_missing_occ])
+    result.insert(0, [repo_name, language, 'Total', 'All', head_total_occ, base_total_occ, percent_delta, total_additional_occ, total_missing_occ])
 
     if header_flag:
-        result.insert(0, ['Repos Name', 'Collection Id', 'Source Id',
+        result.insert(0, ['Repos Name', 'language', 'Collection Id', 'Source Id',
                           f'Total occurrences in {config.HEAD_SHEET_BRANCH_NAME}',
                           f'Total occurrences in {config.BASE_SHEET_BRANCH_NAME}',
                           'Percent Delta',
@@ -229,7 +229,7 @@ def process_collection_sheet_data(worksheet_name, base_collections, head_collect
     return result
 
 
-def sub_process_occurrenaces(base_collection_data, head_collection_data, repo_name):
+def sub_process_occurrenaces(base_collection_data, head_collection_data, repo_name, language):
     final_result_list = []
     process_collection_base_data = {}
     process_collection_head_data = {}
@@ -334,7 +334,7 @@ def sub_process_occurrenaces(base_collection_data, head_collection_data, repo_na
                 else:
                     percent_delta = f'{round(((additional_count + missing_count) / (2 * len(occurrences_union))) * 100, 2)}%'
 
-                final_result_list.append([repo_name, collection_id, source_id, len(head_occurrence_data),
+                final_result_list.append([repo_name, language, collection_id, source_id, len(head_occurrence_data),
                                           len(base_occurrence_data),
                                           percent_delta, additional_count, missing_count])
 
