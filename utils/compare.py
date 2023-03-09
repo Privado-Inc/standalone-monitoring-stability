@@ -237,7 +237,7 @@ def sub_process_occurrenaces(base_collection_data, head_collection_data, repo_na
     print("qqqqq")
 
     for i in base_collection_data:
-        collection_id = base_collection_data['collectionId']
+        collection_id = i['collectionId']
         source_data = {}
         for j in i['collections']:
             source_id = j['sourceId']
@@ -249,7 +249,7 @@ def sub_process_occurrenaces(base_collection_data, head_collection_data, repo_na
         process_collection_base_data[collection_id] = source_data
 
     for i in head_collection_data:
-        collection_id = base_collection_data['collectionId']
+        collection_id = i['collectionId']
         source_data = {}
         for j in i['collections']:
             source_id = j['sourceId']
