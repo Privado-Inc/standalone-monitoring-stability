@@ -204,6 +204,11 @@ def process_collection_sheet_data(worksheet_name, base_collections, head_collect
     for i in value[0]:
         result.append(i)
 
+    head_total_occ += value[1][0]
+    base_total_occ += value[1][1]
+    total_additional_occ += value[1][2]
+    total_missing_occ += value[1][3]
+
     if head_total_occ + total_missing_occ == 0:
         percent_delta = '0%'
     else:

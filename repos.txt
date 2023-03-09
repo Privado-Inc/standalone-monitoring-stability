@@ -1,1 +1,6 @@
-https://github.com/dbMundada/privado-python-test
+https://github.com/dbMundada/privado-python-test.git
+https://github.com/dbMundada/Worldlink.git
+https://github.com/Khantanjil/Employees.git
+https://github.com/relations-dil/python-relations-mysql.git
+https://github.com/nccgroup/ScoutSuite.git
+https://github.com/IMaG1337/inventory_managment.git
