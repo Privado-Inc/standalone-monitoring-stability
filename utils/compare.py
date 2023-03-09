@@ -34,6 +34,9 @@ def main(base_file, head_file, base_intermediate_file, head_intermediate_file, h
     process_path_analysis(f'{head_branch_worksheet_name}-{base_branch_worksheet_name}-flow-report', base_data,
                           head_data, repo_name, language, header_flag)
 
+    process_collection_sheet_data(f'{head_branch_worksheet_name}-{base_branch_worksheet_name}-collections-report',
+                                  base_data, head_data, repo_name, language, header_flag, True)
+
     if os.path.isfile(base_intermediate_file) and os.path.isfile(head_intermediate_file):
         base_intermediate_file = open(base_intermediate_file)
         head_intermediate_file = open(head_intermediate_file)
@@ -187,6 +190,142 @@ def process_source_sink_and_collection_data(worksheet_name, base_data, head_data
     write_source_sink_data(f'{os.getcwd()}/output.xlsx', worksheet_name, result)
 
     return result
+
+
+def process_collection_sheet_data(worksheet_name, base_collections, head_collections, repo_name, language, header_flag, write_report):
+    result = []
+
+    head_total_occ = 0
+    base_total_occ = 0
+    total_additional_occ = 0
+    total_missing_occ = 0
+
+    value = sub_process_occurrenaces(base_collections['collections'], head_collections['collections'], repo_name)
+    for i in value[0]:
+        result.append(i)
+
+    if head_total_occ + total_missing_occ == 0:
+        percent_delta = '0%'
+    else:
+        percent_delta = f'{round(((total_additional_occ + total_missing_occ) / (head_total_occ + total_missing_occ)) * 100, 2)}%'
+
+    result.insert(0, [repo_name, 'Total', 'All', head_total_occ, base_total_occ, percent_delta, total_additional_occ, total_missing_occ])
+
+    if header_flag:
+        result.insert(0, ['Repos Name', 'Collection Id', 'Source Id',
+                          f'Total occurrences in {config.HEAD_SHEET_BRANCH_NAME}',
+                          f'Total occurrences in {config.BASE_SHEET_BRANCH_NAME}',
+                          'Percent Delta',
+                          f'Additional Path in {config.HEAD_SHEET_BRANCH_NAME}',
+                          f'Missing Path in {config.HEAD_SHEET_BRANCH_NAME}'])
+
+    if write_report:
+        write_path_data(f'{os.getcwd()}/output.xlsx', worksheet_name, result)
+    return result
+
+
+def sub_process_occurrenaces(base_collection_data, head_collection_data, repo_name):
+    final_result_list = []
+    process_collection_base_data = {}
+    process_collection_head_data = {}
+
+    head_total_occ = 0
+    base_total_occ = 0
+    total_additional_occ = 0
+    total_missing_occ = 0
+
+    for i in base_collection_data:
+        collection_id = base_collection_data['collectionId']
+        source_data = {}
+        for j in i['collections']:
+            source_id = j['sourceId']
+            hash_collections = []
+            for occ in j['occurrences']:
+                value = json_to_hash(occ)
+                hash_collections.append(value)
+            source_data[source_id] = hash_collections
+        process_collection_base_data[collection_id] = source_data
+
+    for i in head_collection_data:
+        collection_id = base_collection_data['collectionId']
+        source_data = {}
+        for j in i['collections']:
+            source_id = j['sourceId']
+            hash_collections = []
+            for occ in j['occurrences']:
+                value = json_to_hash(occ)
+                hash_collections.append(value)
+            source_data[source_id] = hash_collections
+        process_collection_head_data[collection_id] = source_data
+
+    collection_union = set(process_collection_base_data.keys()).union(set(process_collection_head_data.keys()))
+
+    for collection_id in collection_union:
+
+        if not process_collection_base_data.__contains__(collection_id):
+            for source_id in process_collection_head_data[collection_id].keys():
+                head_total_occ += len(process_collection_head_data[collection_id][source_id])
+                total_additional_occ += len(process_collection_head_data[collection_id][source_id])
+                final_result_list.append([repo_name, collection_id, source_id, len(process_collection_head_data[collection_id][source_id]), 0, '100%', len(process_collection_head_data[collection_id][source_id]), 0])
+            continue
+
+        if not process_collection_head_data.__contains__(collection_id):
+            for source_id in process_collection_base_data[collection_id].keys():
+                base_total_occ += len(process_collection_base_data[collection_id][source_id])
+                total_missing_occ += len(process_collection_base_data[collection_id][source_id])
+                final_result_list.append([repo_name, collection_id, source_id, 0, len(process_collection_base_data[collection_id][source_id]), '-100%', 0, len(process_collection_base_data[collection_id][source_id])])
+            continue
+
+        base_source_data = process_collection_base_data[collection_id]
+        head_source_data = process_collection_head_data[collection_id]
+
+        source_union = set(base_source_data.keys()).union(set(head_source_data.keys()))
+
+        for source_id in source_union:
+
+            if not process_collection_base_data.__contains__(source_id):
+                total_additional_occ += len(head_source_data[source_id])
+                head_total_occ += len(head_source_data[source_id])
+                final_result_list.append([repo_name, collection_id, source_id, len(head_source_data[source_id]), 0, '100%', len(head_source_data[source_id]), 0])
+                continue
+
+            if not process_collection_head_data.__contains__(source_id):
+                total_missing_occ += len(base_source_data[source_id])
+                base_total_occ += len(base_source_data[source_id])
+                final_result_list.append([repo_name, collection_id, source_id, 0, len(base_source_data[source_id]), '-100%', 0, len(base_source_data[source_id])])
+                continue
+
+            base_occurrence_data = base_source_data[source_id]
+            head_occurrence_data = head_source_data[source_id]
+
+            occurrences_union = set(base_occurrence_data).union(set(head_occurrence_data))
+
+            for occ in occurrences_union:
+
+                additional_count = 0
+                missing_count = 0
+
+                if not base_occurrence_data.__contains__(occ):
+                    additional_count = additional_count + 1
+
+                if not head_occurrence_data.__contains__(occ):
+                    missing_count = missing_count + 1
+
+                base_total_occ += len(base_occurrence_data)
+                head_total_occ += len(head_occurrence_data)
+                total_additional_occ += additional_count
+                total_missing_occ += missing_count
+
+                if head_total_occ + total_missing_occ == 0:
+                    percent_delta = '0%'
+                else:
+                    percent_delta = f'{round(((additional_count + missing_count) / (2 * len(occurrences_union))) * 100, 2)}%'
+
+                final_result_list.append([repo_name, collection_id, source_id, len(head_occurrence_data),
+                                          len(base_occurrence_data),
+                                          percent_delta, additional_count, missing_count])
+
+    return [final_result_list, [head_total_occ, base_total_occ, total_additional_occ, total_missing_occ]]
 
 
 def process_sources(source_base, source_head, repo_name, language):
