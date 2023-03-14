@@ -73,14 +73,9 @@ def get_subscan_metadata(repo_name, branch, branch_file_name, language):
         
         # Store values for java to avoid mismatch of values
         if re.search(r".*(Java).*", language):
-            print(tag)
             if re.search(missing_in_python_regex, tag):
-                print("aaaaaaa")
                 missing_in_python_values[tag] = time
                 continue
-            else:
-                print("iiiiii")
-                missing_in_python_values[tag] = '--'
 
         # Map all the tags to the times in a dictionary
         subscan_map[tag] = time
@@ -94,9 +89,10 @@ def get_subscan_metadata(repo_name, branch, branch_file_name, language):
     # Moved down to sync values with headers
     if re.search(r".*(Java).*", language):
         subscan_map["Property file pass"] = missing_in_python_values["Property file pass"]
-        print(subscan_map["IdentifierTagger Non Member"])
-        print(missing_in_python_values["IdentifierTagger Non Member"])
-        subscan_map["IdentifierTagger Non Member"] = missing_in_python_values["IdentifierTagger Non Member"]
+        if missing_in_python_values.__contains__("IdentifierTagger Non Member"):
+            subscan_map["IdentifierTagger Non Member"] = missing_in_python_values["IdentifierTagger Non Member"]
+        else:
+            subscan_map["IdentifierTagger Non Member"] = 'NA'
         subscan_map["DB config tagger"] = missing_in_python_values["DBConfigTagger"]
         subscan_map["Custom Inherit Tagger"] = missing_in_python_values["CustomInheritTagger"]
         subscan_map['RegularSinkTagger'], subscan_map['APITagger'] = subscan_map['APITagger'], subscan_map['RegularSinkTagger'] # Hot fix for java
