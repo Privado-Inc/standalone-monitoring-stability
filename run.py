@@ -120,17 +120,19 @@ def workflow():
 
         for repo_name in valid_repositories:
             try:
+                print("qqqq")
                 base_file = builder.get_result_path(config.BASE_CORE_BRANCH_KEY, repo_name)
                 head_file = builder.get_result_path(config.HEAD_CORE_BRANCH_KEY, repo_name)
                 detected_language = get_detected_language(repo_name, config.BASE_CORE_BRANCH_KEY)
                 base_intermediate_file = builder.get_intermediate_path(config.BASE_CORE_BRANCH_KEY, repo_name)
                 head_intermediate_file = builder.get_intermediate_path(config.HEAD_CORE_BRANCH_KEY, repo_name)
                 compare_and_generate_report(base_file, head_file, base_intermediate_file, head_intermediate_file, header_flag, scan_status, detected_language)
-
+                print("qqqqdd")
                 scan_status[repo_name][config.BASE_CORE_BRANCH_KEY]['comparison_status'] = 'done'
                 scan_status[repo_name][config.BASE_CORE_BRANCH_KEY]['comparison_error_message'] = '--'
                 scan_status[repo_name][config.HEAD_CORE_BRANCH_KEY]['comparison_status'] = 'done'
                 scan_status[repo_name][config.HEAD_CORE_BRANCH_KEY]['comparison_error_message'] = '--'
+                print("qqqq")
 
                 try:
                     base_file = open(base_file)
@@ -144,11 +146,12 @@ def workflow():
 
                 try:
                     # Get the source data from the process_sources function
+                    print("qqqqrrr")
                     source_data = process_sources(base_data['sources'], head_data['sources'], repo_name, detected_language)
                     flow_report = process_path_analysis(f'{head_worksheet_name}-{base_worksheet_name}-flow-report', base_data, head_data, repo_name, detected_language, False, False)
                     missing_flow_head = flow_report[0][-2]
                     additional_flow_head = flow_report[0][-3]
-
+                    print("qqqqeee")
                     hundred_percent_missing_repos = 0
                     for flow in flow_report:
                         if flow[-3] == '-100%' or flow[-3] == '-100':
