@@ -102,6 +102,10 @@ def process_performance_data(worksheet_name, repo_name, language, header_flag):
     head_values = get_subscan_metadata(repo_name, config.BASE_CORE_BRANCH_NAME, config.BASE_CORE_BRANCH_KEY, language)
     base_values = get_subscan_metadata(repo_name, config.HEAD_CORE_BRANCH_NAME, config.HEAD_CORE_BRANCH_KEY, language)
 
+    print(head_values)
+    print("-----")
+    print(base_values)
+
     result.append(list(map(lambda x: head_values[x], subscan_headers)))
     result.append(list(map(lambda x: base_values[x], subscan_headers)))
 
