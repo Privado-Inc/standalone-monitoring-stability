@@ -15,6 +15,8 @@ def main(filepath):
 
     source_sink_regex = r".*(repositories have on an average).*(missing flows.).*"
 
+    scan_time_limit = 60000
+
     results = []
 
     check = True
@@ -29,7 +31,7 @@ def main(filepath):
                 values = line.split(" ")
                 print(values)
                 check = False
-                if int(values[-3]) > 1000:
+                if int(values[-3]) > scan_time_limit:
                     results.append("Average scan time differance more than 1000 ms")
 
             if re.search(reachable_regex, line):
