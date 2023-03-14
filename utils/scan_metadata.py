@@ -75,6 +75,8 @@ def get_subscan_metadata(repo_name, branch, branch_file_name, language):
         if re.search(r".*(Java).*", language):
             if re.search(missing_in_python_regex, tag):
                 missing_in_python_values[tag] = time
+            else:
+                missing_in_python_values[tag] = '--'
                 continue
 
         # Map all the tags to the times in a dictionary
