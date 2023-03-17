@@ -312,14 +312,12 @@ def sub_process_occurrenaces(base_collection_data, head_collection_data, repo_na
                 total_additional_occ += len(head_source_data[source_id])
                 head_total_occ += len(head_source_data[source_id])
                 final_result_list.append([repo_name, language, collection_id, source_id, len(head_source_data[source_id]), 0, '100%', len(head_source_data[source_id]), 0])
-                print("rtgfd")
                 continue
 
             if not head_source_data.__contains__(source_id):
                 total_missing_occ += len(base_source_data[source_id])
                 base_total_occ += len(base_source_data[source_id])
                 final_result_list.append([repo_name, language, collection_id, source_id, 0, len(base_source_data[source_id]), '-100%', 0, len(base_source_data[source_id])])
-                print("tred")
                 continue
 
             base_occurrence_data = base_source_data[source_id]
@@ -327,9 +325,9 @@ def sub_process_occurrenaces(base_collection_data, head_collection_data, repo_na
 
             occurrences_union = set(base_occurrence_data).union(set(head_occurrence_data))
 
-            print("tresd")
-
             for occ in occurrences_union:
+
+                print("-----------" + occ)
 
                 additional_count = 0
                 missing_count = 0
