@@ -96,6 +96,11 @@ def process_performance_data(worksheet_name, repo_name, language, header_flag):
                                                language)
     head_subscan_result = get_subscan_metadata(repo_name, config.HEAD_CORE_BRANCH_NAME, config.HEAD_CORE_BRANCH_KEY,
                                                language)
+
+    print("qqqqq")
+    print(base_subscan_result)
+    print(head_subscan_result)
+
     if header_flag:
         result.append(list(set(base_subscan_result).union(set(head_subscan_result))))
     else:
