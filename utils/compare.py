@@ -239,12 +239,6 @@ def sub_process_occurrenaces(base_collection_data, head_collection_data, repo_na
     total_additional_occ = 0
     total_missing_occ = 0
 
-    print(base_collection_data)
-    print("-----------------------------")
-    print("-----------------------------")
-    print("-----------------------------")
-    print(head_collection_data)
-
 
     for i in base_collection_data:
         collection_id = i['collectionId']
@@ -284,6 +278,7 @@ def sub_process_occurrenaces(base_collection_data, head_collection_data, repo_na
     print("-------------------------")
     print("-------------------------")
     print("-------------------------")
+
     for collection_id in collection_union:
 
         if not process_collection_base_data.__contains__(collection_id):
@@ -296,6 +291,7 @@ def sub_process_occurrenaces(base_collection_data, head_collection_data, repo_na
         if not process_collection_head_data.__contains__(collection_id):
             for source_id in process_collection_base_data[collection_id].keys():
                 base_total_occ += len(process_collection_base_data[collection_id][source_id])
+                print(f"Base occurences: {base_total_occ}")
                 total_missing_occ += len(process_collection_base_data[collection_id][source_id])
                 final_result_list.append([repo_name, language, collection_id, source_id, 0, len(process_collection_base_data[collection_id][source_id]), '-100%', 0, len(process_collection_base_data[collection_id][source_id])])
             continue
