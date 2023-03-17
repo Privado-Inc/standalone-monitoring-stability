@@ -201,6 +201,7 @@ def process_collection_sheet_data(worksheet_name, base_collections, head_collect
     total_missing_occ = 0
 
     value = sub_process_occurrenaces(base_collections['collections'], head_collections['collections'], repo_name, language)
+
     for i in value[0]:
         result.append(i)
 
@@ -288,13 +289,13 @@ def sub_process_occurrenaces(base_collection_data, head_collection_data, repo_na
 
         for source_id in source_union:
 
-            if not process_collection_base_data.__contains__(source_id):
+            if not base_source_data.__contains__(source_id):
                 total_additional_occ += len(head_source_data[source_id])
                 head_total_occ += len(head_source_data[source_id])
                 final_result_list.append([repo_name, language, collection_id, source_id, len(head_source_data[source_id]), 0, '100%', len(head_source_data[source_id]), 0])
                 continue
 
-            if not process_collection_head_data.__contains__(source_id):
+            if not head_source_data.__contains__(source_id):
                 total_missing_occ += len(base_source_data[source_id])
                 base_total_occ += len(base_source_data[source_id])
                 final_result_list.append([repo_name, language, collection_id, source_id, 0, len(base_source_data[source_id]), '-100%', 0, len(base_source_data[source_id])])
@@ -305,10 +306,10 @@ def sub_process_occurrenaces(base_collection_data, head_collection_data, repo_na
 
             occurrences_union = set(base_occurrence_data).union(set(head_occurrence_data))
 
-            for occ in occurrences_union:
+            additional_count = 0
+            missing_count = 0
 
-                additional_count = 0
-                missing_count = 0
+            for occ in occurrences_union:
 
                 if not base_occurrence_data.__contains__(occ):
                     additional_count = additional_count + 1
@@ -316,19 +317,20 @@ def sub_process_occurrenaces(base_collection_data, head_collection_data, repo_na
                 if not head_occurrence_data.__contains__(occ):
                     missing_count = missing_count + 1
 
-                base_total_occ += len(base_occurrence_data)
-                head_total_occ += len(head_occurrence_data)
-                total_additional_occ += additional_count
-                total_missing_occ += missing_count
+            base_total_occ += len(base_occurrence_data)
+            head_total_occ += len(head_occurrence_data)
+            total_additional_occ += additional_count
+            total_missing_occ += missing_count
 
-                if head_total_occ + total_missing_occ == 0:
-                    percent_delta = '0%'
-                else:
-                    percent_delta = f'{round(((additional_count + missing_count) / (2 * len(occurrences_union))) * 100, 2)}%'
+            if head_total_occ + total_missing_occ == 0:
+                percent_delta = '0%'
+            else:
+                percent_delta = f'{round(((additional_count + missing_count) / (2 * len(occurrences_union))) * 100, 2)}%'
 
-                final_result_list.append([repo_name, language, collection_id, source_id, len(head_occurrence_data),
-                                          len(base_occurrence_data),
-                                          percent_delta, additional_count, missing_count])
+            final_result_list.append([repo_name, language, collection_id, source_id, len(head_occurrence_data),
+                                      len(base_occurrence_data),
+                                      percent_delta, additional_count, missing_count])
+
 
     return [final_result_list, [head_total_occ, base_total_occ, total_additional_occ, total_missing_occ]]
 
