@@ -284,6 +284,8 @@ def sub_process_occurrenaces(base_collection_data, head_collection_data, repo_na
         if not process_collection_base_data.__contains__(collection_id):
             for source_id in process_collection_head_data[collection_id].keys():
                 head_total_occ += len(process_collection_head_data[collection_id][source_id])
+                print(f"Base occurences: {head_total_occ}")
+
                 total_additional_occ += len(process_collection_head_data[collection_id][source_id])
                 final_result_list.append([repo_name, language, collection_id, source_id, len(process_collection_head_data[collection_id][source_id]), 0, '100%', len(process_collection_head_data[collection_id][source_id]), 0])
             continue
