@@ -201,6 +201,10 @@ def process_collection_sheet_data(worksheet_name, base_collections, head_collect
     total_missing_occ = 0
 
     value = sub_process_occurrenaces(base_collections['collections'], head_collections['collections'], repo_name, language)
+
+    print("value-------" + repo_name)
+    print(value)
+
     for i in value[0]:
         result.append(i)
 
