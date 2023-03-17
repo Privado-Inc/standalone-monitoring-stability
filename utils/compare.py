@@ -264,7 +264,9 @@ def sub_process_occurrenaces(base_collection_data, head_collection_data, repo_na
             source_data[source_id] = hash_collections
         process_collection_head_data[collection_id] = source_data
 
+    print("qqqqq")
     print(base_collection_data)
+    print("yyyy")
     print(head_collection_data)
 
     collection_union = set(process_collection_base_data.keys()).union(set(process_collection_head_data.keys()))
