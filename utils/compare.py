@@ -240,6 +240,9 @@ def sub_process_occurrenaces(base_collection_data, head_collection_data, repo_na
     total_missing_occ = 0
 
     print(base_collection_data)
+    print("-----------------------------")
+    print("-----------------------------")
+    print("-----------------------------")
     print(head_collection_data)
 
 
@@ -268,6 +271,15 @@ def sub_process_occurrenaces(base_collection_data, head_collection_data, repo_na
         process_collection_head_data[collection_id] = source_data
 
     collection_union = set(process_collection_base_data.keys()).union(set(process_collection_head_data.keys()))
+
+    print("-------------------------")
+    print("-------------------------")
+    print("-------------------------")
+    print(collection_union)
+    print("-------------------------")
+    print("-------------------------")
+    print("-------------------------")
+
 
     for collection_id in collection_union:
 
