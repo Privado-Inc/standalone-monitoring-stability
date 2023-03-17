@@ -307,9 +307,6 @@ def sub_process_occurrenaces(base_collection_data, head_collection_data, repo_na
             base_occurrence_data = base_source_data[source_id]
             head_occurrence_data = head_source_data[source_id]
 
-            print(base_occurrence_data)
-            print(head_occurrence_data)
-
             occurrences_union = set(base_occurrence_data).union(set(head_occurrence_data))
 
             additional_count = 0
