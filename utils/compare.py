@@ -92,18 +92,19 @@ def compare_files(base_file_uri, head_file_uri):
 
 def process_performance_data(worksheet_name, repo_name, language, header_flag):
     result = []
-    subscan_headers = list(get_subscan_metadata(repo_name, config.HEAD_CORE_BRANCH_NAME, config.HEAD_CORE_BRANCH_KEY,
-                                                language).keys())
+    base_subscan_result = get_subscan_metadata(repo_name, config.BASE_CORE_BRANCH_NAME, config.BASE_CORE_BRANCH_KEY,
+                                               language)
+    head_subscan_result = get_subscan_metadata(repo_name, config.HEAD_CORE_BRANCH_NAME, config.HEAD_CORE_BRANCH_KEY,
+                                               language)
     if header_flag:
-        result.append(subscan_headers)
+        result.append(list(set(base_subscan_result).union(set(head_subscan_result))))
     else:
         result.append([])
 
-    head_values = get_subscan_metadata(repo_name, config.BASE_CORE_BRANCH_NAME, config.BASE_CORE_BRANCH_KEY, language)
-    base_values = get_subscan_metadata(repo_name, config.HEAD_CORE_BRANCH_NAME, config.HEAD_CORE_BRANCH_KEY, language)
-
-    result.append(list(map(lambda x: head_values[x], subscan_headers)))
-    result.append(list(map(lambda x: base_values[x], subscan_headers)))
+    result.append(list(map(lambda x: base_subscan_result[x] if base_subscan_result.__contains__(x) else 'NA',
+                           base_subscan_result.keys())))
+    result.append(list(map(lambda x: head_subscan_result[x] if head_subscan_result.__contains__(x) else 'NA',
+                           head_subscan_result.keys())))
 
     write_performance_data(f'{os.getcwd()}/output.xlsx', worksheet_name, result)
 
