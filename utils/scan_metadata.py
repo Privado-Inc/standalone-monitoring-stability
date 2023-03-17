@@ -35,7 +35,7 @@ def get_metadata_pair(filepath):
             if re.search(language_regex, line):
                 detected_language = line.split(' ')[-1].replace("'", "")
                 yield "language", detected_language
-            
+
             if re.search(time_filter_regex, line):
 
                 empty_filtered_list = list(
@@ -67,10 +67,10 @@ def get_subscan_metadata(repo_name, branch, branch_file_name, language):
         # base processing is the cpg generation time
         if "Base processing" in tag:
             tag = "CPG Generation time"
-        
+
         time = metadata_pair[1].strip()
-        flow_count = int(metadata_pair[-1].replace('\n', '').strip()) if metadata_pair[-1].replace('\n', '').strip().isdigit() and "flow" in metadata_pair[0] else None # Time required and flow count both are captured 
-        
+        flow_count = int(metadata_pair[-1].replace('\n', '').strip()) if metadata_pair[-1].replace('\n', '').strip().isdigit() and "flow" in metadata_pair[0] else None # Time required and flow count both are captured
+
         # Store values for java to avoid mismatch of values
         if re.search(r".*(Java).*", language):
             if re.search(missing_in_python_regex, tag):
@@ -88,10 +88,10 @@ def get_subscan_metadata(repo_name, branch, branch_file_name, language):
 
     # Moved down to sync values with headers
     if re.search(r".*(Java).*", language):
-        subscan_map["Property file pass"] = missing_in_python_values["Property file pass"]
-        subscan_map["IdentifierTagger Non Member"] = missing_in_python_values["IdentifierTagger Non Member"]
-        subscan_map["DB config tagger"] = missing_in_python_values["DBConfigTagger"]
-        subscan_map["Custom Inherit Tagger"] = missing_in_python_values["CustomInheritTagger"]
+        subscan_map["Property file pass"] = missing_in_python_values["Property file pass"] if missing_in_python_values.__contains__("Property file pass") else "NA"
+        subscan_map["IdentifierTagger Non Member"] = missing_in_python_values["IdentifierTagger Non Member"] if missing_in_python_values.__contains__("IdentifierTagger Non Member") else "NA"
+        subscan_map["DB config tagger"] = missing_in_python_values["DBConfigTagger"] if missing_in_python_values.__contains__("DBConfigTagger") else "NA"
+        subscan_map["Custom Inherit Tagger"] = missing_in_python_values["CustomInheritTagger"] if missing_in_python_values.__contains__("CustomInheritTagger") else "NA"
         subscan_map['RegularSinkTagger'], subscan_map['APITagger'] = subscan_map['APITagger'], subscan_map['RegularSinkTagger'] # Hot fix for java
 
     # Missing in python should be added at the end
