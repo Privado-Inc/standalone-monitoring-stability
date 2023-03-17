@@ -202,9 +202,6 @@ def process_collection_sheet_data(worksheet_name, base_collections, head_collect
 
     value = sub_process_occurrenaces(base_collections['collections'], head_collections['collections'], repo_name, language)
 
-    print("tredc")
-    print(value)
-
     for i in value[0]:
         result.append(i)
 
