@@ -275,12 +275,15 @@ def sub_process_occurrenaces(base_collection_data, head_collection_data, repo_na
     print("-------------------------")
     print("-------------------------")
     print("-------------------------")
-    print(collection_union)
+    print(process_collection_base_data)
     print("-------------------------")
     print("-------------------------")
     print("-------------------------")
+    print(process_collection_head_data)
 
-
+    print("-------------------------")
+    print("-------------------------")
+    print("-------------------------")
     for collection_id in collection_union:
 
         if not process_collection_base_data.__contains__(collection_id):
