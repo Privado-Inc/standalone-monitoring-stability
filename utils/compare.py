@@ -299,6 +299,13 @@ def sub_process_occurrenaces(base_collection_data, head_collection_data, repo_na
         source_union = set(base_source_data.keys()).union(set(head_source_data.keys()))
         print("rfd")
 
+        print("333")
+        print(base_source_data.keys())
+        print("r555")
+        print(head_source_data.keys())
+        print("trtrtr")
+        print(source_union)
+
         for source_id in source_union:
 
             if not process_collection_base_data.__contains__(source_id):
