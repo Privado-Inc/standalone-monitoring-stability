@@ -202,9 +202,6 @@ def process_collection_sheet_data(worksheet_name, base_collections, head_collect
 
     value = sub_process_occurrenaces(base_collections['collections'], head_collections['collections'], repo_name, language)
 
-    print("value-------" + repo_name)
-    print(value)
-
     for i in value[0]:
         result.append(i)
 
@@ -266,6 +263,9 @@ def sub_process_occurrenaces(base_collection_data, head_collection_data, repo_na
                 hash_collections.append(value)
             source_data[source_id] = hash_collections
         process_collection_head_data[collection_id] = source_data
+
+    print(base_collection_data)
+    print(head_collection_data)
 
     collection_union = set(process_collection_base_data.keys()).union(set(process_collection_head_data.keys()))
 
