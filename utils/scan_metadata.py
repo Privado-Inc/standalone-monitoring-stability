@@ -54,52 +54,56 @@ def get_subscan_metadata(repo_name, branch, branch_file_name, language):
     cwd = os.getcwd()
     filepath = f"{cwd}/temp/result/{branch_file_name}/{repo_name}-output.txt"
 
-    subscan_map["RepoName"] = repo_name
-    subscan_map["language"] = language
-    subscan_map["branch"] = branch
 
-    missing_in_python_regex = r".*(Property file pass|IdentifierTagger Non Member|DBConfigTagger|CustomInheritTagger).*"
+    try:
+        subscan_map["RepoName"] = repo_name
+        subscan_map["language"] = language
+        subscan_map["branch"] = branch
 
-    missing_in_python_values = dict()
+        missing_in_python_regex = r".*(Property file pass|IdentifierTagger Non Member|DBConfigTagger|CustomInheritTagger).*"
 
-    for metadata_pair in get_metadata_pair(filepath):
-        tag = re.sub(pattern=r"(\t|done in|is done in)", repl="", string=metadata_pair[0]).strip()
-        # base processing is the cpg generation time
-        if "Base processing" in tag:
-            tag = "CPG Generation time"
-        
-        time = metadata_pair[1].strip()
-        flow_count = int(metadata_pair[-1].replace('\n', '').strip()) if metadata_pair[-1].replace('\n', '').strip().isdigit() and "flow" in metadata_pair[0] else None # Time required and flow count both are captured 
-        
-        # Store values for java to avoid mismatch of values
+        missing_in_python_values = dict()
+
+        for metadata_pair in get_metadata_pair(filepath):
+            tag = re.sub(pattern=r"(\t|done in|is done in)", repl="", string=metadata_pair[0]).strip()
+            # base processing is the cpg generation time
+            if "Base processing" in tag:
+                tag = "CPG Generation time"
+            
+            time = metadata_pair[1].strip()
+            flow_count = int(metadata_pair[-1].replace('\n', '').strip()) if metadata_pair[-1].replace('\n', '').strip().isdigit() and "flow" in metadata_pair[0] else None # Time required and flow count both are captured 
+            
+            # Store values for java to avoid mismatch of values
+            if re.search(r".*(Java).*", language):
+                if re.search(missing_in_python_regex, tag):
+                    missing_in_python_values[tag] = time
+                    continue
+
+            # Map all the tags to the times in a dictionary
+            subscan_map[tag] = time
+
+            if flow_count is not None:
+                # Changing key to avoid confusion between flow counts and time required for flow counts, and also to
+                # prevent overrides
+                subscan_map[tag + " (time) "] = time
+                subscan_map[tag] = flow_count
+
+        # Moved down to sync values with headers
         if re.search(r".*(Java).*", language):
-            if re.search(missing_in_python_regex, tag):
-                missing_in_python_values[tag] = time
-                continue
+            subscan_map["Property file pass"] = missing_in_python_values["Property file pass"]
+            subscan_map["IdentifierTagger Non Member"] = missing_in_python_values["IdentifierTagger Non Member"]
+            subscan_map["DB config tagger"] = missing_in_python_values["DBConfigTagger"]
+            subscan_map["Custom Inherit Tagger"] = missing_in_python_values["CustomInheritTagger"]
+            subscan_map['RegularSinkTagger'], subscan_map['APITagger'] = subscan_map['APITagger'], subscan_map['RegularSinkTagger'] # Hot fix for java
 
-        # Map all the tags to the times in a dictionary
-        subscan_map[tag] = time
-
-        if flow_count is not None:
-            # Changing key to avoid confusion between flow counts and time required for flow counts, and also to
-            # prevent overrides
-            subscan_map[tag + " (time) "] = time
-            subscan_map[tag] = flow_count
-
-    # Moved down to sync values with headers
-    if re.search(r".*(Java).*", language):
-        subscan_map["Property file pass"] = missing_in_python_values["Property file pass"]
-        subscan_map["IdentifierTagger Non Member"] = missing_in_python_values["IdentifierTagger Non Member"]
-        subscan_map["DB config tagger"] = missing_in_python_values["DBConfigTagger"]
-        subscan_map["Custom Inherit Tagger"] = missing_in_python_values["CustomInheritTagger"]
-        subscan_map['RegularSinkTagger'], subscan_map['APITagger'] = subscan_map['APITagger'], subscan_map['RegularSinkTagger'] # Hot fix for java
-
-    # Missing in python should be added at the end
-    if re.search(r".*(Python).*", language):
-        subscan_map["Property file pass"] = "--"
-        subscan_map["IdentifierTagger Non Member"] = "--"
-        subscan_map["DB config tagger"] = "--"
-        subscan_map["Custom Inherit Tagger"] = "--"
+        # Missing in python should be added at the end
+        if re.search(r".*(Python).*", language):
+            subscan_map["Property file pass"] = "--"
+            subscan_map["IdentifierTagger Non Member"] = "--"
+            subscan_map["DB config tagger"] = "--"
+            subscan_map["Custom Inherit Tagger"] = "--"
+    except Exception as e:
+        print(e)
 
     return subscan_map
 
