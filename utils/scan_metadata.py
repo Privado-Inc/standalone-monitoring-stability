@@ -100,6 +100,8 @@ def get_subscan_metadata(repo_name, branch, branch_file_name, language):
         subscan_map["IdentifierTagger Non Member"] = "--"
         subscan_map["DB config tagger"] = "--"
         subscan_map["Custom Inherit Tagger"] = "--"
+        subscan_map['RegularSinkTagger'] = '--'
+        subscan_map['APITagger'] = '--'
 
     return subscan_map
 
