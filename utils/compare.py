@@ -267,12 +267,6 @@ def sub_process_occurrenaces(base_collection_data, head_collection_data, repo_na
             source_data[source_id] = hash_collections
         process_collection_head_data[collection_id] = source_data
 
-    print("qqqqq")
-    print(base_collection_data)
-    print("yyyy")
-    print(head_collection_data)
-    print("cccc")
-
     collection_union = set(process_collection_base_data.keys()).union(set(process_collection_head_data.keys()))
 
     for collection_id in collection_union:
@@ -282,7 +276,6 @@ def sub_process_occurrenaces(base_collection_data, head_collection_data, repo_na
                 head_total_occ += len(process_collection_head_data[collection_id][source_id])
                 total_additional_occ += len(process_collection_head_data[collection_id][source_id])
                 final_result_list.append([repo_name, language, collection_id, source_id, len(process_collection_head_data[collection_id][source_id]), 0, '100%', len(process_collection_head_data[collection_id][source_id]), 0])
-                print("rrrdd")
             continue
 
         if not process_collection_head_data.__contains__(collection_id):
@@ -290,21 +283,12 @@ def sub_process_occurrenaces(base_collection_data, head_collection_data, repo_na
                 base_total_occ += len(process_collection_base_data[collection_id][source_id])
                 total_missing_occ += len(process_collection_base_data[collection_id][source_id])
                 final_result_list.append([repo_name, language, collection_id, source_id, 0, len(process_collection_base_data[collection_id][source_id]), '-100%', 0, len(process_collection_base_data[collection_id][source_id])])
-                print("trew")
             continue
 
         base_source_data = process_collection_base_data[collection_id]
         head_source_data = process_collection_head_data[collection_id]
 
         source_union = set(base_source_data.keys()).union(set(head_source_data.keys()))
-        print("rfd")
-
-        print("333")
-        print(base_source_data.keys())
-        print("r555")
-        print(head_source_data.keys())
-        print("trtrtr")
-        print(source_union)
 
         for source_id in source_union:
 
@@ -323,14 +307,15 @@ def sub_process_occurrenaces(base_collection_data, head_collection_data, repo_na
             base_occurrence_data = base_source_data[source_id]
             head_occurrence_data = head_source_data[source_id]
 
+            print(base_occurrence_data)
+            print(head_occurrence_data)
+
             occurrences_union = set(base_occurrence_data).union(set(head_occurrence_data))
 
+            additional_count = 0
+            missing_count = 0
+
             for occ in occurrences_union:
-
-                print("-----------" + occ)
-
-                additional_count = 0
-                missing_count = 0
 
                 if not base_occurrence_data.__contains__(occ):
                     additional_count = additional_count + 1
@@ -338,22 +323,19 @@ def sub_process_occurrenaces(base_collection_data, head_collection_data, repo_na
                 if not head_occurrence_data.__contains__(occ):
                     missing_count = missing_count + 1
 
-                base_total_occ += len(base_occurrence_data)
-                head_total_occ += len(head_occurrence_data)
-                total_additional_occ += additional_count
-                total_missing_occ += missing_count
+            base_total_occ += len(base_occurrence_data)
+            head_total_occ += len(head_occurrence_data)
+            total_additional_occ += additional_count
+            total_missing_occ += missing_count
 
-                if head_total_occ + total_missing_occ == 0:
-                    percent_delta = '0%'
-                else:
-                    percent_delta = f'{round(((additional_count + missing_count) / (2 * len(occurrences_union))) * 100, 2)}%'
+            if head_total_occ + total_missing_occ == 0:
+                percent_delta = '0%'
+            else:
+                percent_delta = f'{round(((additional_count + missing_count) / (2 * len(occurrences_union))) * 100, 2)}%'
 
-                final_result_list.append([repo_name, language, collection_id, source_id, len(head_occurrence_data),
-                                          len(base_occurrence_data),
-                                          percent_delta, additional_count, missing_count])
-
-                print("tredf")
-                print(final_result_list)
+            final_result_list.append([repo_name, language, collection_id, source_id, len(head_occurrence_data),
+                                      len(base_occurrence_data),
+                                      percent_delta, additional_count, missing_count])
 
 
     return [final_result_list, [head_total_occ, base_total_occ, total_additional_occ, total_missing_occ]]
