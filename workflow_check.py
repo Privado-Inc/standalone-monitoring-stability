@@ -13,7 +13,7 @@ def main(filepath):
 
     sink_regex = r".*(repositories have an average).*(missing sinks.).*"
 
-    source_sink_regex = r".*(repositories have on an average).*(missing flows.).*"
+    source_sink_regex = r".*(repositories have hundred percent missing flows.).*"
 
     scan_time_limit = 60000
 
@@ -51,7 +51,7 @@ def main(filepath):
 
             if re.search(source_sink_regex, line):
                 values = line.split(" ")
-                if int(values[-9]) != 0 or int(values[-3]) != 0:
+                if int(values[-7]) != 0:
                     results.append("Source to sink flow missing Detected")
 
         output_path = f'{os.getcwd()}/action_result.txt'
