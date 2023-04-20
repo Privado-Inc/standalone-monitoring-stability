@@ -1,6 +1,6 @@
 import utils.repo_link_generator
 from utils.scan import scan_repo_report
-from utils.compare import main as compare_and_generate_report, compare_files, process_sources, process_sinks, process_path_analysis
+from utils.compare import main as compare_and_generate_report, compare_files, process_sources, process_sinks, process_path_analysis, process_collection, top_level_collection_processor, sub_process_occurrences
 from utils.post_to_slack import post_report_to_slack
 from utils.build_binary import build
 from utils.delete import delete_action, clean_after_scan
@@ -114,6 +114,7 @@ def workflow():
         scan_status = scan_repo_report(valid_repositories, args)
         source_count = dict()
         flow_data = dict()
+        collection_count = dict()
 
         # Used to add header for only one time in report
         header_flag = True
@@ -146,6 +147,9 @@ def workflow():
                     # Get the source data from the process_sources function
                     source_data = process_sources(base_data['sources'], head_data['sources'], repo_name, detected_language)
                     flow_report = process_path_analysis(f'{head_worksheet_name}-{base_worksheet_name}-flow-report', base_data, head_data, repo_name, detected_language, False, False)
+                    collections_data = sub_process_occurrences(base_data['collections'], head_data['collections'], repo_name, detected_language)[-1]
+
+
                     missing_flow_head = flow_report[0][-2]
                     additional_flow_head = flow_report[0][-3]
 
@@ -159,6 +163,7 @@ def workflow():
 
                 flow_data[repo_name] = dict({'missing': missing_flow_head, 'additional': additional_flow_head, 'hundred_missing': hundred_percent_missing_repos, 'matching_flows': True if flow_report[0][-3] == 0 else False})
                 source_count[repo_name] = dict({config.BASE_CORE_BRANCH_KEY: source_data[5], config.HEAD_CORE_BRANCH_KEY: source_data[4]})
+                collection_count[repo_name] = dict({config.BASE_CORE_BRANCH_KEY: collections_data[0], config.HEAD_CORE_BRANCH_KEY: collections_data[1]})
 
                 base_file.close()
                 head_file.close()
@@ -172,7 +177,7 @@ def workflow():
             header_flag = False
 
         write_scan_status_report(builder.OUTPUT_PATH, scan_status)
-        write_summary_data(builder.OUTPUT_PATH, scan_status, source_count, flow_data)
+        write_summary_data(builder.OUTPUT_PATH, scan_status, source_count, collection_count , flow_data)
 
         if args.upload or args.joern_update:
             post_report_to_slack(True)
