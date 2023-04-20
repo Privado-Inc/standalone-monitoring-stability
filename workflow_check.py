@@ -15,6 +15,8 @@ def main(filepath):
 
     source_sink_regex = r".*(repositories have hundred percent missing flows.).*"
 
+    collection_regex = r".*(repositories have missing collections).*"
+
     scan_time_limit = 60000
 
     results = []
@@ -53,6 +55,12 @@ def main(filepath):
                 values = line.split(" ")
                 if int(values[-7]) != 0:
                     results.append("Source to sink flow missing Detected")
+
+            if (re.search(collection_regex, line)):
+                values = line.split(" ")
+                if (int(values[0]) != 0):
+                    results.append("Missing collections detected")
+
 
         output_path = f'{os.getcwd()}/action_result.txt'
 

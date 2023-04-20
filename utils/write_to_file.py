@@ -281,9 +281,9 @@ def write_summary_data(workbook_location, report, data_elements, collections ,fl
         {missing_not_zero} repositories have on an average {floor(missing_average)} missing flows.
         
         G. Collection Summary
-        {matching_collections} repositories have exactly matching elements.
-        {less_collections} repositories have missing data elements.
-        {more_collections} repositories have additional eleme
+        {matching_collections} repositories have exactly matching collections.
+        {less_collections} repositories have missing collections.
+        {more_collections} repositories have additional collections.
     ''')
     
     highlight_summary_cell(worksheet)
