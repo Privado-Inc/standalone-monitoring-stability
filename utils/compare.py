@@ -200,7 +200,7 @@ def process_collection_sheet_data(worksheet_name, base_collections, head_collect
     total_additional_occ = 0
     total_missing_occ = 0
 
-    value = sub_process_occurrenaces(base_collections['collections'], head_collections['collections'], repo_name, language)
+    value = sub_process_occurrences(base_collections['collections'], head_collections['collections'], repo_name, language)
 
     for i in value[0]:
         result.append(i)
@@ -230,7 +230,7 @@ def process_collection_sheet_data(worksheet_name, base_collections, head_collect
     return result
 
 
-def sub_process_occurrenaces(base_collection_data, head_collection_data, repo_name, language):
+def sub_process_occurrences(base_collection_data, head_collection_data, repo_name, language):
     final_result_list = []
     process_collection_base_data = {}
     process_collection_head_data = {}
