@@ -111,7 +111,7 @@ def write_scan_status_report(workbook_location, report):
     workbook.save(workbook_location)
 
 
-def write_summary_data(workbook_location, report, data_elements, flow_report):
+def write_summary_data(workbook_location, report, data_elements, collections ,flow_report):
     workbook = openpyxl.load_workbook(filename=workbook_location)
     worksheet = workbook['summary']
 
@@ -121,7 +121,7 @@ def write_summary_data(workbook_location, report, data_elements, flow_report):
                       f"{config.BASE_SHEET_BRANCH_NAME} No of data elements",
                       f"{config.HEAD_SHEET_BRANCH_NAME} No of data elements", "Data element diff",
                       f"Missing sinks in {config.HEAD_SHEET_BRANCH_NAME}",
-                      "No of 100% missing source to sink combinations"])
+                      "No of 100% missing source to sink combinations", f"Total collections in {config.BASE_SHEET_BRANCH_NAME}", f"Total collections in {config.HEAD_SHEET_BRANCH_NAME}", f"Missing collections in {config.HEAD_SHEET_BRANCH_NAME}"])
 
     scan_time_positive = 0
     scan_time_positive_average = 0
@@ -141,6 +141,10 @@ def write_summary_data(workbook_location, report, data_elements, flow_report):
 
     missing_sink_repo_count = 0
     total_missing_sinks = 0
+
+    matching_collections = 0
+    less_collections = 0
+    more_collections = 0
 
     additional_not_zero = len(list(filter(lambda x: x['additional'] > 0, flow_report.values())))
     try:
@@ -170,6 +174,8 @@ def write_summary_data(workbook_location, report, data_elements, flow_report):
             unique_flow_diff = '--' if report[repo][config.BASE_CORE_BRANCH_KEY]['unique_flows'] == '--' or report[repo][config.HEAD_CORE_BRANCH_KEY]['unique_flows'] == '--' else int(report[repo][config.HEAD_CORE_BRANCH_KEY]['unique_flows']) - int(report[repo][config.BASE_CORE_BRANCH_KEY]['unique_flows'])
             reachable_flow_time_diff = '--' if report[repo][config.BASE_CORE_BRANCH_KEY]['reachable_flow_time'] == '--' or report[repo][config.HEAD_CORE_BRANCH_KEY]['reachable_flow_time'] == '--' else int(report[repo][config.HEAD_CORE_BRANCH_KEY]['reachable_flow_time']) - int(report[repo][config.BASE_CORE_BRANCH_KEY]['reachable_flow_time'])
             number_hundred_missing_for_repo = flow_report[repo]['hundred_missing']
+            unique_collections_diff = '--' if collections[repo][config.BASE_CORE_BRANCH_KEY] == '--' or collections[repo][config.HEAD_CORE_BRANCH_KEY] == '--' else int(collections[repo][config.HEAD_CORE_BRANCH_KEY]) - int(collections[repo][config.BASE_CORE_BRANCH_KEY])
+
 
             if scan_time_diff != '--':
                 if scan_time_diff > 0: # Head branch took more time
@@ -194,6 +200,15 @@ def write_summary_data(workbook_location, report, data_elements, flow_report):
                 else:
                     matching_sources += 1
 
+            if unique_collections_diff != '--':
+                if unique_collections_diff > 0:
+                    more_collections += 1
+                elif unique_collections_diff < 0:
+                    less_collections += 1
+                else:
+                    matching_collections += 1
+        
+
             if reachable_flow_time_diff != '--':
                 # Head branch took more time
                 if reachable_flow_time_diff > 0:
@@ -213,7 +228,7 @@ def write_summary_data(workbook_location, report, data_elements, flow_report):
                               data_elements[repo][config.BASE_CORE_BRANCH_KEY],
                               data_elements[repo][config.HEAD_CORE_BRANCH_KEY], unique_source_diff,
                               report[repo]['missing_sink'],
-                              number_hundred_missing_for_repo])
+                              number_hundred_missing_for_repo, collections[repo][config.BASE_CORE_BRANCH_KEY], collections[repo][config.HEAD_CORE_BRANCH_KEY], unique_collections_diff])
 
         except Exception as e:
             print(f'{builder.get_current_time()} - Scan failed for repo {repo} : {str(e)}')
@@ -265,6 +280,10 @@ def write_summary_data(workbook_location, report, data_elements, flow_report):
         {additional_not_zero} repositories have on an average {floor(additional_average)} additional flows.
         {missing_not_zero} repositories have on an average {floor(missing_average)} missing flows.
         
+        G. Collection Summary
+        {matching_collections} repositories have exactly matching collections.
+        {less_collections} repositories have missing collections.
+        {more_collections} repositories have additional collections.
     ''')
     
     highlight_summary_cell(worksheet)
