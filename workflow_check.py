@@ -58,7 +58,7 @@ def main(filepath):
 
             if (re.search(collection_regex, line)):
                 values = line.split(" ")
-                if (int(values[0]) != 0):
+                if (int(values[-5]) != 0):
                     results.append("Missing collections detected")
 
 
