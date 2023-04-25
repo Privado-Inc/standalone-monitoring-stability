@@ -12,3 +12,4 @@ slack_summary.txt
 report
 report.zip
 */__pycache__
+__pycache__/*
