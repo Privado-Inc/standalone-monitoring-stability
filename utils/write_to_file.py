@@ -174,6 +174,10 @@ def write_summary_data(workbook_location, report, data_elements, collections ,fl
             unique_flow_diff = '--' if report[repo][config.BASE_CORE_BRANCH_KEY]['unique_flows'] == '--' or report[repo][config.HEAD_CORE_BRANCH_KEY]['unique_flows'] == '--' else int(report[repo][config.HEAD_CORE_BRANCH_KEY]['unique_flows']) - int(report[repo][config.BASE_CORE_BRANCH_KEY]['unique_flows'])
             reachable_flow_time_diff = '--' if report[repo][config.BASE_CORE_BRANCH_KEY]['reachable_flow_time'] == '--' or report[repo][config.HEAD_CORE_BRANCH_KEY]['reachable_flow_time'] == '--' else int(report[repo][config.HEAD_CORE_BRANCH_KEY]['reachable_flow_time']) - int(report[repo][config.BASE_CORE_BRANCH_KEY]['reachable_flow_time'])
             number_hundred_missing_for_repo = flow_report[repo]['hundred_missing']
+            
+            print(int(collections[repo][config.HEAD_CORE_BRANCH_KEY]))
+            print(int(collections[repo][config.BASE_CORE_BRANCH_KEY]))
+            
             unique_collections_diff = '--' if collections[repo][config.BASE_CORE_BRANCH_KEY] == '--' or collections[repo][config.HEAD_CORE_BRANCH_KEY] == '--' else int(collections[repo][config.HEAD_CORE_BRANCH_KEY]) - int(collections[repo][config.BASE_CORE_BRANCH_KEY])
 
 
