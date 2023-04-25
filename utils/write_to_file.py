@@ -121,7 +121,7 @@ def write_summary_data(workbook_location, report, data_elements, collections ,fl
                       f"{config.BASE_SHEET_BRANCH_NAME} No of data elements",
                       f"{config.HEAD_SHEET_BRANCH_NAME} No of data elements", "Data element diff",
                       f"Missing sinks in {config.HEAD_SHEET_BRANCH_NAME}",
-                      "No of 100% missing source to sink combinations", f"Total collections in {config.BASE_SHEET_BRANCH_NAME}", f"Total collections in {config.HEAD_SHEET_BRANCH_NAME}", f"Missing collections in {config.HEAD_SHEET_BRANCH_NAME}"])
+                      "No of 100% missing source to sink combinations", f"Total collections in {config.BASE_SHEET_BRANCH_NAME}", f"Total collections in {config.HEAD_SHEET_BRANCH_NAME}", f"Unique collection diff"])
 
     scan_time_positive = 0
     scan_time_positive_average = 0
@@ -180,6 +180,8 @@ def write_summary_data(workbook_location, report, data_elements, collections ,fl
             
             unique_collections_diff = '--' if collections[repo][config.BASE_CORE_BRANCH_KEY] == '--' or collections[repo][config.HEAD_CORE_BRANCH_KEY] == '--' else int(collections[repo][config.HEAD_CORE_BRANCH_KEY]) - int(collections[repo][config.BASE_CORE_BRANCH_KEY])
 
+
+            print(unique_collections_diff)
 
             if scan_time_diff != '--':
                 if scan_time_diff > 0: # Head branch took more time
@@ -296,7 +298,7 @@ def write_summary_data(workbook_location, report, data_elements, collections ,fl
 
 def highlight_summary_cell(worksheet):
 
-    for col in ['F', 'G', 'J', 'M', 'N']:
+    for col in ['F', 'G', 'J', 'M', 'N', 'R']:
         for row in range(2, len(worksheet[col]) + 1):
             try:
                 if int(worksheet[f'{col}{row}'].value) < 0:
