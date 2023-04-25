@@ -121,7 +121,7 @@ def write_summary_data(workbook_location, report, data_elements, collections ,fl
                       f"{config.BASE_SHEET_BRANCH_NAME} No of data elements",
                       f"{config.HEAD_SHEET_BRANCH_NAME} No of data elements", "Data element diff",
                       f"Missing sinks in {config.HEAD_SHEET_BRANCH_NAME}",
-                      "No of 100% missing source to sink combinations", f"Total collections in {config.BASE_SHEET_BRANCH_NAME}", f"Total collections in {config.HEAD_SHEET_BRANCH_NAME}", f"Missing collections in {config.HEAD_SHEET_BRANCH_NAME}"])
+                      "No of 100% missing source to sink combinations", f"Total collections in {config.BASE_SHEET_BRANCH_NAME}", f"Total collections in {config.HEAD_SHEET_BRANCH_NAME}", f"Unique collection diff"])
 
     scan_time_positive = 0
     scan_time_positive_average = 0
@@ -174,8 +174,8 @@ def write_summary_data(workbook_location, report, data_elements, collections ,fl
             unique_flow_diff = '--' if report[repo][config.BASE_CORE_BRANCH_KEY]['unique_flows'] == '--' or report[repo][config.HEAD_CORE_BRANCH_KEY]['unique_flows'] == '--' else int(report[repo][config.HEAD_CORE_BRANCH_KEY]['unique_flows']) - int(report[repo][config.BASE_CORE_BRANCH_KEY]['unique_flows'])
             reachable_flow_time_diff = '--' if report[repo][config.BASE_CORE_BRANCH_KEY]['reachable_flow_time'] == '--' or report[repo][config.HEAD_CORE_BRANCH_KEY]['reachable_flow_time'] == '--' else int(report[repo][config.HEAD_CORE_BRANCH_KEY]['reachable_flow_time']) - int(report[repo][config.BASE_CORE_BRANCH_KEY]['reachable_flow_time'])
             number_hundred_missing_for_repo = flow_report[repo]['hundred_missing']
+                        
             unique_collections_diff = '--' if collections[repo][config.BASE_CORE_BRANCH_KEY] == '--' or collections[repo][config.HEAD_CORE_BRANCH_KEY] == '--' else int(collections[repo][config.HEAD_CORE_BRANCH_KEY]) - int(collections[repo][config.BASE_CORE_BRANCH_KEY])
-
 
             if scan_time_diff != '--':
                 if scan_time_diff > 0: # Head branch took more time
@@ -292,7 +292,7 @@ def write_summary_data(workbook_location, report, data_elements, collections ,fl
 
 def highlight_summary_cell(worksheet):
 
-    for col in ['F', 'G', 'J', 'M', 'N']:
+    for col in ['F', 'G', 'J', 'M', 'N', 'R']:
         for row in range(2, len(worksheet[col]) + 1):
             try:
                 if int(worksheet[f'{col}{row}'].value) < 0:
