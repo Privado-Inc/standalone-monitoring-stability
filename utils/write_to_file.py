@@ -178,7 +178,7 @@ def write_summary_data(workbook_location, report, data_elements, collections ,fl
             print(int(collections[repo][config.HEAD_CORE_BRANCH_KEY]))
             print(int(collections[repo][config.BASE_CORE_BRANCH_KEY]))
             
-            unique_collections_diff = '--' if collections[repo][config.BASE_CORE_BRANCH_KEY] == '--' or collections[repo][config.HEAD_CORE_BRANCH_KEY] == '--' else int(collections[repo][config.HEAD_CORE_BRANCH_KEY]) - int(collections[repo][config.BASE_CORE_BRANCH_KEY])
+            unique_collections_diff = '--' if collections[repo][config.BASE_CORE_BRANCH_KEY] == '--' or collections[repo][config.HEAD_CORE_BRANCH_KEY] == '--' else int(collections[repo][config.BASE_CORE_BRANCH_KEY]) - int(collections[repo][config.HEAD_CORE_BRANCH_KEY])
 
 
             if scan_time_diff != '--':
