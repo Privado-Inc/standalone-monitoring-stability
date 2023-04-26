@@ -24,3 +24,5 @@ https://github.com/valhuber/api_logic_server.git
 https://github.com/martinvigo/email2phonenumber.git
 https://github.com/lulitw/photoalbum.git
 https://github.com/bbedward/graham_discord_bot.git
+https://github.com/dbMundada/Worldlink.git
+https://github.com/nccgroup/ScoutSuite.git
