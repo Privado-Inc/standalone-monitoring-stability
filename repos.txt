@@ -8,7 +8,6 @@ https://github.com/facebook/shimmer-android.git
 https://github.com/sazanrjb/InventoryManagementSystem.git
 https://github.com/hiteshbedre/hotelbook-JavaWeb.git
 https://github.com/webtutsplus/ecommerce-backend.git
-https://github.com/hiroki1994/snitch_public.git
 https://github.com/tranxactive/J2PAY.git
 https://github.com/rhourani/E-Commerce-Resturant-Android-Java-Apps.git
 https://github.com/watson031/ISIDrone.git
