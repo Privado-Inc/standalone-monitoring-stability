@@ -91,10 +91,14 @@ def scan_repo_report(valid_repos, args):
             dest_path_intermediate = f'{cwd}/temp/result/{config.HEAD_CORE_BRANCH_KEY}/{repo}-intermediate.json'
             dest_path_semantic = f'{scan_dir}/{config.HEAD_CORE_BRANCH_KEY}/{repo}-semantic.txt'
 
+            if os.path.isfile(src_path_semantic):
+                shutil.move(src_path_semantic, dest_path_semantic)
 
             # move the intermediate result if exist
             if os.path.isfile(src_path_intermediate):
                 shutil.move(src_path_intermediate, dest_path_intermediate)
+
+
 
             try:
                 shutil.move(src_path, dest_path)
