@@ -40,7 +40,7 @@ def build_binary_and_move(repo, branch_name, branch_file_name):
     except Exception as e:
         print(f'{builder.get_current_time()} - branch_name + " doesn\'t exist: {str(e)}')
     print(f'{builder.get_current_time()} - Buliding Privado Binary for {branch_name}')
-    os.system("cd " + core_dir + " && sbt clean && sbt stage")
+    os.system("cd " + core_dir + " && sudo sbt clean && sudo sbt stage")
     os.system("mkdir -p " + final_dir)
     os.system("mv " + binary_dir + " " + final_dir)
     print(f'{builder.get_current_time()} - Build Completed')
