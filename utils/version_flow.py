@@ -26,7 +26,7 @@ def check_update():
     # change the permission
     os.system(f'chmod 777 {builder.get_joern_update_file_path("second")}')
 
-    check_command = f'cd {builder.get_joern_privado_path("second")} && ./updateDependencies.sh --non-interactive'
+    check_command = f'cd {builder.get_joern_privado_path("second")} && ./updateDependencies.sh --non-interactive --only=joern'
     output = os.popen(check_command).read()
     update_require = is_update_require(output)
 
