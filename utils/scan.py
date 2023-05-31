@@ -54,8 +54,15 @@ def scan_repo_report(valid_repos, args):
             src_path = f'{scan_dir}/.privado/privado.json'
             dest_path = f'{cwd}/temp/result/{config.BASE_CORE_BRANCH_KEY}/{repo}.json'
 
+
+            src_path_semantic = f'{scan_dir}/.privado/semantic.txt'
+            dest_path_semantic = f'{cwd}/temp/result/{config.BASE_CORE_BRANCH_KEY}/{repo}-semantic.txt'
+
             src_path_intermediate = f'{scan_dir}/.privado/intermediate.json'
             dest_path_intermediate = f'{cwd}/temp/result/{config.BASE_CORE_BRANCH_KEY}/{repo}-intermediate.json'
+
+            if os.path.isfile(src_path_semantic):
+                shutil.move(src_path_semantic, dest_path_semantic)
 
             if os.path.isfile(src_path_intermediate):
                 shutil.move(src_path_intermediate, dest_path_intermediate)
@@ -82,6 +89,8 @@ def scan_repo_report(valid_repos, args):
 
             dest_path = f'{cwd}/temp/result/{config.HEAD_CORE_BRANCH_KEY}/{repo}.json'
             dest_path_intermediate = f'{cwd}/temp/result/{config.HEAD_CORE_BRANCH_KEY}/{repo}-intermediate.json'
+            dest_path_semantic = f'{cwd}/temp/result/{config.HEAD_CORE_BRANCH_KEY}/{repo}-semantic.txt'
+
 
             # move the intermediate result if exist
             if os.path.isfile(src_path_intermediate):
