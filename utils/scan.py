@@ -196,6 +196,8 @@ def build_command(cwd, branch_name, branch_file_name, scan_dir, repo, unique_flo
     command = [f'cd {cwd}/temp/binary/{branch_file_name}/bin && ./privado-core scan', scan_dir,
                f'-ic {cwd}/temp/privado --skip-upload']
 
+    print(command)
+
     if unique_flow:
         command.append('--test-output')
     if debug_mode:

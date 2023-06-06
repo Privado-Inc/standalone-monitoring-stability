@@ -24,17 +24,19 @@ def build(skip_build = False):
         privado_repo = clone_repo_with_name("https://github.com/Privado-Inc/privado", f'{temp_dir}/privado', "privado")
 
     build_binary_and_move(repo, config.BASE_CORE_BRANCH_NAME, config.BASE_CORE_BRANCH_KEY)
-    build_binary_and_move(repo_second, config.BASE_CORE_BRANCH_NAME, config.BASE_CORE_BRANCH_KEY)
+    # build_binary_and_move(repo_second, config.BASE_CORE_BRANCH_NAME, config.BASE_CORE_BRANCH_KEY)
     move_log_rule_file(f'{pwd}/temp/privado-core/log4j2.xml', config.BASE_CORE_BRANCH_KEY)
-    build_binary_and_move(repo, config.HEAD_CORE_BRANCH_NAME, config.HEAD_CORE_BRANCH_KEY)
-    build_binary_and_move(repo_second, f'{config.HEAD_CORE_BRANCH_NAME}-second', f'{config.HEAD_CORE_BRANCH_KEY}-second')
+    # build_binary_and_move(repo, config.HEAD_CORE_BRANCH_NAME, config.HEAD_CORE_BRANCH_KEY)
+    build_binary_and_move(repo_second, config.HEAD_CORE_BRANCH_NAME, config.HEAD_CORE_BRANCH_KEY)
     move_log_rule_file(f'{pwd}/temp/privado-core/log4j2.xml', config.HEAD_CORE_BRANCH_KEY)
 
 
 def build_binary_and_move(repo, branch_name, branch_file_name):
     path = os.getcwd()
     core_dir = f'{path}/temp/privado-core'
+    core_dir_second = f'{path}/temp/david-privado-core'
     binary_dir = f'{core_dir}/target/universal/stage/*'
+    binary_dir_second = f'{core_dir_second}/target/universal/stage/*'
     final_dir = f'{path}/temp/binary/{branch_file_name}'
 
     try:
@@ -45,8 +47,11 @@ def build_binary_and_move(repo, branch_name, branch_file_name):
         print(f'{builder.get_current_time()} - branch_name + " doesn\'t exist: {str(e)}')
     print(f'{builder.get_current_time()} - Buliding Privado Binary for {branch_name}')
     os.system("cd " + core_dir + " && sbt clean && sbt stage")
+    os.system("cd " + core_dir_second + " && sbt clean && sbt stage")
+
     os.system("mkdir -p " + final_dir)
     os.system("mv " + binary_dir + " " + final_dir)
+    os.system("mv " + binary_dir_second + " " + final_dir)
     print(f'{builder.get_current_time()} - Build Completed')
 
 
