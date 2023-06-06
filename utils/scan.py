@@ -205,4 +205,6 @@ def build_command(cwd, branch_name, branch_file_name, scan_dir, repo, unique_flo
         command.append(f'-Dlog4j.configurationFile={cwd}/temp/log-rule/{branch_file_name}/log4j2.xml')
     command.append(f'2>&1 | tee -a {cwd}/temp/result/{branch_file_name}/{repo}-output.txt')
 
+    print(' '.join(command))
+
     return ' '.join(command)
