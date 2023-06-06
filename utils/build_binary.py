@@ -13,17 +13,21 @@ def build(skip_build = False):
         return
     pwd = os.getcwd()
     temp_dir = f'{pwd}/temp'
-    if not os.path.isdir(f'{temp_dir}/privado-core'):
+    if not os.path.isdir(f'{temp_dir}/privado-core') and not os.path.isdir(f'{temp_dir}/david-privado-core'):
         repo = clone_repo_with_name("https://github.com/Privado-Inc/privado-core", f'{temp_dir}/privado-core', "privado-core")
+        repo_second = clone_repo_with_name("https://github.com/DavidBakerEffendi/privado-core", f'{temp_dir}/david-privado-core', "joern-privado-core")
     else:
         repo = Repo(f'{temp_dir}/privado-core')
+        repo_second = Repo(f'{temp_dir}/david-privado-core')
 
     if not os.path.isdir(f'{temp_dir}/privado'):
         privado_repo = clone_repo_with_name("https://github.com/Privado-Inc/privado", f'{temp_dir}/privado', "privado")
 
     build_binary_and_move(repo, config.BASE_CORE_BRANCH_NAME, config.BASE_CORE_BRANCH_KEY)
+    build_binary_and_move(repo_second, config.BASE_CORE_BRANCH_NAME, config.BASE_CORE_BRANCH_KEY)
     move_log_rule_file(f'{pwd}/temp/privado-core/log4j2.xml', config.BASE_CORE_BRANCH_KEY)
     build_binary_and_move(repo, config.HEAD_CORE_BRANCH_NAME, config.HEAD_CORE_BRANCH_KEY)
+    build_binary_and_move(repo_second, f'{config.HEAD_CORE_BRANCH_NAME}-second', f'{config.HEAD_CORE_BRANCH_KEY}-second')
     move_log_rule_file(f'{pwd}/temp/privado-core/log4j2.xml', config.HEAD_CORE_BRANCH_KEY)
 
 
