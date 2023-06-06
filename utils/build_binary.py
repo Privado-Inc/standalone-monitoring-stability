@@ -23,7 +23,7 @@ def build(skip_build = False):
     if not os.path.isdir(f'{temp_dir}/privado'):
         privado_repo = clone_repo_with_name("https://github.com/Privado-Inc/privado", f'{temp_dir}/privado', "privado")
 
-    build_binary_and_move(repo, config.BASE_CORE_BRANCH_NAME, config.BASE_CORE_BRANCH_KEY, f'${os.getcwd()}/temp/privado-core')
+    build_binary_and_move(repo, config.BASE_CORE_BRANCH_NAME, config.BASE_CORE_BRANCH_KEY, f'{os.getcwd()}/temp/privado-core')
     # build_binary_and_move(repo_second, config.BASE_CORE_BRANCH_NAME, config.BASE_CORE_BRANCH_KEY)
     move_log_rule_file(f'{pwd}/temp/privado-core/log4j2.xml', config.BASE_CORE_BRANCH_KEY)
     # build_binary_and_move(repo, config.HEAD_CORE_BRANCH_NAME, config.HEAD_CORE_BRANCH_KEY)
