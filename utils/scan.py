@@ -197,7 +197,7 @@ def build_command(cwd, branch_name, branch_file_name, scan_dir, repo, unique_flo
                f'-ic {cwd}/temp/privado --skip-upload']
 
     os.system(f"ls {cwd}/temp/binary/")
-    os.system(f"ls {cwd}/temp/binary/bin")
+    os.system(f"ls {cwd}/temp/binary/{branch_file_name}/bin")
 
     if unique_flow:
         command.append('--test-output')
