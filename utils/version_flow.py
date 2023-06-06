@@ -21,7 +21,7 @@ def check_update():
     clone_repo_with_name(config.PRIVADO_CORE_URL, builder.get_joern_privado_path("second"), "privado-core")
 
     # clone privado for rules
-    clone_repo_with_name(config.PRIVADO_URL, builder.get_privado_path(), "privado")
+    clone_repo_with_name(config.PRIVADO_RULE_URL, builder.get_privado_path(), "privado")
 
     # change the permission
     os.system(f'chmod 777 {builder.get_joern_update_file_path("second")}')
@@ -79,4 +79,6 @@ def build_binary_for_joern(versions):
         return False
 
     return True
+
+
 
