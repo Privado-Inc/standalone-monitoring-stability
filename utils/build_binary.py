@@ -15,7 +15,7 @@ def build(skip_build = False):
     temp_dir = f'{pwd}/temp'
     if not os.path.isdir(f'{temp_dir}/privado-core') and not os.path.isdir(f'{temp_dir}/david-privado-core'):
         repo = clone_repo_with_name("https://github.com/Privado-Inc/privado-core", f'{temp_dir}/privado-core', "privado-core")
-        repo_second = clone_repo_with_name("https://github.com/DavidBakerEffendi/privado-core", f'{temp_dir}/david-privado-core', "joern-privado-core")
+        repo_second = clone_repo_with_name("https://github.com/karan-batavia/privado-core", f'{temp_dir}/david-privado-core', "joern-privado-core")
     else:
         repo = Repo(f'{temp_dir}/privado-core')
         repo_second = Repo(f'{temp_dir}/david-privado-core')
