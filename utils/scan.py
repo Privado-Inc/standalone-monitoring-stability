@@ -3,7 +3,6 @@ import shutil
 import datetime
 
 import builder
-from utils.build_binary import checkout_repo
 from utils.write_to_file import write_scan_status_report, create_new_excel, create_new_excel_for_file
 import re
 import config
@@ -46,14 +45,15 @@ def scan_repo_report(valid_repos, args):
             # Scan the cloned repo with first branch and push output to a file
             first_command = build_command(cwd, config.BASE_CORE_BRANCH_NAME, config.BASE_CORE_BRANCH_KEY, scan_dir,
                                           repo, args.generate_unique_flow, args.debug_mode,
-                                          args.use_docker, config.BASE_RULE_BRANCH_NAME)
+                                          args.use_docker)
+
+            print(f"first commaond {first_command}")
 
             # Execute the command to generate the binary file for first branch
             os.system(first_command)
 
             src_path = f'{scan_dir}/.privado/privado.json'
             dest_path = f'{cwd}/temp/result/{config.BASE_CORE_BRANCH_KEY}/{repo}.json'
-
 
             src_path_semantic = f'{scan_dir}/.privado/semantic.txt'
             dest_path_semantic = f'{cwd}/temp/result/{config.BASE_CORE_BRANCH_KEY}/{repo}-semantic.txt'
@@ -78,8 +78,7 @@ def scan_repo_report(valid_repos, args):
 
             # Scan the cloned repo with second branch and push output to a file with debug logs
             second_command = build_command(cwd, config.HEAD_CORE_BRANCH_NAME, config.HEAD_CORE_BRANCH_KEY, scan_dir,
-                                           repo, args.generate_unique_flow, args.debug_mode, args.use_docker,
-                                           config.HEAD_RULE_BRANCH_NAME)
+                                           repo, args.generate_unique_flow, args.debug_mode, args.use_docker)
 
             language = get_detected_language(repo, config.BASE_CORE_BRANCH_KEY)
             report["language"] = language
@@ -197,18 +196,17 @@ def parse_flows_data(repo_name, branch_name, branch_key, scan_report):
 
 
 # Build the scan command
-def build_command(cwd, branch_name, branch_file_name, scan_dir, repo, unique_flow, debug_mode, use_docker, checkout_branch):
+def build_command(cwd, branch_name, key, scan_dir, repo, unique_flow, debug_mode, use_docker):
     if use_docker:
-        return f'{get_docker_commands(branch_name, scan_dir)} | tee {cwd}/temp/result/{branch_file_name}/{repo}-output.txt'
+        return f'{get_docker_commands(branch_name, scan_dir)} | tee {cwd}/temp/result/{key}/{repo}-output.txt'
 
-    checkout_repo(checkout_branch)
-    command = [f'cd {cwd}/temp/binary/{branch_file_name}/bin && ./privado-core scan', scan_dir,
-               f'-ic {cwd}/temp/privado --skip-upload']
+    command = [f'cd {cwd}/temp/binary/{key}/bin && ./privado-core scan', scan_dir,
+               f'-ic {cwd}/temp/privado/{key} --skip-upload']
 
     if unique_flow:
         command.append('--test-output')
     if debug_mode:
-        command.append(f'-Dlog4j.configurationFile={cwd}/temp/log-rule/{branch_file_name}/log4j2.xml')
-    command.append(f'2>&1 | tee -a {cwd}/temp/result/{branch_file_name}/{repo}-output.txt')
+        command.append(f'-Dlog4j.configurationFile={cwd}/temp/log-rule/{key}/log4j2.xml')
+    command.append(f'2>&1 | tee -a {cwd}/temp/result/{key}/{repo}-output.txt')
 
     return ' '.join(command)
