@@ -27,3 +27,7 @@ https://github.com/bbedward/graham_discord_bot.git
 https://github.com/Privado-Inc/njs_accounts.git
 https://github.com/dbMundada/Worldlink.git
 https://github.com/nccgroup/ScoutSuite.git
+https://github.com/dbMundada/tech-specter-client
+https://github.com/gothinkster/angular-realworld-example-app
+https://github.com/dbMundada/expressCart
+https://github.com/jstibenpb/nodejs-express-template
