@@ -59,8 +59,8 @@ def resolve_core_branch_key_name(core_base_branch_name, core_head_branch_name, r
                                  base_rule_owner, head_rule_owner):
     global BASE_CORE_BRANCH_KEY, HEAD_CORE_BRANCH_KEY, BASE_SHEET_BRANCH_NAME, HEAD_SHEET_BRANCH_NAME
 
-    BASE_CORE_BRANCH_KEY = f'{base_core_owner}-{core_base_branch_name}#{base_rule_owner}-{rules_base_branch_name}'
-    HEAD_CORE_BRANCH_KEY = f'{head_core_owner}-{core_head_branch_name}#{head_rule_owner}-{rules_head_branch_name}'
+    BASE_CORE_BRANCH_KEY = f'{base_core_owner}-{core_base_branch_name}@{base_rule_owner}-{rules_base_branch_name}'
+    HEAD_CORE_BRANCH_KEY = f'{head_core_owner}-{core_head_branch_name}@{head_rule_owner}-{rules_head_branch_name}'
 
     if rule_compare:
         BASE_SHEET_BRANCH_NAME = f'{base_rule_owner}-{rules_base_branch_name}'
