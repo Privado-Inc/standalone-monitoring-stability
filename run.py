@@ -33,6 +33,10 @@ parser.add_argument('-rbb', '--rules-branch-base', default=None)
 parser.add_argument('-rbh', '--rules-branch-head', default=None)
 parser.add_argument('-urc', '--use-rule-compare', action='store_true')
 parser.add_argument('-dm', '--debug-mode', action='store_true')
+parser.add_argument('-bcr', '--base-core-repo', default=None)
+parser.add_argument('-hcr', '--head-core-repo', default=None)
+parser.add_argument('-brr', '--base-rule-repo', default=None)
+parser.add_argument('-hrr', '--head-rule-repo', default=None)
 parser.set_defaults(feature=True)
 
 args: argparse.Namespace = parser.parse_args()
@@ -68,8 +72,6 @@ def workflow():
         if not build_binary_for_joern(versions):
             post_report_to_slack(False)
             return
-        args.base = versions[0]
-        args.head = versions[1]
 
     if args.use_rule_compare:
         if args.rules_branch_base is None or args.rules_branch_head is None:

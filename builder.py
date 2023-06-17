@@ -33,5 +33,5 @@ def get_joern_privado_path(path):
     return f'{pwd}/temp/joern/{path}/privado-core'
 
 
-def get_privado_path():
-    return f'{pwd}/temp/privado'
+def get_privado_path(version):
+    return f'{pwd}/temp/privado/Privado-Inc-{version}@Privado-Inc-dev'
