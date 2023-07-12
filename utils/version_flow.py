@@ -33,6 +33,7 @@ def check_update():
         return ["Updated", None]
 
     versions = get_updated_version(output)
+    print(versions)
     # clone privado for rules
     clone_repo_with_name(config.PRIVADO_RULE_URL, builder.get_privado_path(versions[0]), 'First - privado')
     clone_repo_with_name(config.PRIVADO_RULE_URL, builder.get_privado_path(versions[1]), 'Second - privado')
