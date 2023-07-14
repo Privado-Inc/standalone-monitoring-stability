@@ -55,7 +55,7 @@ def workflow():
 
     if args.joern_update:
         versions = check_update()
-        if versions[0] == 'updated':
+        if versions[0] == 'Updated':
             print(f"{builder.get_current_time()} - No Update Available for comparison")
             write_slack_summary(
                 f"No Update Available for Comparison")
