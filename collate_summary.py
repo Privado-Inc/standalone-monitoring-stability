@@ -90,6 +90,7 @@ class ScanTime(TimeDifference):
         return self.diff_pass(language_summary, 0, 3)
     def get_summary(self):
         return f'''
+        
         A. Scantime Difference
         {self.more} repos took an average {floor(self.more_value)} ms more.
         {self.less} repos took an average {floor(self.less_value)} ms less.
