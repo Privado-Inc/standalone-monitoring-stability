@@ -2,6 +2,8 @@ import os
 import argparse
 import re
 from math import floor
+from pathlib import Path
+
 
 
 class Difference:
@@ -233,7 +235,7 @@ parser.add_argument("-s", "--summary-dir")
 args: argparse.Namespace = parser.parse_args()
 
 def get_file_contents(summary_dir):
-    files = list(map(lambda x: os.path.join(os.path.abspath(summary_dir), x), os.listdir(os.path.abspath(summary_dir))))
+    files = list(Path(summary_dir).rglob("*.[tT][xX][tT]"))
     for f in files:
         with open(f) as content:
             yield list(filter(lambda y: len(y) > 0, map(lambda x: x.strip(), content.readlines())))
