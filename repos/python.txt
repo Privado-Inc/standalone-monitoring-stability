@@ -1,7 +1,2 @@
 https://github.com/dbMundada/privado-python-test
 https://github.com/Khantanjil/Employees.git
-https://github.com/IMaG1337/inventory_managment.git
-https://github.com/valhuber/api_logic_server.git
-https://github.com/martinvigo/email2phonenumber.git
-https://github.com/lulitw/photoalbum.git
-https://github.com/bbedward/graham_discord_bot.git
