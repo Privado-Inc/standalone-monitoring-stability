@@ -202,7 +202,7 @@ class SourceToSinkFlowDifference(FlowCollectionDifference):
     
 
     def get_result(self, language_summary):
-        return self.diff_pass(language_summary, 15, 21)
+        return self.diff_pass(language_summary, 16, 21)
     
     def get_summary(self):
         return f'''
