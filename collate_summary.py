@@ -219,7 +219,7 @@ class CollectionDifference(FlowCollectionDifference):
         super().__init__()
     
     def get_result(self, language_summary):
-        return self.diff_pass(language_summary, -5)
+        return self.diff_pass(language_summary, -4)
     
     def get_summary(self):
         return f'''
