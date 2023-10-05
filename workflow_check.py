@@ -38,7 +38,7 @@ def main(filepath):
 
             if re.search(reachable_regex, line):
                 values = line.split(" ")
-                if int(values[-5]) != 0:
+                if int(values[-6]) != 0:
                     results.append("Missing Reachable by flow Detected")
 
             if re.search(data_element_regex, line):
@@ -58,7 +58,7 @@ def main(filepath):
 
             if (re.search(collection_regex, line)):
                 values = line.split(" ")
-                if (int(values[-5]) != 0):
+                if (int(values[-6]) != 0):
                     results.append("Missing collections detected")
 
 
