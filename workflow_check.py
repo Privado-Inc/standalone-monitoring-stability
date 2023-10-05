@@ -38,27 +38,27 @@ def main(filepath):
 
             if re.search(reachable_regex, line):
                 values = line.split(" ")
-                if int(values[-6]) != 0:
+                if int(values[0]) != 0:
                     results.append("Missing Reachable by flow Detected")
 
             if re.search(data_element_regex, line):
                 values = line.split(" ")
-                if int(values[-7]) != 0:
+                if int(values[0]) != 0:
                     results.append("Missing Data Element Detected")
 
             if re.search(sink_regex, line):
                 values = line.split(" ")
-                if int(values[-9]) != 0 or int(values[-4]) != 0:
+                if int(values[0]) != 0 or int(values[-4]) != 0:
                     results.append("Missing Sink Detected")
 
             if re.search(source_sink_regex, line):
                 values = line.split(" ")
-                if int(values[-8]) != 0:
+                if int(values[0]) != 0:
                     results.append("Source to sink flow missing Detected")
 
             if (re.search(collection_regex, line)):
                 values = line.split(" ")
-                if (int(values[-6]) != 0):
+                if (int(values[0]) != 0):
                     results.append("Missing collections detected")
 
 
