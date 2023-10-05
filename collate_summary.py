@@ -90,10 +90,10 @@ class ScanTime(TimeDifference):
         return self.diff_pass(language_summary, 0, 3)
     def get_summary(self):
         return f'''
-        
+
         A. Scantime Difference
-        {self.more} repos took an average {floor(self.more_value)} ms more.
-        {self.less} repos took an average {floor(self.less_value)} ms less.
+        {self.more} repos took an average {self.more_value} ms more.
+        {self.less} repos took an average {self.less_value} ms less.
 
         '''
 
@@ -108,8 +108,8 @@ class ReachableByFlowTime(TimeDifference):
     def get_summary(self):
         return f'''
         B. Reachable by flow time difference.
-        {self.more} repos took an average {floor(self.more_value)} ms more.
-        {self.less} repos took an average {floor(self.less_value)} ms less.
+        {self.more} repos took an average {self.more_value} ms more.
+        {self.less} repos took an average {self.less_value} ms less.
         
         '''
 
@@ -208,8 +208,8 @@ class SourceToSinkFlowDifference(FlowCollectionDifference):
         F. Source to Sink Flow data
         {self.hundred_missing} repositories have hundred percent missing flows.
         {self.matching} repositories have exactly matching flows.
-        {self.less} repositories have missing flows.
-        {self.more} repositories have additional flows.
+        {self.less} repositories have on an average {self.less_value} missing flows.
+        {self.more} repositories have additional {self.more_value} flows.
         
         '''
 
