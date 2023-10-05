@@ -254,12 +254,12 @@ def write_summary_data(workbook_location, report, data_elements, collections ,fl
     
     write_slack_summary(f'''
         A. Scantime difference.
-        {scan_time_positive} repos took an average {floor(scan_time_positive_average)} ms more.
-        {len(report.keys()) - scan_time_positive} repos took an average {floor(scan_time_negative_average)} ms  less.
+        {scan_time_positive} repos took on an average {floor(scan_time_positive_average)} ms more.
+        {len(report.keys()) - scan_time_positive} repos took on an average {floor(scan_time_negative_average)} ms  less.
 
         B. Reachable by flow time difference.
-        {reachable_by_flow_time_positive} repos took an average {floor(reachable_by_flow_time_positive_average)} ms more.
-        {len(report.keys()) - reachable_by_flow_time_positive} repos took an average {floor(reachable_by_flow_time_negative_average)} ms less.
+        {reachable_by_flow_time_positive} repos took on an average {floor(reachable_by_flow_time_positive_average)} ms more.
+        {len(report.keys()) - reachable_by_flow_time_positive} repos took on an average {floor(reachable_by_flow_time_negative_average)} ms less.
 
         C. Reachable by flow count difference.
         {matching_flows} repositories have exactly matching flows.
@@ -272,7 +272,7 @@ def write_summary_data(workbook_location, report, data_elements, collections ,fl
         {more_sources} repositories have additional elements.
 
         E. Missing sinks.
-        {missing_sink_repo_count} repositories have an average {missing_sink_average} missing sinks.
+        {missing_sink_repo_count} repositories have on an average {missing_sink_average} missing sinks.
 
         F. Source to Sink Flow data
         {hundred_percent_missing} repositories have hundred percent missing flows.

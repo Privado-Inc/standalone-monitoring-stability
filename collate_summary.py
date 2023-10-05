@@ -26,6 +26,7 @@ class Difference:
                 number, value = self.get_relevant_data(row)
                 self.hundred_missing += number
             elif re.match(pattern_match.get("missing"), row):
+                print(row)
                 number, value = self.get_relevant_data(row)
                 self.less += number
                 self.less_value += value
@@ -121,9 +122,9 @@ class FlowCollectionDifference(Difference):
     @staticmethod
     def get_relevant_data(result):
         split_data = result.split(" ")
-        if re.match("^.*matching.*$", result) or re.match(pattern_match.get("hundred_missing"), result):
+        if re.match(pattern_match.get("matching"), result) or re.match(pattern_match.get("hundred_missing"), result):
             return (int(split_data[0]), 0)
-        elif (re.match("^.*(additional|missing).*$", result)):
+        elif (re.match(pattern_match.get("additional"), result)) or (re.match(pattern_match.get("missing"), result)):
             if int(split_data[0]) == 0:
                 return (int(split_data[0]), 0)
             return (int(split_data[0]), int(split_data[6]))
@@ -182,7 +183,7 @@ class MissingSinksVal(Difference):
     def get_relevant_data(result):
         split_data = result.split(" ")
         number = int(split_data[0])
-        value = int(split_data[5])
+        value = int(split_data[6])
         return (number, value)
     
     def get_result(self, language_summary):
