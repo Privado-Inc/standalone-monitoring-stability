@@ -3,7 +3,7 @@ import argparse
 import re
 from math import floor
 from pathlib import Path
-
+from .utils.write_to_file import add_missing_emoji
 
 
 class Difference:
@@ -147,7 +147,7 @@ class ReachableByFlowCountDifference(FlowCollectionDifference):
         return f'''
         C. Reachable by flow count difference.
         {self.matching} repositories have exactly matching flows.
-        {self.less} repositories have missing flows. :rotating_light:
+        {self.less} repositories have missing flows. {add_missing_emoji(self.less)}
         {self.more} repositories have additional flows.
         
         '''
@@ -169,7 +169,7 @@ class DataElementDifference(Difference):
         return f'''
         D. Unique data elements difference.
         {self.matching} repositories have exactly matching elements.
-        {self.less} repositories have missing data elements. :rotating_light:
+        {self.less} repositories have missing data elements. {add_missing_emoji(self.less)}
         {self.more} repositories have additional elements.
         
         '''
@@ -192,7 +192,7 @@ class MissingSinksVal(Difference):
     def get_summary(self):
         return f'''
         E. Missing sinks.
-        {self.less} repositories have on an average {self.less_value} missing sinks. :rotating_light:
+        {self.less} repositories have on an average {self.less_value} missing sinks. {add_missing_emoji(self.less)}
         
         '''
 
@@ -207,9 +207,9 @@ class SourceToSinkFlowDifference(FlowCollectionDifference):
     def get_summary(self):
         return f'''
         F. Source to Sink Flow data
-        {self.hundred_missing} repositories have hundred percent missing flows. :rotating_light: :rotating_light:
+        {self.hundred_missing} repositories have hundred percent missing flows. {add_missing_emoji(self.hundred_missing)} {add_missing_emoji(self.hundred_missing)}
         {self.matching} repositories have exactly matching flows.
-        {self.less} repositories have on an average {self.less_value} missing flows. :rotating_light:
+        {self.less} repositories have on an average {self.less_value} missing flows. {add_missing_emoji(self.less)}
         {self.more} repositories have on an average {self.more_value} additional flows.
         
         '''
@@ -225,7 +225,7 @@ class CollectionDifference(FlowCollectionDifference):
         return f'''
         G. Collection Summary
         {self.matching} repositories have exactly matching collections.
-        {self.less} repositories have missing collections. :rotating_light:
+        {self.less} repositories have missing collections. {add_missing_emoji(self.less)}
         {self.more} repositories have additional collections.
         '''
 
