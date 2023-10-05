@@ -62,7 +62,7 @@ class TimeDifference(Difference):
     @staticmethod
     def get_relevant_data(result):
         split_data = result.split(" ")
-        return (int(split_data[0]), int(split_data[5]))
+        return (int(split_data[0]), int(split_data[6]))
     
     def get_average(self):
         return (
@@ -93,8 +93,8 @@ class ScanTime(TimeDifference):
         return f'''
 
         A. Scantime Difference
-        {self.more} repos took an average {self.more_value} ms more.
-        {self.less} repos took an average {self.less_value} ms less.
+        {self.more} repos took on an average {self.more_value} ms more.
+        {self.less} repos took on an average {self.less_value} ms less.
 
         '''
 
@@ -109,8 +109,8 @@ class ReachableByFlowTime(TimeDifference):
     def get_summary(self):
         return f'''
         B. Reachable by flow time difference.
-        {self.more} repos took an average {self.more_value} ms more.
-        {self.less} repos took an average {self.less_value} ms less.
+        {self.more} repos took on an average {self.more_value} ms more.
+        {self.less} repos took on an average {self.less_value} ms less.
         
         '''
 
@@ -192,7 +192,7 @@ class MissingSinksVal(Difference):
     def get_summary(self):
         return f'''
         E. Missing sinks.
-        {self.less} repositories have an average {self.less_value} missing sinks.
+        {self.less} repositories have on an average {self.less_value} missing sinks.
         
         '''
 
@@ -210,7 +210,7 @@ class SourceToSinkFlowDifference(FlowCollectionDifference):
         {self.hundred_missing} repositories have hundred percent missing flows.
         {self.matching} repositories have exactly matching flows.
         {self.less} repositories have on an average {self.less_value} missing flows.
-        {self.more} repositories have additional {self.more_value} flows.
+        {self.more} repositories have on an average {self.more_value} additional flows.
         
         '''
 
