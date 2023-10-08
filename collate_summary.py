@@ -1,9 +1,7 @@
-import os
 import argparse
 import re
-from math import floor
 from pathlib import Path
-from .utils.write_to_file import add_missing_emoji
+from utils.write_to_file import add_missing_emoji
 
 
 class Difference:

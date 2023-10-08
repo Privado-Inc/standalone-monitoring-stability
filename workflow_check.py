@@ -5,13 +5,13 @@ import os
 
 def main(filepath):
 
-    scan_time_regex = r".*(repos took an average).*(ms more).*"
+    scan_time_regex = r".*(repos took on an average).*(ms more).*"
 
     reachable_regex = r".*(repositories have missing flows.).*"
 
     data_element_regex = r".*(repositories have missing data elements.).*"
 
-    sink_regex = r".*(repositories have an average).*(missing sinks.).*"
+    sink_regex = r".*(repositories have on an average).*(missing sinks.).*"
 
     source_sink_regex = r".*(repositories have hundred percent missing flows.).*"
 
