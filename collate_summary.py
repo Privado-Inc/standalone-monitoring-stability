@@ -44,7 +44,7 @@ class Difference:
 pattern_match = {
     "ms_more": "^.*ms\s*more\.$",
     "ms_less": "^.*ms\s*less\.$",
-    "missing": "^.*missing\s*(flows|collections|elements|sinks)\.$",
+    "missing": "^.*missing\s*(flows|collections|elements|sinks)\..*",
     "additional": "^.*additional\s*(flows|collections|elements)\.$",
     "matching": "^.*matching\s*(flows|collections|elements)\.$",
     "hundred_missing": "^.*hundred.*"
