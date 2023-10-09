@@ -102,11 +102,10 @@ def scan_repo_report(valid_repos, args):
                 report[config.HEAD_CORE_BRANCH_KEY] = {'scan_status': 'failed', 'scan_error_message': str(e)}
             
             scan_report[repo] = report
-
         finally:
-            # Generate and status and export into result
-            generate_scan_status_data(scan_report)
+            pass
 
+    generate_scan_status_data(scan_report)
     return scan_report
 
 
