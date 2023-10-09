@@ -16,17 +16,3 @@ https://github.com/OSSpk/Library-Management-System-JAVA.git
 https://github.com/sadatrafsanjani/JavaFX-Point-of-Sales.git
 https://github.com/galibBd/OnlineSchoolManagementSystem.git
 https://github.com/Privado-Demo/privado-accounts-api
-https://github.com/dbMundada/privado-python-test
-https://github.com/Khantanjil/Employees.git
-https://github.com/IMaG1337/inventory_managment.git
-https://github.com/valhuber/api_logic_server.git
-https://github.com/martinvigo/email2phonenumber.git
-https://github.com/lulitw/photoalbum.git
-https://github.com/bbedward/graham_discord_bot.git
-https://github.com/Privado-Inc/njs_accounts.git
-https://github.com/dbMundada/tech-specter-client
-https://github.com/gothinkster/angular-realworld-example-app
-https://github.com/dbMundada/expressCart
-https://github.com/jstibenpb/nodejs-express-template
-https://github.com/odinsride/olubalance
-https://github.com/pay-rails/pay
