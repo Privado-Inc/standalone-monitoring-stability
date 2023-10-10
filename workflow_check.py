@@ -28,37 +28,37 @@ def main(filepath):
         for line in summary_report.readlines():
 
             print(line)
-
+            values = list(filter(lambda y: len(y) > 0, map(lambda x: x.strip(), line.split(" "))))
             if re.search(scan_time_regex, line) and check:
-                values = line.split(" ")
+                # values = line.split(" ")
                 print(values)
                 check = False
                 if int(values[-3]) > scan_time_limit:
                     results.append("Average scan time differance more than 1000 ms")
 
             if re.search(reachable_regex, line):
-                values = line.split(" ")
-                if int(values[-5]) != 0:
+                # values = line.split(" ")
+                if int(values[0]) != 0:
                     results.append("Missing Reachable by flow Detected")
 
             if re.search(data_element_regex, line):
-                values = line.split(" ")
-                if int(values[-6]) != 0:
+                # values = line.split(" ")
+                if int(values[0]) != 0:
                     results.append("Missing Data Element Detected")
 
             if re.search(sink_regex, line):
-                values = line.split(" ")
-                if int(values[-8]) != 0 or int(values[-3]) != 0:
+                # values = line.split(" ")
+                if int(values[0]) != 0 or int(values[-4]) != 0:
                     results.append("Missing Sink Detected")
 
             if re.search(source_sink_regex, line):
-                values = line.split(" ")
-                if int(values[-7]) != 0:
+                # values = line.split(" ")
+                if int(values[0]) != 0:
                     results.append("Source to sink flow missing Detected")
 
             if (re.search(collection_regex, line)):
-                values = line.split(" ")
-                if (int(values[-5]) != 0):
+                # values = line.split(" ")
+                if (int(values[0]) != 0):
                     results.append("Missing collections detected")
 
 
