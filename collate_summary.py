@@ -47,7 +47,9 @@ pattern_match = {
     "missing": "^.*missing\s*(flows|collections|elements|sinks)\..*",
     "additional": "^.*additional\s*(flows|collections|elements)\.$",
     "matching": "^.*matching\s*(flows|collections|elements)\.$",
-    "hundred_missing": "^.*hundred.*"
+    "hundred_missing": "^.*hundred.*",
+    "current_version": "^.*Current.*$",
+    "updated_version": "^.*Updated.*"
 }
 
 
@@ -227,10 +229,30 @@ class CollectionDifference(FlowCollectionDifference):
         {self.more} repositories have additional collections.
         '''
 
+class VersionUpdate(Difference):
+    def __init__(self) -> None:
+        super().__init__()
+        self.current_version = ""
+        self.updated_version = ""
+
+    def get_result(self, language_summary):
+        for row in language_summary[:2]:
+            if (re.match(pattern_match.get("current_version"), row)):
+                self.current_version = row.strip()
+            elif (re.match(pattern_match.get("updated_version"), row)):
+                self.updated_version = row.strip()
+
+    def get_summary(self):
+        return f'''
+        {self.current_version}
+        {self.updated_version}
+        '''
+
 
 parser = argparse.ArgumentParser(add_help=False)
 
 parser.add_argument("-s", "--summary-dir")
+parser.add_argument("-ju", "--joern-update", default=False)
 
 args: argparse.Namespace = parser.parse_args()
 
@@ -255,9 +277,13 @@ def main():
     collections_difference_result = CollectionDifference()
     data_element_difference_result = DataElementDifference()
     missing_sinks_value_result = MissingSinksVal()
+    joern_version = VersionUpdate()
     summary = ""
 
     for language_summary in get_file_contents(args.summary_dir):
+        if args.joern_update:
+            joern_version.get_result(language_summary)
+            language_summary = language_summary[2:]
         scantime_result.get_result(language_summary)
         reachable_by_flow_time_result.get_result(language_summary)
         reachable_by_flow_count_difference_result.get_result(language_summary)
@@ -265,7 +291,8 @@ def main():
         missing_sinks_value_result.get_result(language_summary)
         source_to_sink_flow_difference_result.get_result(language_summary)
         collections_difference_result.get_result(language_summary)
-
+    
+    if args.joern_update: summary += joern_version.get_summary()
     summary += scantime_result.get_summary()
     summary += reachable_by_flow_time_result.get_summary()
     summary += reachable_by_flow_count_difference_result.get_summary()
