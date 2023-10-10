@@ -104,9 +104,9 @@ def scan_repo_report(valid_repos, args):
             scan_report[repo] = report
 
         finally:
-            # Generate and status and export into result
-            generate_scan_status_data(scan_report)
-
+            pass
+        
+    generate_scan_status_data(scan_report)
     return scan_report
 
 
