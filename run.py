@@ -182,7 +182,7 @@ def workflow():
         write_scan_status_report(builder.OUTPUT_PATH, scan_status)
         write_summary_data(builder.OUTPUT_PATH, scan_status, source_count, collection_count , flow_data)
 
-        if args.upload or args.joern_update:
+        if args.upload:
             post_report_to_slack(True)
     except Exception as e:
         traceback.print_exc()
