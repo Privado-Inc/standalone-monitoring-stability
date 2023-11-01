@@ -177,8 +177,8 @@ def process_source_sink_and_collection_data(worksheet_name, base_data, head_data
     result.append(process_sinks(base_data['dataFlow'], head_data['dataFlow'], repo_name, scan_status, language,
                                 key='storages'))
     # Analysis for the third party sink
-   result.append(process_sinks(base_data['dataFlow'], head_data['dataFlow'], repo_name, scan_status, language,
-                               key='third_parties'))
+    result.append(process_sinks(base_data['dataFlow'], head_data['dataFlow'], repo_name, scan_status, language,
+                                key='third_parties'))
     # Analysis for the leakage sink
     result.append(process_sinks(base_data['dataFlow'], head_data['dataFlow'], repo_name, scan_status, language,
                                 key='leakages'))
