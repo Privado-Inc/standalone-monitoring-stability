@@ -177,8 +177,8 @@ def process_source_sink_and_collection_data(worksheet_name, base_data, head_data
     result.append(process_sinks(base_data['dataFlow'], head_data['dataFlow'], repo_name, scan_status, language,
                                 key='storages'))
     # Analysis for the third party sink
-   # result.append(process_sinks(base_data['dataFlow'], head_data['dataFlow'], repo_name, scan_status, language,
-   #                             key='third_parties'))
+   result.append(process_sinks(base_data['dataFlow'], head_data['dataFlow'], repo_name, scan_status, language,
+                               key='third_parties'))
     # Analysis for the leakage sink
     result.append(process_sinks(base_data['dataFlow'], head_data['dataFlow'], repo_name, scan_status, language,
                                 key='leakages'))
@@ -407,7 +407,7 @@ def process_path_analysis(worksheet_name, base_source, head_source, repo_name, l
     total_additional_flow = 0
     total_missing_flow = 0
 
-    for i in ['storages', 'leakages']:
+    for i in ['storages', 'leakages', 'third_parties']:
         value = sub_process_path(base_source['dataFlow'][i], head_source['dataFlow'][i], i, repo_name, language)
         for j in value[0]:
             result.append(j)
