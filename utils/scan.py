@@ -200,7 +200,7 @@ def build_command(cwd, branch_name, key, scan_dir, repo, unique_flow, debug_mode
     if use_docker:
         return f'{get_docker_commands(branch_name, scan_dir)} | tee {cwd}/temp/result/{key}/{repo}-output.txt'
 
-    command = [f'cd {cwd}/temp/binary/{key}/bin && ./privado-core scan', scan_dir,
+    command = [f'export JAVA_TOOL_OPTIONS="-Xms5g -Xmx25g" && cd {cwd}/temp/binary/{key}/bin && ./privado-core scan', scan_dir,
                f'-ic {cwd}/temp/privado/{key} --skip-upload']
 
     if unique_flow:
