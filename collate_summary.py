@@ -281,6 +281,7 @@ def main():
     summary = ""
 
     for language_summary in get_file_contents(args.summary_dir):
+
         if args.joern_update:
             joern_version.get_result(language_summary)
             language_summary = language_summary[2:]
