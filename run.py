@@ -59,6 +59,7 @@ def workflow():
             print(f"{builder.get_current_time()} - No Update Available for comparison")
             write_slack_summary(
                 f"No Update Available for Comparison")
+            post_report_to_slack(False)
 
             return
         args.base = versions[0]
