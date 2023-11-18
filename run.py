@@ -60,7 +60,6 @@ def workflow():
             write_slack_summary(
                 f"No Update Available for Comparison")
             post_report_to_slack(False)
-
             return
         args.base = versions[0]
         args.head = versions[1]
