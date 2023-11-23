@@ -102,6 +102,8 @@ def scan_repo_report(valid_repos, args):
                 report[config.HEAD_CORE_BRANCH_KEY] = {'scan_status': 'done', 'scan_error_message': '--'}
             except Exception as e:
                 report[config.HEAD_CORE_BRANCH_KEY] = {'scan_status': 'failed', 'scan_error_message': str(e)}
+                with open(f"{os.getcwd()}/action_result.txt", "a") as workflow_file:
+                    workflow_file.write(f"{repo} - scan failed\n")
             
             scan_report[repo] = report
 
