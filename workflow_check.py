@@ -64,10 +64,7 @@ def main(filepath):
 
         output_path = f'{os.getcwd()}/action_result.txt'
 
-        if os.path.isfile(output_path):
-            os.system(f'rm {output_path}')
-
-        file = open(output_path, 'w')
+        file = open(output_path, 'a')
 
         if len(results) == 0:
             file.write("true")
