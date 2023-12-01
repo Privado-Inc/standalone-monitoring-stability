@@ -6,6 +6,8 @@ from math import floor
 import builder
 import config
 
+def add_missing_emoji(missing_value):
+    return ":rotating_light:" if missing_value > 0 else ""
 
 def create_new_excel_for_file(location, first_file, second_file):
     wb = openpyxl.Workbook()
@@ -254,35 +256,35 @@ def write_summary_data(workbook_location, report, data_elements, collections ,fl
     
     write_slack_summary(f'''
         A. Scantime difference.
-        {scan_time_positive} repos took an average {floor(scan_time_positive_average)} ms more.
-        {len(report.keys()) - scan_time_positive} repos took an average {floor(scan_time_negative_average)} ms  less.
+        {scan_time_positive} repos took on an average {floor(scan_time_positive_average)} ms more.
+        {len(report.keys()) - scan_time_positive} repos took on an average {floor(scan_time_negative_average)} ms  less.
 
         B. Reachable by flow time difference.
-        {reachable_by_flow_time_positive} repos took an average {floor(reachable_by_flow_time_positive_average)} ms more.
-        {len(report.keys()) - reachable_by_flow_time_positive} repos took an average {floor(reachable_by_flow_time_negative_average)} ms less.
+        {reachable_by_flow_time_positive} repos took on an average {floor(reachable_by_flow_time_positive_average)} ms more.
+        {len(report.keys()) - reachable_by_flow_time_positive} repos took on an average {floor(reachable_by_flow_time_negative_average)} ms less.
 
         C. Reachable by flow count difference.
         {matching_flows} repositories have exactly matching flows.
-        {less_flows} repositories have missing flows.
+        {less_flows} repositories have missing flows. {add_missing_emoji(less_flows)}
         {more_flows} repositories have additional flows.
 
         D. Unique data elements difference.
         {matching_sources} repositories have exactly matching elements.
-        {less_sources} repositories have missing data elements.
+        {less_sources} repositories have missing data elements. {add_missing_emoji(less_sources)}
         {more_sources} repositories have additional elements.
 
         E. Missing sinks.
-        {missing_sink_repo_count} repositories have an average {missing_sink_average} missing sinks.
+        {missing_sink_repo_count} repositories have on an average {missing_sink_average} missing sinks. {add_missing_emoji(missing_sink_repo_count)}
 
         F. Source to Sink Flow data
-        {hundred_percent_missing} repositories have hundred percent missing flows.
+        {hundred_percent_missing} repositories have hundred percent missing flows. {add_missing_emoji(hundred_percent_missing)} {add_missing_emoji(hundred_percent_missing)}
         {matching_flow_repo_count} repositories have matching flows.
         {additional_not_zero} repositories have on an average {floor(additional_average)} additional flows.
-        {missing_not_zero} repositories have on an average {floor(missing_average)} missing flows.
+        {missing_not_zero} repositories have on an average {floor(missing_average)} missing flows. {add_missing_emoji(missing_not_zero)}
         
         G. Collection Summary
         {matching_collections} repositories have exactly matching collections.
-        {less_collections} repositories have missing collections.
+        {less_collections} repositories have missing collections. {add_missing_emoji(less_collections)}
         {more_collections} repositories have additional collections.
     ''')
     

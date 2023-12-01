@@ -11,6 +11,7 @@ def build(skip_build = False):
         return
     pwd = os.getcwd()
     temp_dir = f'{pwd}/temp'
+
     base_core_repo_path = f'{temp_dir}/privado-core/{config.BASE_CORE_BRANCH_KEY}'
     head_core_repo_path = f'{temp_dir}/privado-core/{config.HEAD_CORE_BRANCH_KEY}'
     base_rule_repo_path = f'{temp_dir}/privado/{config.BASE_CORE_BRANCH_KEY}'
