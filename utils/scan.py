@@ -6,6 +6,7 @@ import builder
 from utils.write_to_file import write_scan_status_report, create_new_excel, create_new_excel_for_file
 import re
 import config
+import threading
 
 
 def get_detected_language(repo, branch):
@@ -46,12 +47,20 @@ def scan_repo_report(valid_repos, args):
             first_command = build_command(cwd, config.BASE_CORE_BRANCH_NAME, config.BASE_CORE_BRANCH_KEY, scan_dir,
                                           repo, args.generate_unique_flow, args.debug_mode,
                                           args.use_docker)
+            second_command = build_command(cwd, config.HEAD_CORE_BRANCH_NAME, config.HEAD_CORE_BRANCH_KEY, scan_dir,
+                                           repo, args.generate_unique_flow, args.debug_mode, args.use_docker)
 
             print(f"first commaond {first_command}")
 
             # Execute the command to generate the binary file for first branch
-            os.system(first_command)
+            t1 = threading.Thread(target=os.system, args=(first_command,))
+            t1.start()
+            # Execute the command to generate the binary file for second branch
+            t2 = threading.Thread(target=os.system, args=(second_command,))
+            t2.start()
 
+
+            t1.join()
             src_path = f'{scan_dir}/.privado/privado.json'
             dest_path = f'{cwd}/temp/result/{config.BASE_CORE_BRANCH_KEY}/{repo}.json'
 
@@ -77,15 +86,13 @@ def scan_repo_report(valid_repos, args):
                 report[config.BASE_CORE_BRANCH_KEY] = {'scan_status': 'failed', 'scan_error_message': str(e)}
 
             # Scan the cloned repo with second branch and push output to a file with debug logs
-            second_command = build_command(cwd, config.HEAD_CORE_BRANCH_NAME, config.HEAD_CORE_BRANCH_KEY, scan_dir,
-                                           repo, args.generate_unique_flow, args.debug_mode, args.use_docker)
+
 
             language = get_detected_language(repo, config.BASE_CORE_BRANCH_KEY)
             report["language"] = language
 
-            # Execute the command to generate the binary file for second branch
-            os.system(second_command)
 
+            t2.join()
             dest_path = f'{cwd}/temp/result/{config.HEAD_CORE_BRANCH_KEY}/{repo}.json'
             dest_path_intermediate = f'{cwd}/temp/result/{config.HEAD_CORE_BRANCH_KEY}/{repo}-intermediate.json'
             dest_path_semantic = f'{cwd}/temp/result/{config.HEAD_CORE_BRANCH_KEY}/{repo}-semantic.txt'

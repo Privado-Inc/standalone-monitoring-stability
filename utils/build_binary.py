@@ -4,6 +4,7 @@ import shutil
 import builder
 from utils.clone_repo import clone_repo_with_name
 import config
+import threading
 
 
 def build(skip_build = False):
@@ -33,13 +34,19 @@ def build(skip_build = False):
         clone_privado_core_repo(config.HEAD_PRIVADO_RULE_URL, config.HEAD_RULE_BRANCH_NAME, head_rule_repo_path,
                                 f'{config.HEAD_PRIVADO_RULE_OWNER}-{config.HEAD_RULE_BRANCH_NAME}')
 
-    build_binary_and_move("privado-core", config.BASE_CORE_BRANCH_KEY)
+    t1 = threading.Thread(target=build_binary_and_move, args=("privado-core", config.BASE_CORE_BRANCH_KEY,))
+    t2 = threading.Thread(target=build_binary_and_move, args=("privado-core", config.HEAD_CORE_BRANCH_KEY,))
+    t1.start()
+    t2.start()
+
+    t1.join()
+    t2.join()
     move_log_rule_file(f'{pwd}/temp/privado-core/{config.BASE_CORE_BRANCH_KEY}/log4j2.xml', config.BASE_CORE_BRANCH_KEY)
-    build_binary_and_move("privado-core", config.HEAD_CORE_BRANCH_KEY)
     move_log_rule_file(f'{pwd}/temp/privado-core/{config.HEAD_CORE_BRANCH_KEY}/log4j2.xml', config.HEAD_CORE_BRANCH_KEY)
 
 
 def build_binary_and_move(repo_name, key):
+    print(f"Started for {repo_name} and branch: {key}")
     path = os.getcwd()
     core_dir = f'{path}/temp/{repo_name}/{key}'
     binary_dir = f'{core_dir}/target/universal/stage/*'
