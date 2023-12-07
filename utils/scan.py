@@ -56,9 +56,9 @@ def scan_repo_report(valid_repos, args):
             print(first_command.split(" ")[3:])
             print(second_command.split(" ")[3:])
             # Execute the command to generate the binary file for first branch
-            t1 = subprocess.Popen(first_command.split(" "))
+            t1 = subprocess.Popen(first_command.split(" ")[3:])
             # Execute the command to generate the binary file for second branch
-            t2 = subprocess.Popen(second_command.split(" "))
+            t2 = subprocess.Popen(second_command.split(" ")[3:])
 
 
             t1.wait()
