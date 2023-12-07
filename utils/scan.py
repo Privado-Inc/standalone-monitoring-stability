@@ -7,6 +7,7 @@ from utils.write_to_file import write_scan_status_report, create_new_excel, crea
 import re
 import config
 import threading
+import subprocess
 
 
 def get_detected_language(repo, branch):
@@ -53,14 +54,13 @@ def scan_repo_report(valid_repos, args):
             print(f"first commaond {first_command}")
 
             # Execute the command to generate the binary file for first branch
-            t1 = threading.Thread(target=os.system, args=(first_command,))
-            t1.start()
+            t1 = subprocess.Popen(first_command.split(" "))
             # Execute the command to generate the binary file for second branch
-            t2 = threading.Thread(target=os.system, args=(second_command,))
-            t2.start()
+            t2 = subprocess.Popen(second_command.split(" "))
 
 
-            t1.join()
+            t1.wait()
+            t2.wait()
             src_path = f'{scan_dir}/.privado/privado.json'
             dest_path = f'{cwd}/temp/result/{config.BASE_CORE_BRANCH_KEY}/{repo}.json'
 
@@ -91,8 +91,6 @@ def scan_repo_report(valid_repos, args):
             language = get_detected_language(repo, config.BASE_CORE_BRANCH_KEY)
             report["language"] = language
 
-
-            t2.join()
             dest_path = f'{cwd}/temp/result/{config.HEAD_CORE_BRANCH_KEY}/{repo}.json'
             dest_path_intermediate = f'{cwd}/temp/result/{config.HEAD_CORE_BRANCH_KEY}/{repo}-intermediate.json'
             dest_path_semantic = f'{cwd}/temp/result/{config.HEAD_CORE_BRANCH_KEY}/{repo}-semantic.txt'
