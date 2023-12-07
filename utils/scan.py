@@ -53,6 +53,8 @@ def scan_repo_report(valid_repos, args):
 
             print(f"first commaond {first_command}")
 
+            print(first_command.split(" "))
+            print(second_command.split(" "))
             # Execute the command to generate the binary file for first branch
             t1 = subprocess.Popen(first_command.split(" "))
             # Execute the command to generate the binary file for second branch
