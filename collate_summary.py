@@ -15,6 +15,7 @@ class Difference:
         self.hundred_missing = 0
     
     def diff_pass(self, language_summary, start, end=None):
+        # print(lan)
         for row in language_summary[start:end]:
             if re.match(pattern_match.get("additional"), row):
                 number, value = self.get_relevant_data(row)
@@ -47,9 +48,10 @@ pattern_match = {
     "missing": "^.*missing\s*(flows|collections|elements|sinks)\..*",
     "additional": "^.*additional\s*(flows|collections|elements)\.$",
     "matching": "^.*matching\s*(flows|collections|elements)\.$",
-    "hundred_missing": "^.*hundred.*"
+    "hundred_missing": "^.*hundred.*",
+    "repo_failed_number": "^.*failed\.$",
+    "repo_failed_list": "^Scan failed for.*$"
 }
-
 
 
 class TimeDifference(Difference):
@@ -83,14 +85,16 @@ class TimeDifference(Difference):
 
 
 class ScanTime(TimeDifference):
-    def __init__(self):
+    def __init__(self, offset):
         super().__init__()
+        self.start = 0 + offset
+        self.end = self.start + 3
     def get_result(self, language_summary):
-        return self.diff_pass(language_summary, 0, 3)
+        return self.diff_pass(language_summary, self.start, self.end)
     def get_summary(self):
         return f'''
 
-        A. Scantime Difference
+        B. Scantime Difference
         {self.more} repos took on an average {self.more_value} ms more.
         {self.less} repos took on an average {self.less_value} ms less.
 
@@ -98,15 +102,17 @@ class ScanTime(TimeDifference):
 
 
 class ReachableByFlowTime(TimeDifference):
-    def __init__(self):
+    def __init__(self, offset):
         super().__init__()
+        self.start = 3 + offset
+        self.end = self.start + 4
     
     def get_result(self, language_summary):
-        return self.diff_pass(language_summary, 3, 6)
+        return self.diff_pass(language_summary, self.start, self.end)
     
     def get_summary(self):
         return f'''
-        B. Reachable by flow time difference.
+        C. Reachable by flow time difference.
         {self.more} repos took on an average {self.more_value} ms more.
         {self.less} repos took on an average {self.less_value} ms less.
         
@@ -130,30 +136,10 @@ class FlowCollectionDifference(Difference):
                 
 
 class ReachableByFlowCountDifference(FlowCollectionDifference): 
-    def __init__(self):
+    def __init__(self, offset): # offset is the location at which the actual summary starts
         super().__init__()
-
-    @staticmethod
-    def get_relevant_data(result):
-        number = int(result.split(' ')[0])
-        return (number, 0)
-    
-    def get_result(self, language_summary):
-        return self.diff_pass(language_summary, 6, 10)
-    
-    def get_summary(self):
-        return f'''
-        C. Reachable by flow count difference.
-        {self.matching} repositories have exactly matching flows.
-        {self.less} repositories have missing flows. {add_missing_emoji(self.less)}
-        {self.more} repositories have additional flows.
-        
-        '''
-    
-
-class DataElementDifference(Difference):
-    def __init__(self):
-        super().__init__()
+        self.start = 6 + offset
+        self.end = self.start + 4
 
     @staticmethod
     def get_relevant_data(result):
@@ -162,10 +148,34 @@ class DataElementDifference(Difference):
     
     def get_result(self, language_summary):
         return self.diff_pass(language_summary, 10, 14)
+    
+    def get_summary(self):
+        return f'''
+        D. Reachable by flow count difference.
+        {self.matching} repositories have exactly matching flows.
+        {self.less} repositories have missing flows. {add_missing_emoji(self.less)}
+        {self.more} repositories have additional flows.
+        
+        '''
+    
+
+class DataElementDifference(Difference):
+    def __init__(self, offset):
+        super().__init__()
+        self.start = 10 + offset
+        self.end = self.start + 4
+
+    @staticmethod
+    def get_relevant_data(result):
+        number = int(result.split(' ')[0])
+        return (number, 0)
+    
+    def get_result(self, language_summary):
+        return self.diff_pass(language_summary, self.start, self.end)
 
     def get_summary(self):
         return f'''
-        D. Unique data elements difference.
+        E. Unique data elements difference.
         {self.matching} repositories have exactly matching elements.
         {self.less} repositories have missing data elements. {add_missing_emoji(self.less)}
         {self.more} repositories have additional elements.
@@ -174,8 +184,10 @@ class DataElementDifference(Difference):
 
 
 class MissingSinksVal(Difference):
-    def __init__(self):
+    def __init__(self, offset):
         super().__init__()
+        self.start = 14 + offset
+        self.end = self.start + 2
 
     @staticmethod
     def get_relevant_data(result):
@@ -185,26 +197,28 @@ class MissingSinksVal(Difference):
         return (number, value)
     
     def get_result(self, language_summary):
-        return self.diff_pass(language_summary, 14, 16)
+        return self.diff_pass(language_summary, self.start, self.end)
     
     def get_summary(self):
         return f'''
-        E. Missing sinks.
+        F. Missing sinks.
         {self.less} repositories have on an average {self.less_value} missing sinks. {add_missing_emoji(self.less)}
         
         '''
 
 class SourceToSinkFlowDifference(FlowCollectionDifference):
-    def __init__(self):
+    def __init__(self, offset):
         super().__init__()
+        self.start = 16 + offset
+        self.end = self.start + 5
     
 
     def get_result(self, language_summary):
-        return self.diff_pass(language_summary, 16, 21)
+        return self.diff_pass(language_summary, self.start, self.end)
     
     def get_summary(self):
         return f'''
-        F. Source to Sink Flow data
+        G. Source to Sink Flow data
         {self.hundred_missing} repositories have hundred percent missing flows. {add_missing_emoji(self.hundred_missing)} {add_missing_emoji(self.hundred_missing)}
         {self.matching} repositories have exactly matching flows.
         {self.less} repositories have on an average {self.less_value} missing flows. {add_missing_emoji(self.less)}
@@ -213,19 +227,48 @@ class SourceToSinkFlowDifference(FlowCollectionDifference):
         '''
 
 class CollectionDifference(FlowCollectionDifference):
-    def __init__(self):
+    def __init__(self, offset):
         super().__init__()
+        self.start = 21 + offset
+        self.end = self.start + 4
     
     def get_result(self, language_summary):
-        return self.diff_pass(language_summary, -4)
+        return self.diff_pass(language_summary, self.start, self.end)
     
     def get_summary(self):
         return f'''
-        G. Collection Summary
+        H. Collection Summary
         {self.matching} repositories have exactly matching collections.
         {self.less} repositories have missing collections. {add_missing_emoji(self.less)}
         {self.more} repositories have additional collections.
         '''
+
+class ScanFailureReport():
+    def __init__(self, offset=0):
+        self.num_repos_failed = 0
+        self.repos_failed = ""
+        self.total_repos = 0
+        self.start = offset
+        self.end = offset + 3
+    
+    def get_number_repos_failed(self, language_summary):
+        for row in language_summary[0:3]:
+            if re.match(pattern_match.get("repo_failed_number"), row):
+                line = row.split(" ")
+                self.num_repos_failed += int(line[2])
+                self.total_repos += line[-2]
+    
+    def get_result(self, language_summary):
+        pass
+
+    def get_summary(self):
+        return f'''
+        A. Repository scan failure report
+        Scan for {self.num_repos_failed} repositories out of {self.total_repos} failed.
+        {self.repos_failed if len(self.repos_failed) > 0 else "No scans failed."}
+        '''
+
+    
 
 
 parser = argparse.ArgumentParser(add_help=False)
@@ -242,30 +285,42 @@ def get_file_contents(summary_dir):
 
 
 
+def get_num_until_summary_start(language_summary):
+    for i, row in enumerate(language_summary):
+        if re.match("^B\..*$", row):
+            return i
+    return -1
+
 def write_summary_to_file(summary,filename="global_summary.txt"):
     with open(filename, "w") as f:
         f.write(summary)
 
 
 def main():
-    scantime_result = ScanTime()
-    reachable_by_flow_time_result = ReachableByFlowTime()
-    reachable_by_flow_count_difference_result = ReachableByFlowCountDifference()
-    source_to_sink_flow_difference_result = SourceToSinkFlowDifference()
-    collections_difference_result = CollectionDifference()
-    data_element_difference_result = DataElementDifference()
-    missing_sinks_value_result = MissingSinksVal()
+    scanfail_report = ScanFailureReport(0)
+    scantime_result = ScanTime(0)
+    reachable_by_flow_time_result = ReachableByFlowTime(0)
+    reachable_by_flow_count_difference_result = ReachableByFlowCountDifference(0)
+    source_to_sink_flow_difference_result = SourceToSinkFlowDifference(0)
+    collections_difference_result = CollectionDifference(0)
+    data_element_difference_result = DataElementDifference(0)
+    missing_sinks_value_result = MissingSinksVal(0)
     summary = ""
 
-    for language_summary in get_file_contents(args.summary_dir):
-        scantime_result.get_result(language_summary)
-        reachable_by_flow_time_result.get_result(language_summary)
-        reachable_by_flow_count_difference_result.get_result(language_summary)
-        data_element_difference_result.get_result(language_summary)
-        missing_sinks_value_result.get_result(language_summary)
-        source_to_sink_flow_difference_result.get_result(language_summary)
-        collections_difference_result.get_result(language_summary)
 
+    for language_summary in get_file_contents(args.summary_dir):
+        scantime_start = get_num_until_summary_start(language_summary)
+       
+        ScanFailureReport(0).get_result(language_summary)
+        ScanTime(scantime_start).get_result(language_summary)
+        ReachableByFlowTime(scantime_start).get_result(language_summary)
+        ReachableByFlowCountDifference(scantime_start).get_result(language_summary)
+        SourceToSinkFlowDifference(scantime_start).get_result(language_summary)
+        CollectionDifference(scantime_start).get_result(language_summary)
+        DataElementDifference(scantime_start).get_result(language_summary)
+        MissingSinksVal(scantime_start).get_result(language_summary)
+
+    summary += scanfail_report.get_summary()
     summary += scantime_result.get_summary()
     summary += reachable_by_flow_time_result.get_summary()
     summary += reachable_by_flow_count_difference_result.get_summary()
