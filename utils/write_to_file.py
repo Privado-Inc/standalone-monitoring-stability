@@ -260,8 +260,8 @@ def write_summary_data(workbook_location, report, data_elements, collections ,fl
     
     write_slack_summary(f'''
         A. Repository scan failure report
-        Scan for {num_repos_failed} repositories out of {len(list(report.keys()))} failed.
-        {scan_failure if len(scan_failure) > 0 else "No scans failed"}
+        Scan for {num_repos_failed} out of {len(list(report.keys()))} repositories failed. {":rotating_light:" if num_repos_failed > 0 else ""}
+        {scan_failure if len(scan_failure) > 0 else ""}
 
         B. Scantime difference.
         {scan_time_positive} repos took on an average {floor(scan_time_positive_average)} ms more.
