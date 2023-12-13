@@ -85,10 +85,14 @@ class TimeDifference(Difference):
 
 
 class ScanTime(TimeDifference):
-    def __init__(self, offset):
+    def __init__(self):
         super().__init__()
+
+    def calculate_start_end(self, offset):
         self.start = 0 + offset
         self.end = self.start + 3
+        return self
+
     def get_result(self, language_summary):
         return self.diff_pass(language_summary, self.start, self.end)
     def get_summary(self):
@@ -101,10 +105,13 @@ class ScanTime(TimeDifference):
 
 
 class ReachableByFlowTime(TimeDifference):
-    def __init__(self, offset):
+    def __init__(self):
         super().__init__()
+    
+    def calculate_start_end(self, offset):
         self.start = 3 + offset
         self.end = self.start + 4
+        return self
     
     def get_result(self, language_summary):
         return self.diff_pass(language_summary, self.start, self.end)
@@ -129,15 +136,18 @@ class FlowCollectionDifference(Difference):
         elif (re.match(pattern_match.get("additional"), result)) or (re.match(pattern_match.get("missing"), result)):
             if int(split_data[0]) == 0:
                 return (int(split_data[0]), 0)
-            return (int(split_data[0]), int(split_data[6]))
+            return int(split_data[0]), int(split_data[6])
         
                 
 
 class ReachableByFlowCountDifference(FlowCollectionDifference): 
-    def __init__(self, offset): # offset is the location at which the actual summary starts
+    def __init__(self):
         super().__init__()
+
+    def calculate_start_end(self, offset):
         self.start = 6 + offset
         self.end = self.start + 4
+        return self
 
     @staticmethod
     def get_relevant_data(result):
@@ -157,11 +167,14 @@ class ReachableByFlowCountDifference(FlowCollectionDifference):
     
 
 class DataElementDifference(Difference):
-    def __init__(self, offset):
+    def __init__(self):
         super().__init__()
+
+    def calculate_start_end(self, offset):
         self.start = 10 + offset
         self.end = self.start + 4
-
+        return self
+    
     @staticmethod
     def get_relevant_data(result):
         number = int(result.split(' ')[0])
@@ -180,10 +193,13 @@ class DataElementDifference(Difference):
 
 
 class MissingSinksVal(Difference):
-    def __init__(self, offset):
+    def __init__(self):
         super().__init__()
+
+    def calculate_start_end(self, offset):
         self.start = 14 + offset
-        self.end = self.start + 2
+        self.end = self.start + 2       
+        return self
 
     @staticmethod
     def get_relevant_data(result):
@@ -202,11 +218,13 @@ class MissingSinksVal(Difference):
         '''
 
 class SourceToSinkFlowDifference(FlowCollectionDifference):
-    def __init__(self, offset):
+    def __init__(self):
         super().__init__()
+
+    def calculate_start_end(self, offset):
         self.start = 16 + offset
         self.end = self.start + 5
-    
+        return self
 
     def get_result(self, language_summary):
         return self.diff_pass(language_summary, self.start, self.end)
@@ -221,10 +239,13 @@ class SourceToSinkFlowDifference(FlowCollectionDifference):
         '''
 
 class CollectionDifference(FlowCollectionDifference):
-    def __init__(self, offset):
+    def __init__(self):
         super().__init__()
+    
+    def calculate_start_end(self, offset):
         self.start = 21 + offset
         self.end = self.start + 4
+        return self
     
     def get_result(self, language_summary):
         return self.diff_pass(language_summary, self.start, self.end)
@@ -238,12 +259,16 @@ class CollectionDifference(FlowCollectionDifference):
         '''
 
 class ScanFailureReport():
-    def __init__(self, offset, end):
+    def __init__(self):
         self.num_repos_failed = 0
         self.repos_failed = ""
         self.total_repos = 0
-        self.end = end
     
+    def calculate_start_end(self, offset):
+        self.start = 0
+        self.end = offset
+        return self
+
     def get_number_repos_failed(self, language_summary):
         for row in language_summary[0:3]:
             if re.match(pattern_match.get("repo_failed_number"), row):
@@ -297,43 +322,44 @@ def write_summary_to_file(summary,filename="global_summary.txt"):
 
 
 def main():
-    scanfail_report = ScanFailureReport(0,-1)
-    scantime_result = ScanTime(0)
-    reachable_by_flow_time_result = ReachableByFlowTime(0)
-    reachable_by_flow_count_difference_result = ReachableByFlowCountDifference(0)
-    source_to_sink_flow_difference_result = SourceToSinkFlowDifference(0)
-    collections_difference_result = CollectionDifference(0)
-    data_element_difference_result = DataElementDifference(0)
-    missing_sinks_value_result = MissingSinksVal(0)
+    scanfail_report = ScanFailureReport()
+    scantime_result = ScanTime()
+    reachable_by_flow_time_result = ReachableByFlowTime()
+    reachable_by_flow_count_difference_result = ReachableByFlowCountDifference()
+    source_to_sink_flow_difference_result = SourceToSinkFlowDifference()
+    collections_difference_result = CollectionDifference()
+    data_element_difference_result = DataElementDifference()
+    missing_sinks_value_result = MissingSinksVal()
     summary = ""
 
 
     for language_summary in get_file_contents(args.summary_dir):
+        print(language_summary)
         scantime_start = get_num_until_summary_start(language_summary)
        
-        scanfail_report = ScanFailureReport(0, scantime_start)
-        scanfail_report.get_result(language_summary)
+        # scanfail_report = ScanFailureReport(0, scantime_start)
+        scanfail_report.calculate_start_end(scantime_start).get_result(language_summary)
         
-        scantime_result = ScanTime(scantime_start)
-        scantime_result.get_result(language_summary)
+        # scantime_result = ScanTime(scantime_start)
+        scantime_result.calculate_start_end(scantime_start).get_result(language_summary)
 
-        reachable_by_flow_time_result = ReachableByFlowTime(scantime_start)
-        reachable_by_flow_time_result.get_result(language_summary)
+        # reachable_by_flow_time_result = ReachableByFlowTime()
+        reachable_by_flow_time_result.calculate_start_end(scantime_start).get_result(language_summary)
 
-        reachable_by_flow_count_difference_result = ReachableByFlowCountDifference(scantime_start)
-        reachable_by_flow_count_difference_result.get_result(language_summary)
+        # reachable_by_flow_count_difference_result = ReachableByFlowCountDifference(scantime_start)
+        reachable_by_flow_count_difference_result.calculate_start_end(scantime_start).get_result(language_summary)
 
-        source_to_sink_flow_difference_result = SourceToSinkFlowDifference(scantime_start)
-        source_to_sink_flow_difference_result.get_result(language_summary)
+        # source_to_sink_flow_difference_result = SourceToSinkFlowDifference(scantime_start)
+        source_to_sink_flow_difference_result.calculate_start_end(scantime_start).get_result(language_summary)
 
-        collections_difference_result = CollectionDifference(scantime_start)
-        collections_difference_result.get_result(language_summary)
+        # collections_difference_result = CollectionDifference(scantime_start)
+        collections_difference_result.calculate_start_end(scantime_start).get_result(language_summary)
 
-        data_element_difference_result = DataElementDifference(scantime_start)
-        data_element_difference_result.get_result(language_summary)
+        # data_element_difference_result = DataElementDifference(scantime_start)
+        data_element_difference_result.calculate_start_end(scantime_start).get_result(language_summary)
 
-        missing_sinks_value_result = MissingSinksVal(scantime_start)
-        missing_sinks_value_result.get_result(language_summary)
+        # missing_sinks_value_result = MissingSinksVal(scantime_start)
+        missing_sinks_value_result.calculate_start_end(scantime_start).get_result(language_summary)
 
     summary += scanfail_report.get_summary()
     summary += scantime_result.get_summary()
