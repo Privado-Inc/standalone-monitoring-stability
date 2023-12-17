@@ -23,7 +23,7 @@ def main(filepath):
 
     check = True
 
-    with open(filepath) as summary_report:
+    with open(filepath, "a+") as summary_report:
 
         for line in summary_report.readlines():
 
@@ -64,10 +64,7 @@ def main(filepath):
 
         output_path = f'{os.getcwd()}/action_result.txt'
 
-        if os.path.isfile(output_path):
-            os.system(f'rm {output_path}')
-
-        file = open(output_path, 'w')
+        file = open(output_path, 'a')
 
         if len(results) == 0:
             file.write("true")
