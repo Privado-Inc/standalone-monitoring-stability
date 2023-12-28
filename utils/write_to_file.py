@@ -169,10 +169,12 @@ def write_summary_data(workbook_location, report, data_elements, collections ,fl
 
     for repo in report.keys():
         try:
+            language = report[repo]['language']
             scan_status = 'done' if report[repo][config.HEAD_CORE_BRANCH_KEY]['comparison_error_message'] == '--' and report[repo][config.BASE_CORE_BRANCH_KEY]['comparison_error_message'] == '--' else 'failed'
+            scan_failure += f"\tScan failed for {repo} - language: {language}" if scan_status == "failed" else ""
+            num_repos_failed += 1 if scan_status == "failed" else 0
             head_scan_time = report[repo][config.HEAD_CORE_BRANCH_KEY]['code_scan_time'].split()[0]
             base_scan_time = report[repo][config.BASE_CORE_BRANCH_KEY]['code_scan_time'].split()[0]
-            language = report[repo]['language']
             scan_time_diff = '--' if base_scan_time == '--' or head_scan_time == '--' else int(head_scan_time) - int(base_scan_time)
             unique_source_diff = '--' if data_elements[repo][config.BASE_CORE_BRANCH_KEY] == '--' or data_elements[repo][config.HEAD_CORE_BRANCH_KEY] == '--' else int(data_elements[repo][config.HEAD_CORE_BRANCH_KEY]) - int(data_elements[repo][config.BASE_CORE_BRANCH_KEY])
             unique_flow_diff = '--' if report[repo][config.BASE_CORE_BRANCH_KEY]['unique_flows'] == '--' or report[repo][config.HEAD_CORE_BRANCH_KEY]['unique_flows'] == '--' else int(report[repo][config.HEAD_CORE_BRANCH_KEY]['unique_flows']) - int(report[repo][config.BASE_CORE_BRANCH_KEY]['unique_flows'])
@@ -180,8 +182,7 @@ def write_summary_data(workbook_location, report, data_elements, collections ,fl
             number_hundred_missing_for_repo = flow_report[repo]['hundred_missing']
                         
 
-            scan_failure += f"Scan failed for {repo} - language: {language}\n" if scan_status == "failed" else ""
-            num_repos_failed += 1 if scan_status == "failed" else 0
+
             unique_collections_diff = '--' if collections[repo][config.BASE_CORE_BRANCH_KEY] == '--' or collections[repo][config.HEAD_CORE_BRANCH_KEY] == '--' else int(collections[repo][config.HEAD_CORE_BRANCH_KEY]) - int(collections[repo][config.BASE_CORE_BRANCH_KEY])
             if scan_time_diff != '--':
                 if scan_time_diff > 0: # Head branch took more time
@@ -214,7 +215,7 @@ def write_summary_data(workbook_location, report, data_elements, collections ,fl
                 else:
                     matching_collections += 1
         
-
+            
             if reachable_flow_time_diff != '--':
                 # Head branch took more time
                 if reachable_flow_time_diff > 0:
@@ -261,7 +262,7 @@ def write_summary_data(workbook_location, report, data_elements, collections ,fl
     write_slack_summary(f'''
         A. Repository scan failure report
         Scan for {num_repos_failed} out of {len(list(report.keys()))} repositories failed. {":rotating_light:" if num_repos_failed > 0 else ""}
-        {scan_failure if len(scan_failure) > 0 else ""}
+{scan_failure if len(scan_failure) > 0 else ""} # do not add a indent before this line, it messes with the formatting
 
         B. Scantime difference.
         {scan_time_positive} repos took on an average {floor(scan_time_positive_average)} ms more.
