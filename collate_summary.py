@@ -15,7 +15,6 @@ class Difference:
         self.hundred_missing = 0
     
     def diff_pass(self, language_summary, start, end=None):
-        # print(lan)
         for row in language_summary[start:end]:
             if re.match(pattern_match.get("additional"), row):
                 number, value = self.get_relevant_data(row)
@@ -25,7 +24,6 @@ class Difference:
                 number, value = self.get_relevant_data(row)
                 self.hundred_missing += number
             elif re.match(pattern_match.get("missing"), row):
-                print(row)
                 number, value = self.get_relevant_data(row)
                 self.less += number
                 self.less_value += value
@@ -49,7 +47,7 @@ pattern_match = {
     "additional": "^.*additional\s*(flows|collections|elements)\.$",
     "matching": "^.*matching\s*(flows|collections|elements)\.$",
     "hundred_missing": "^.*hundred.*",
-    "repo_failed_number": "^.*failed\.$",
+    "repo_failed_number": "^Scan\sfor.*out\sof.*repositories\sfailed.*$",
     "repo_failed_list": "^Scan failed for.*$"
 }
 
@@ -273,15 +271,14 @@ class ScanFailureReport():
         for row in language_summary[0:3]:
             if re.match(pattern_match.get("repo_failed_number"), row):
                 line = row.split(" ")
+                print(line)
                 self.num_repos_failed += int(line[2])
-                self.total_repos += int(line[-3])
+                self.total_repos += int(line[5])
     
     def get_repo_name_failed(self, language_summary):
         for i, row in enumerate(language_summary[0:self.end]):
             if re.match(pattern_match.get("repo_failed_list"), row):
-                self.repos_failed += f"{row}"
-                if i < self.end - 1:
-                    self.repos_failed += "\n\t"
+                self.repos_failed += f"{row}\n\t"
 
     def get_result(self, language_summary):
         self.get_number_repos_failed(language_summary)
@@ -334,31 +331,22 @@ def main():
 
 
     for language_summary in get_file_contents(args.summary_dir):
-        print(language_summary)
         scantime_start = get_num_until_summary_start(language_summary)
        
-        # scanfail_report = ScanFailureReport(0, scantime_start)
         scanfail_report.calculate_start_end(scantime_start).get_result(language_summary)
         
-        # scantime_result = ScanTime(scantime_start)
         scantime_result.calculate_start_end(scantime_start).get_result(language_summary)
 
-        # reachable_by_flow_time_result = ReachableByFlowTime()
         reachable_by_flow_time_result.calculate_start_end(scantime_start).get_result(language_summary)
 
-        # reachable_by_flow_count_difference_result = ReachableByFlowCountDifference(scantime_start)
         reachable_by_flow_count_difference_result.calculate_start_end(scantime_start).get_result(language_summary)
 
-        # source_to_sink_flow_difference_result = SourceToSinkFlowDifference(scantime_start)
         source_to_sink_flow_difference_result.calculate_start_end(scantime_start).get_result(language_summary)
 
-        # collections_difference_result = CollectionDifference(scantime_start)
         collections_difference_result.calculate_start_end(scantime_start).get_result(language_summary)
 
-        # data_element_difference_result = DataElementDifference(scantime_start)
         data_element_difference_result.calculate_start_end(scantime_start).get_result(language_summary)
 
-        # missing_sinks_value_result = MissingSinksVal(scantime_start)
         missing_sinks_value_result.calculate_start_end(scantime_start).get_result(language_summary)
 
     summary += scanfail_report.get_summary()
