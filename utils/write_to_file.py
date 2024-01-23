@@ -164,21 +164,26 @@ def write_summary_data(workbook_location, report, data_elements, collections ,fl
 
     matching_flow_repo_count = len(list(filter(lambda x: x['matching_flows'], flow_report.values())))
     hundred_percent_missing = len(list(filter(lambda x: x['hundred_missing'] > 0, flow_report.values())))    
+    scan_failure = ""
+    num_repos_failed = 0
 
     for repo in report.keys():
         try:
+            language = report[repo]['language']
             scan_status = 'done' if report[repo][config.HEAD_CORE_BRANCH_KEY]['comparison_error_message'] == '--' and report[repo][config.BASE_CORE_BRANCH_KEY]['comparison_error_message'] == '--' else 'failed'
+            scan_failure += f"\tScan failed for {repo} - language: {language}" if scan_status == "failed" else ""
+            num_repos_failed += 1 if scan_status == "failed" else 0
             head_scan_time = report[repo][config.HEAD_CORE_BRANCH_KEY]['code_scan_time'].split()[0]
             base_scan_time = report[repo][config.BASE_CORE_BRANCH_KEY]['code_scan_time'].split()[0]
-            language = report[repo]['language']
             scan_time_diff = '--' if base_scan_time == '--' or head_scan_time == '--' else int(head_scan_time) - int(base_scan_time)
             unique_source_diff = '--' if data_elements[repo][config.BASE_CORE_BRANCH_KEY] == '--' or data_elements[repo][config.HEAD_CORE_BRANCH_KEY] == '--' else int(data_elements[repo][config.HEAD_CORE_BRANCH_KEY]) - int(data_elements[repo][config.BASE_CORE_BRANCH_KEY])
             unique_flow_diff = '--' if report[repo][config.BASE_CORE_BRANCH_KEY]['unique_flows'] == '--' or report[repo][config.HEAD_CORE_BRANCH_KEY]['unique_flows'] == '--' else int(report[repo][config.HEAD_CORE_BRANCH_KEY]['unique_flows']) - int(report[repo][config.BASE_CORE_BRANCH_KEY]['unique_flows'])
             reachable_flow_time_diff = '--' if report[repo][config.BASE_CORE_BRANCH_KEY]['reachable_flow_time'] == '--' or report[repo][config.HEAD_CORE_BRANCH_KEY]['reachable_flow_time'] == '--' else int(report[repo][config.HEAD_CORE_BRANCH_KEY]['reachable_flow_time']) - int(report[repo][config.BASE_CORE_BRANCH_KEY]['reachable_flow_time'])
             number_hundred_missing_for_repo = flow_report[repo]['hundred_missing']
                         
-            unique_collections_diff = '--' if collections[repo][config.BASE_CORE_BRANCH_KEY] == '--' or collections[repo][config.HEAD_CORE_BRANCH_KEY] == '--' else int(collections[repo][config.HEAD_CORE_BRANCH_KEY]) - int(collections[repo][config.BASE_CORE_BRANCH_KEY])
 
+
+            unique_collections_diff = '--' if collections[repo][config.BASE_CORE_BRANCH_KEY] == '--' or collections[repo][config.HEAD_CORE_BRANCH_KEY] == '--' else int(collections[repo][config.HEAD_CORE_BRANCH_KEY]) - int(collections[repo][config.BASE_CORE_BRANCH_KEY])
             if scan_time_diff != '--':
                 if scan_time_diff > 0: # Head branch took more time
                     scan_time_positive += 1
@@ -210,7 +215,7 @@ def write_summary_data(workbook_location, report, data_elements, collections ,fl
                 else:
                     matching_collections += 1
         
-
+            
             if reachable_flow_time_diff != '--':
                 # Head branch took more time
                 if reachable_flow_time_diff > 0:
@@ -255,34 +260,37 @@ def write_summary_data(workbook_location, report, data_elements, collections ,fl
     missing_sink_average = total_missing_sinks // missing_sink_repo_count if missing_sink_repo_count > 0 else 0
     
     write_slack_summary(f'''
-        A. Scantime difference.
+        A. Repository scan failure report
+        Scan for {num_repos_failed} out of {len(list(report.keys()))} repositories failed. {":rotating_light:" if num_repos_failed > 0 else ""}
+{scan_failure if len(scan_failure) > 0 else ""} 
+        B. Scantime difference.
         {scan_time_positive} repos took on an average {floor(scan_time_positive_average)} ms more.
         {len(report.keys()) - scan_time_positive} repos took on an average {floor(scan_time_negative_average)} ms  less.
 
-        B. Reachable by flow time difference.
+        C. Reachable by flow time difference.
         {reachable_by_flow_time_positive} repos took on an average {floor(reachable_by_flow_time_positive_average)} ms more.
         {len(report.keys()) - reachable_by_flow_time_positive} repos took on an average {floor(reachable_by_flow_time_negative_average)} ms less.
 
-        C. Reachable by flow count difference.
+        D. Reachable by flow count difference.
         {matching_flows} repositories have exactly matching flows.
         {less_flows} repositories have missing flows. {add_missing_emoji(less_flows)}
         {more_flows} repositories have additional flows.
 
-        D. Unique data elements difference.
+        E. Unique data elements difference.
         {matching_sources} repositories have exactly matching elements.
         {less_sources} repositories have missing data elements. {add_missing_emoji(less_sources)}
         {more_sources} repositories have additional elements.
 
-        E. Missing sinks.
+        F. Missing sinks.
         {missing_sink_repo_count} repositories have on an average {missing_sink_average} missing sinks. {add_missing_emoji(missing_sink_repo_count)}
 
-        F. Source to Sink Flow data
+        G. Source to Sink Flow data
         {hundred_percent_missing} repositories have hundred percent missing flows. {add_missing_emoji(hundred_percent_missing)} {add_missing_emoji(hundred_percent_missing)}
         {matching_flow_repo_count} repositories have matching flows.
         {additional_not_zero} repositories have on an average {floor(additional_average)} additional flows.
         {missing_not_zero} repositories have on an average {floor(missing_average)} missing flows. {add_missing_emoji(missing_not_zero)}
         
-        G. Collection Summary
+        H. Collection Summary
         {matching_collections} repositories have exactly matching collections.
         {less_collections} repositories have missing collections. {add_missing_emoji(less_collections)}
         {more_collections} repositories have additional collections.

@@ -109,7 +109,7 @@ def scan_repo_report(valid_repos, args):
 
         finally:
             pass
-        
+   
     generate_scan_status_data(scan_report)
     return scan_report
 
