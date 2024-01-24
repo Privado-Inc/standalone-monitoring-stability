@@ -281,7 +281,6 @@ class ScanFailureReport():
         for row in language_summary[0:3]:
             if re.match(pattern_match.get("repo_failed_number"), row):
                 line = row.split(" ")
-                print(line)
                 self.num_repos_failed += int(line[2])
                 self.total_repos += int(line[5])
     
@@ -342,30 +341,21 @@ def main():
 
     for language_summary in get_file_contents(args.summary_dir):
         scantime_start = get_num_until_summary_start(language_summary)
-        # print(scantime_start)
         scanfail_report.calculate_start_end(scantime_start).get_result(language_summary)
-        # print(scanfail_report)
         
         scantime_result.calculate_start_end(scantime_start).get_result(language_summary)
-        # print(scantime_result)
 
         reachable_by_flow_time_result.calculate_start_end(scantime_start).get_result(language_summary)
-        # print(reachable_by_flow_time_result)
 
         reachable_by_flow_count_difference_result.calculate_start_end(scantime_start).get_result(language_summary)
-        # print(reachable_by_flow_count_difference_result)
 
         source_to_sink_flow_difference_result.calculate_start_end(scantime_start).get_result(language_summary)
-        # print(source_to_sink_flow_difference_result)
 
         collections_difference_result.calculate_start_end(scantime_start).get_result(language_summary)
-        # print(collections_difference_result)
 
         data_element_difference_result.calculate_start_end(scantime_start).get_result(language_summary)
-        # print(data_element_difference_result)
 
         missing_sinks_value_result.calculate_start_end(scantime_start).get_result(language_summary)
-        # print(missing_sinks_value_result)
 
     summary += scanfail_report.get_summary()
     summary += scantime_result.get_summary()
