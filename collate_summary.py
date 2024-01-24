@@ -134,7 +134,7 @@ class FlowCollectionDifference(Difference):
         elif (re.match(pattern_match.get("additional"), result)) or (re.match(pattern_match.get("missing"), result)):
             if int(split_data[0]) == 0:
                 return (int(split_data[0]), 0)
-            return int(split_data[0]), int(split_data[6])
+        return int(split_data[0]), int(split_data[6])
         
                 
 
@@ -248,6 +248,16 @@ class CollectionDifference(FlowCollectionDifference):
     def get_result(self, language_summary):
         return self.diff_pass(language_summary, self.start, self.end)
     
+    @staticmethod
+    def get_relevant_data(result):
+        split_data = result.split(" ")
+        if re.match(pattern_match.get("matching"), result) or re.match(pattern_match.get("hundred_missing"), result):
+            return (int(split_data[0]), 0)
+        elif (re.match(pattern_match.get("additional"), result)) or (re.match(pattern_match.get("missing"), result)):
+            if int(split_data[0]) == 0:
+                return (int(split_data[0]), 0)
+        return int(split_data[0]), 0
+    
     def get_summary(self):
         return f'''
         H. Collection Summary
@@ -332,22 +342,30 @@ def main():
 
     for language_summary in get_file_contents(args.summary_dir):
         scantime_start = get_num_until_summary_start(language_summary)
-       
+        # print(scantime_start)
         scanfail_report.calculate_start_end(scantime_start).get_result(language_summary)
+        # print(scanfail_report)
         
         scantime_result.calculate_start_end(scantime_start).get_result(language_summary)
+        # print(scantime_result)
 
         reachable_by_flow_time_result.calculate_start_end(scantime_start).get_result(language_summary)
+        # print(reachable_by_flow_time_result)
 
         reachable_by_flow_count_difference_result.calculate_start_end(scantime_start).get_result(language_summary)
+        # print(reachable_by_flow_count_difference_result)
 
         source_to_sink_flow_difference_result.calculate_start_end(scantime_start).get_result(language_summary)
+        # print(source_to_sink_flow_difference_result)
 
         collections_difference_result.calculate_start_end(scantime_start).get_result(language_summary)
+        # print(collections_difference_result)
 
         data_element_difference_result.calculate_start_end(scantime_start).get_result(language_summary)
+        # print(data_element_difference_result)
 
         missing_sinks_value_result.calculate_start_end(scantime_start).get_result(language_summary)
+        # print(missing_sinks_value_result)
 
     summary += scanfail_report.get_summary()
     summary += scantime_result.get_summary()
