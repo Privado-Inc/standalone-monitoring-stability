@@ -249,6 +249,16 @@ class CollectionDifference(FlowCollectionDifference):
     
     def get_result(self, language_summary):
         return self.diff_pass(language_summary, self.start, self.end)
+
+    @staticmethod
+    def get_relevant_data(result):
+        split_data = result.split(" ")
+        if re.match(pattern_match.get("matching"), result) or re.match(pattern_match.get("hundred_missing"), result):
+            return (int(split_data[0]), 0)
+        elif (re.match(pattern_match.get("additional"), result)) or (re.match(pattern_match.get("missing"), result)):
+            if int(split_data[0]) == 0:
+                return (int(split_data[0]), 0)
+        return int(split_data[0]), 0
     
     def get_summary(self):
         return f'''
