@@ -134,7 +134,7 @@ class FlowCollectionDifference(Difference):
         elif (re.match(pattern_match.get("additional"), result)) or (re.match(pattern_match.get("missing"), result)):
             if int(split_data[0]) == 0:
                 return (int(split_data[0]), 0)
-            return int(split_data[0]), int(split_data[6])
+        return int(split_data[0]), int(split_data[6])
         
                 
 
@@ -248,6 +248,16 @@ class CollectionDifference(FlowCollectionDifference):
     def get_result(self, language_summary):
         return self.diff_pass(language_summary, self.start, self.end)
     
+    @staticmethod
+    def get_relevant_data(result):
+        split_data = result.split(" ")
+        if re.match(pattern_match.get("matching"), result) or re.match(pattern_match.get("hundred_missing"), result):
+            return (int(split_data[0]), 0)
+        elif (re.match(pattern_match.get("additional"), result)) or (re.match(pattern_match.get("missing"), result)):
+            if int(split_data[0]) == 0:
+                return (int(split_data[0]), 0)
+        return int(split_data[0]), 0
+    
     def get_summary(self):
         return f'''
         H. Collection Summary
@@ -271,7 +281,6 @@ class ScanFailureReport():
         for row in language_summary[0:3]:
             if re.match(pattern_match.get("repo_failed_number"), row):
                 line = row.split(" ")
-                print(line)
                 self.num_repos_failed += int(line[2])
                 self.total_repos += int(line[5])
     
@@ -332,7 +341,6 @@ def main():
 
     for language_summary in get_file_contents(args.summary_dir):
         scantime_start = get_num_until_summary_start(language_summary)
-       
         scanfail_report.calculate_start_end(scantime_start).get_result(language_summary)
         
         scantime_result.calculate_start_end(scantime_start).get_result(language_summary)
