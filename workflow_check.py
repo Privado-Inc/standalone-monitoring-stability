@@ -24,12 +24,14 @@ def main(filepath):
     check = True
 
     with open(filepath, "r+") as summary_report:
-        
+
         for line in summary_report.readlines():
 
             print(line)
             values = list(filter(lambda y: len(y) > 0, map(lambda x: x.strip(), line.split(" "))))
             if re.search(scan_time_regex, line) and check:
+                # values = line.split(" ")
+                print(values)
                 check = False
                 if int(values[-3]) > scan_time_limit:
                     results.append("Average scan time differance more than 1000 ms")
