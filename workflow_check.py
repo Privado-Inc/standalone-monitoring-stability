@@ -11,7 +11,7 @@ def main(filepath):
 
     data_element_regex = r".*(repositories have missing data elements.).*"
 
-    sink_regex = r".*(repositories have an average).*(missing sinks.).*"
+    sink_regex = r".*(repositories have on an average).*(missing sinks.).*"
 
     source_sink_regex = r".*(repositories have hundred percent missing flows.).*"
 
@@ -23,7 +23,7 @@ def main(filepath):
 
     check = True
 
-    with open(filepath, "a+") as summary_report:
+    with open(filepath, "r+") as summary_report:
 
         for line in summary_report.readlines():
 
