@@ -48,7 +48,7 @@ def main(filepath):
 
             if re.search(sink_regex, line):
                 # values = line.split(" ")
-                if int(values[0]) != 0 or int(values[-4]) != 0:
+                if int(values[0]) != 0:
                     results.append("Missing Sink Detected")
 
             if re.search(source_sink_regex, line):
