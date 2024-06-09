@@ -21,6 +21,7 @@ def change_joern_in_head_branch(repo_path):
 
 
 def build(skip_build = False, custom_joern = False):
+    print(f"Building binary for privado-core with custom joern: {custom_joern}")
     if skip_build and os.path.exists(f"{os.getcwd()}/temp/binary"):
         return
     pwd = os.getcwd()
