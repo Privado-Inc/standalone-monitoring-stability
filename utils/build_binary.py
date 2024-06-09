@@ -7,7 +7,7 @@ import config
 
 def read_joern_version_from_file(filePath="./temp/m2Version.txt"):
     with open(filePath, "r") as f:
-        return f.read()     
+        return f"\"{f.read()}\""     
 
 def change_joern_in_head_branch(repo_path):
     version = read_joern_version_from_file().strip()
@@ -40,7 +40,7 @@ def build(skip_build = False, custom_joern = False):
         clone_privado_core_repo(config.HEAD_PRIVADO_CORE_URL, config.HEAD_CORE_BRANCH_NAME,
                                 head_core_repo_path, f'{config.HEAD_PRIVADO_CORE_OWNER}-{config.HEAD_CORE_BRANCH_NAME}')
         if custom_joern:
-            change_joern_in_head_branch(head_core_repo_path )
+            change_joern_in_head_branch(head_core_repo_path)
 
     if not os.path.isdir(base_rule_repo_path):
         clone_privado_core_repo(config.BASE_PRIVADO_RULE_URL, config.BASE_RULE_BRANCH_NAME, base_rule_repo_path,
