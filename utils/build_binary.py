@@ -16,7 +16,7 @@ def change_joern_in_head_branch(repo_path):
     updatedJoernVersion  = f"val joernVersion\1= \"{version}\""
     print(f"New version: {updatedJoernVersion}")
     print("Updating joern version in the head branch....")
-    os.system(f"cd {repo_path} && sed -i \"s/{joernVersionRegex}/{updatedJoernVersion}\" build.sbt ")
+    os.system(f"cd {repo_path} && sed -i \"s/{joernVersionRegex}/{updatedJoernVersion}/\" build.sbt ")
 
 
 
