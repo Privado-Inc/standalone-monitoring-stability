@@ -1,6 +1,7 @@
 import shutil
 import datetime
 from git.repo.base import Repo
+import config
 
 import builder
 
@@ -33,3 +34,16 @@ def copy_directory(src, dst):
     except OSError as e:
         print(f'{builder.get_current_time()} - Directory not copied. Error: {e}')
 
+
+
+def clone_joern_and_checkout(joern_branch, boost=False):
+    if boost:
+        return
+    try:
+        print("In joern build")
+        repo = Repo.clone_from(config.PRIVADO_JOERN_URL, builder.get_joern_path())
+        print("Repo cloned")
+        repo.git.checkout(joern_branch)
+        print("Checked out branch")
+    except Exception as e:
+        print(f"Error while cloning joern: {e}")

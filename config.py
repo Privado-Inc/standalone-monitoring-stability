@@ -26,6 +26,7 @@ SLACK_SUMMARY_FILE_NAME = "slack_summary.txt"
 OUTPUT_FILE_NAME = "output.xlsx"
 PRIVADO_CORE_URL = "https://github.com/Privado-Inc/privado-core"
 PRIVADO_RULE_URL = "https://github.com/Privado-Inc/privado"
+PRIVADO_JOERN_URL = "https://github.com/Privado-Inc/joern"
 
 
 def init(args):

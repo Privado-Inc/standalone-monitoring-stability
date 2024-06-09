@@ -5,8 +5,22 @@ import builder
 from utils.clone_repo import clone_repo_with_name
 import config
 
+def read_joern_version_from_file(filePath="./temp/m2Version.txt"):
+    with open(filePath, "r") as f:
+        return f.read()     
 
-def build(skip_build = False):
+def change_joern_in_head_branch(repo_path):
+    version = read_joern_version_from_file().strip()
+    joernVersionRegex = "val joernVersion\([ ]*\)= .*"
+    print(f"Old version: {joernVersionRegex}")
+    updatedJoernVersion  = f"val joernVersion\1= \"{version}\""
+    print(f"New version: {updatedJoernVersion}")
+    print("Updating joern version in the head branch....")
+    os.system(f"cd {repo_path} && sed -i \"s/{joernVersionRegex}/{updatedJoernVersion}\" build.sbt ")
+
+
+
+def build(skip_build = False, custom_joern = False):
     if skip_build and os.path.exists(f"{os.getcwd()}/temp/binary"):
         return
     pwd = os.getcwd()
@@ -21,9 +35,12 @@ def build(skip_build = False):
         clone_privado_core_repo(config.BASE_PRIVADO_CORE_URL, config.BASE_CORE_BRANCH_NAME, base_core_repo_path,
                                 f'{config.BASE_PRIVADO_CORE_OWNER}-{config.BASE_CORE_BRANCH_NAME}')
 
+
     if not os.path.isdir(head_core_repo_path):
         clone_privado_core_repo(config.HEAD_PRIVADO_CORE_URL, config.HEAD_CORE_BRANCH_NAME,
                                 head_core_repo_path, f'{config.HEAD_PRIVADO_CORE_OWNER}-{config.HEAD_CORE_BRANCH_NAME}')
+        if custom_joern:
+            change_joern_in_head_branch(head_core_repo_path )
 
     if not os.path.isdir(base_rule_repo_path):
         clone_privado_core_repo(config.BASE_PRIVADO_RULE_URL, config.BASE_RULE_BRANCH_NAME, base_rule_repo_path,
@@ -90,3 +107,9 @@ def clone_privado_core_repo(repo_url, branch_name, temp_dir, name):
         print(f'{builder.get_current_time()} - Privado branch changed to {branch_name}')
     except Exception as e:
         print(f'{builder.get_current_time()} - {branch_name} + " doesn\'t exist: {e}')
+
+
+def publish_joern_and_get_version():
+    print("In publish")
+    awk_split = "awk '{split($0,a,\"/\"); print a[9]}'"
+    os.system(f"cd {os.getcwd()}/temp/joern && sbt publishM2 | grep published | {awk_split} | sort -u > ../m2Version.txt")

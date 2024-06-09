@@ -4,11 +4,12 @@ from utils.compare import main as compare_and_generate_report, compare_files, pr
 from utils.post_to_slack import post_report_to_slack
 from utils.build_binary import build
 from utils.delete import delete_action, clean_after_scan
-from utils.clone_repo import clone_repo_with_location
+from utils.clone_repo import clone_repo_with_location, clone_joern_and_checkout
 from utils.write_to_file import create_new_excel, write_scan_status_report, write_summary_data
 from utils.scan import get_detected_language
 from utils.version_flow import check_update, build_binary_for_joern
 from utils.write_to_file import write_slack_summary
+from utils.build_binary import publish_joern_and_get_version
 import builder
 import config
 import os
@@ -37,6 +38,8 @@ parser.add_argument('-bcr', '--base-core-repo', default=None)
 parser.add_argument('-hcr', '--head-core-repo', default=None)
 parser.add_argument('-brr', '--base-rule-repo', default=None)
 parser.add_argument('-hrr', '--head-rule-repo', default=None)
+parser.add_argument("--custom-joern", default=False)
+parser.add_argument("--custom-joern-branch", default=None)
 parser.set_defaults(feature=True)
 
 args: argparse.Namespace = parser.parse_args()
@@ -77,6 +80,15 @@ def workflow():
         if args.rules_branch_base is None or args.rules_branch_head is None:
             print("Please provide flags \"-rbb=\" and \"-rbh\" while using \"-urc\" flag")
             return
+    
+    if args.custom_joern:
+        print("Custom joern build")
+        if (args.custom_joern_branch is not None):
+            clone_joern_and_checkout(args.custom_joern_branch, args.boost)
+            publish_joern_and_get_version()
+        else:
+            print("Error: Did not specify branch for custom joern build.")
+
 
     # Delete previously scanned Excel report if exist
     excel_report_location = config.OUTPUT_FILE_NAME
@@ -96,7 +108,7 @@ def workflow():
 
     if not args.use_docker and not args.joern_update:
         # build the Privado binary for both branches
-        build(args.boost)
+        build(args.boost, args.custom_joern)
 
     try:
         for repo_link in utils.repo_link_generator.generate_repo_link(args.repos):
