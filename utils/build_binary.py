@@ -4,19 +4,25 @@ import shutil
 import builder
 from utils.clone_repo import clone_repo_with_name
 import config
+import re
 
 def read_joern_version_from_file(filePath="./temp/m2Version.txt"):
     with open(filePath, "r") as f:
-        return f"\"{f.read()}\""     
+        return f"{f.read().strip()}"     
 
 def change_joern_in_head_branch(repo_path):
     version = read_joern_version_from_file().strip()
-    joernVersionRegex = "val joernVersion\([ ]*\)= .*"
+    joernVersionRegex = "val joernVersion([ ]*)= .*"
     print(f"Old version: {joernVersionRegex}")
-    updatedJoernVersion  = f"val joernVersion\1= \"{version}\""
+    updatedJoernVersion  = f"val joernVersion = \"{version}\""
     print(f"New version: {updatedJoernVersion}")
     print("Updating joern version in the head branch....")
-    os.system(f"cd {repo_path} && sed -i \"s/{joernVersionRegex}/{updatedJoernVersion}/\" build.sbt ")
+    updated_build_file = ""
+    with open(f"{repo_path}/build.sbt", "r") as f:
+        updated_build_file = re.sub(joernVersionRegex, updatedJoernVersion,f.read())
+
+    with open(f"{repo_path}/build.sbt", "w") as f:
+        f.write(updated_build_file)
 
 
 
