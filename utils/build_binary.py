@@ -10,13 +10,13 @@ def read_joern_version_from_file(filePath="./temp/m2Version.txt"):
     with open(filePath, "r") as f:
         return f"{f.read().strip()}"     
 
-def change_joern_in_head_branch(repo_path):
-    version = read_joern_version_from_file().strip()
+def change_joern_in_build_file(repo_path, joern_branch):
+    version = read_joern_version_from_file(f"./temp/m2Version_{joern_branch}.txt").strip()
     joernVersionRegex = "val joernVersion([ ]*)= .*"
     print(f"Old version: {joernVersionRegex}")
     updatedJoernVersion  = f"val joernVersion = \"{version}\""
     print(f"New version: {updatedJoernVersion}")
-    print("Updating joern version in the head branch....")
+    print("Updating joern version....")
     updated_build_file = ""
     with open(f"{repo_path}/build.sbt", "r") as f:
         updated_build_file = re.sub(joernVersionRegex, updatedJoernVersion,f.read())
@@ -26,7 +26,7 @@ def change_joern_in_head_branch(repo_path):
 
 
 
-def build(skip_build = False, custom_joern = False):
+def build(skip_build = False, custom_joern = False, joern_base=None, joern_head=None):
     print(f"Building binary for privado-core with custom joern: {custom_joern}")
     if skip_build and os.path.exists(f"{os.getcwd()}/temp/binary"):
         return
@@ -41,13 +41,16 @@ def build(skip_build = False, custom_joern = False):
     if not os.path.isdir(base_core_repo_path):
         clone_privado_core_repo(config.BASE_PRIVADO_CORE_URL, config.BASE_CORE_BRANCH_NAME, base_core_repo_path,
                                 f'{config.BASE_PRIVADO_CORE_OWNER}-{config.BASE_CORE_BRANCH_NAME}')
+        
+        if (custom_joern):
+            change_joern_in_build_file(base_core_repo_path, joern_base)
 
 
     if not os.path.isdir(head_core_repo_path):
         clone_privado_core_repo(config.HEAD_PRIVADO_CORE_URL, config.HEAD_CORE_BRANCH_NAME,
                                 head_core_repo_path, f'{config.HEAD_PRIVADO_CORE_OWNER}-{config.HEAD_CORE_BRANCH_NAME}')
         if custom_joern:
-            change_joern_in_head_branch(head_core_repo_path)
+            change_joern_in_build_file(head_core_repo_path, joern_head)
 
     if not os.path.isdir(base_rule_repo_path):
         clone_privado_core_repo(config.BASE_PRIVADO_RULE_URL, config.BASE_RULE_BRANCH_NAME, base_rule_repo_path,
@@ -56,7 +59,6 @@ def build(skip_build = False, custom_joern = False):
     if not os.path.isdir(head_rule_repo_path):
         clone_privado_core_repo(config.HEAD_PRIVADO_RULE_URL, config.HEAD_RULE_BRANCH_NAME, head_rule_repo_path,
                                 f'{config.HEAD_PRIVADO_RULE_OWNER}-{config.HEAD_RULE_BRANCH_NAME}')
-
     build_binary_and_move("privado-core", config.BASE_CORE_BRANCH_KEY)
     move_log_rule_file(f'{pwd}/temp/privado-core/{config.BASE_CORE_BRANCH_KEY}/log4j2.xml', config.BASE_CORE_BRANCH_KEY)
     build_binary_and_move("privado-core", config.HEAD_CORE_BRANCH_KEY)
@@ -116,7 +118,7 @@ def clone_privado_core_repo(repo_url, branch_name, temp_dir, name):
         print(f'{builder.get_current_time()} - {branch_name} + " doesn\'t exist: {e}')
 
 
-def publish_joern_and_get_version():
-    print("In publish")
+def publish_joern_and_get_version(branch_name):
+    print(f"In publish for branch: {branch_name}")
     awk_split = "awk '{split($0,a,\"/\"); print a[9]}'"
-    os.system(f"cd {os.getcwd()}/temp/joern && sbt publishM2 | grep published | {awk_split} | sort -u > ../m2Version.txt")
+    os.system(f"cd {os.getcwd()}/temp/joern_{branch_name} && sbt publishM2 | grep published | {awk_split} | sort -u > ../m2Version_{branch_name}.txt")

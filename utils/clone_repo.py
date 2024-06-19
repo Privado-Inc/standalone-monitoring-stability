@@ -41,7 +41,7 @@ def clone_joern_and_checkout(joern_branch, boost=False):
         return
     try:
         print("In joern build")
-        repo = Repo.clone_from(config.PRIVADO_JOERN_URL, builder.get_joern_path())
+        repo = Repo.clone_from(config.PRIVADO_JOERN_URL, builder.get_joern_path(joern_branch))
         print("Repo cloned")
         repo.git.checkout(joern_branch)
         print("Checked out branch")

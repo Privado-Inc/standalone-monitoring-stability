@@ -39,7 +39,8 @@ parser.add_argument('-hcr', '--head-core-repo', default=None)
 parser.add_argument('-brr', '--base-rule-repo', default=None)
 parser.add_argument('-hrr', '--head-rule-repo', default=None)
 parser.add_argument("--custom-joern", default=False)
-parser.add_argument("--custom-joern-branch", default=None)
+parser.add_argument("--custom-joern-base-branch", default=None)
+parser.add_argument("--custom-joern-head-branch", default=None)
 parser.set_defaults(feature=True)
 
 args: argparse.Namespace = parser.parse_args()
@@ -83,9 +84,11 @@ def workflow():
     
     if args.custom_joern:
         print("Custom joern build")
-        if (args.custom_joern_branch is not None):
-            clone_joern_and_checkout(args.custom_joern_branch, args.boost)
-            publish_joern_and_get_version()
+        if (args.custom_joern_base_branch is not None and args.custom_joern_head_branch is not None):
+            clone_joern_and_checkout(args.custom_joern_base_branch, args.boost)
+            publish_joern_and_get_version(args.custom_joern_base_branch)
+            clone_joern_and_checkout(args.custom_joern_head_branch, args.boost)
+            publish_joern_and_get_version(args.custom_joern_head_branch)            
         else:
             print("Error: Did not specify branch for custom joern build.")
 
@@ -108,7 +111,7 @@ def workflow():
 
     if not args.use_docker and not args.joern_update:
         # build the Privado binary for both branches
-        build(args.boost, args.custom_joern)
+        build(args.boost, args.custom_joern, args.custom_joern_base_branch, args.custom_joern_head_branch)
 
     try:
         for repo_link in utils.repo_link_generator.generate_repo_link(args.repos):
