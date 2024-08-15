@@ -47,7 +47,7 @@ def init(args):
     BASE_RULE_BRANCH_NAME = rule_branch_name[0]
     HEAD_RULE_BRANCH_NAME = rule_branch_name[1]
 
-    resolve_privado_core_repo(args.base_core_repo, args.head_core_repo)
+    resolve_privado_core_repo(args.token)
     resolve_privado_rule_repo(args.base_rule_repo, args.head_rule_repo)
 
     resolve_core_branch_key_name(BASE_CORE_BRANCH_NAME, HEAD_CORE_BRANCH_NAME, BASE_RULE_BRANCH_NAME,
@@ -100,18 +100,12 @@ def init_file():
     HEAD_CORE_BRANCH_NAME = HEAD_CORE_BRANCH_KEY = HEAD_SHEET_BRANCH_NAME = 'second'
 
 
-def resolve_privado_core_repo(base_repo, head_repo, args=None):
+def resolve_privado_core_repo(github_token):
     global BASE_PRIVADO_CORE_OWNER, HEAD_PRIVADO_CORE_OWNER, BASE_PRIVADO_CORE_URL, HEAD_PRIVADO_CORE_URL
-    if base_repo is None or head_repo is None:
-        BASE_PRIVADO_CORE_URL = get_privado_core_url(args.token)
-        HEAD_PRIVADO_CORE_URL = get_privado_core_url(args.token)
-        BASE_PRIVADO_CORE_OWNER = 'Privado-Inc'
-        HEAD_PRIVADO_CORE_OWNER = 'Privado-Inc'
-    else:
-        BASE_PRIVADO_CORE_URL = base_repo
-        HEAD_PRIVADO_CORE_URL = head_repo
-        BASE_PRIVADO_CORE_OWNER = get_repo_owner(base_repo)
-        HEAD_PRIVADO_CORE_OWNER = get_repo_owner(head_repo)
+    BASE_PRIVADO_CORE_URL = get_privado_core_url(github_token)
+    HEAD_PRIVADO_CORE_URL = get_privado_core_url(github_token)
+    BASE_PRIVADO_CORE_OWNER = 'Privado-Inc'
+    HEAD_PRIVADO_CORE_OWNER = 'Privado-Inc'
 
 
 def resolve_privado_rule_repo(base_repo, head_repo):
