@@ -1,3 +1,5 @@
+import os
+
 BASE_CORE_BRANCH_NAME = None
 HEAD_CORE_BRANCH_NAME = None
 
@@ -27,7 +29,7 @@ OUTPUT_FILE_NAME = "output.xlsx"
 PRIVADO_RULE_URL = "https://github.com/Privado-Inc/privado"
 
 def get_privado_core_url(github_token):
-    return f"https://{github_token}@github.com/Privado-Inc/privado-core-internal" 
+    return f"https://{os.getenv("GITHUB_TOKEN", "")}@github.com/Privado-Inc/privado-core-internal" 
 
 def init(args):
     global BASE_CORE_BRANCH_NAME, HEAD_CORE_BRANCH_NAME, BASE_RULE_BRANCH_NAME, HEAD_RULE_BRANCH_NAME
