@@ -24,9 +24,10 @@ HEAD_PRIVADO_RULE_OWNER = None
 
 SLACK_SUMMARY_FILE_NAME = "slack_summary.txt"
 OUTPUT_FILE_NAME = "output.xlsx"
-PRIVADO_CORE_URL = "https://github.com/Privado-Inc/privado-core"
 PRIVADO_RULE_URL = "https://github.com/Privado-Inc/privado"
 
+def get_privado_core_url(github_token):
+    return f"https://{github_token}:x-oauth-basic@github.com/Privado-Inc/privado-core-internal" 
 
 def init(args):
     global BASE_CORE_BRANCH_NAME, HEAD_CORE_BRANCH_NAME, BASE_RULE_BRANCH_NAME, HEAD_RULE_BRANCH_NAME
@@ -99,11 +100,11 @@ def init_file():
     HEAD_CORE_BRANCH_NAME = HEAD_CORE_BRANCH_KEY = HEAD_SHEET_BRANCH_NAME = 'second'
 
 
-def resolve_privado_core_repo(base_repo, head_repo):
+def resolve_privado_core_repo(base_repo, head_repo, args=None):
     global BASE_PRIVADO_CORE_OWNER, HEAD_PRIVADO_CORE_OWNER, BASE_PRIVADO_CORE_URL, HEAD_PRIVADO_CORE_URL
     if base_repo is None or head_repo is None:
-        BASE_PRIVADO_CORE_URL = PRIVADO_CORE_URL
-        HEAD_PRIVADO_CORE_URL = PRIVADO_CORE_URL
+        BASE_PRIVADO_CORE_URL = get_privado_core_url(args.token)
+        HEAD_PRIVADO_CORE_URL = get_privado_core_url(args.token)
         BASE_PRIVADO_CORE_OWNER = 'Privado-Inc'
         HEAD_PRIVADO_CORE_OWNER = 'Privado-Inc'
     else:

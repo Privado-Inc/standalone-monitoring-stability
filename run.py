@@ -37,6 +37,7 @@ parser.add_argument('-bcr', '--base-core-repo', default=None)
 parser.add_argument('-hcr', '--head-core-repo', default=None)
 parser.add_argument('-brr', '--base-rule-repo', default=None)
 parser.add_argument('-hrr', '--head-rule-repo', default=None)
+parser.add_argument('--token', default=None)
 parser.set_defaults(feature=True)
 
 args: argparse.Namespace = parser.parse_args()
@@ -54,7 +55,7 @@ def workflow():
         os.system(f'rm {builder.SLACK_SUMMARY_PATH}')
 
     if args.joern_update:
-        versions = check_update()
+        versions = check_update(args.token)
         if versions[0] == 'updated':
             print(f"{builder.get_current_time()} - No Update Available for comparison")
             write_slack_summary(
@@ -66,7 +67,7 @@ def workflow():
     if not args.m:
         config.init(args)
     else:
-        config.init_file()
+        config.init_file(args)
 
     if args.joern_update:
         if not build_binary_for_joern(versions):
