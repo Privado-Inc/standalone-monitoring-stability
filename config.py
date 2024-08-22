@@ -1,3 +1,5 @@
+import os 
+
 BASE_CORE_BRANCH_NAME = None
 HEAD_CORE_BRANCH_NAME = None
 
@@ -28,6 +30,9 @@ PRIVADO_CORE_URL = "https://github.com/Privado-Inc/privado-core"
 PRIVADO_RULE_URL = "https://github.com/Privado-Inc/privado"
 PRIVADO_JOERN_URL = "https://github.com/Privado-Inc/joern"
 
+
+def get_privado_core_url():
+    return f"https://{os.getenv('PAT')}@github.com/Privado-Inc/privado-core-internal.git" 
 
 def init(args):
     global BASE_CORE_BRANCH_NAME, HEAD_CORE_BRANCH_NAME, BASE_RULE_BRANCH_NAME, HEAD_RULE_BRANCH_NAME
@@ -102,16 +107,10 @@ def init_file():
 
 def resolve_privado_core_repo(base_repo, head_repo):
     global BASE_PRIVADO_CORE_OWNER, HEAD_PRIVADO_CORE_OWNER, BASE_PRIVADO_CORE_URL, HEAD_PRIVADO_CORE_URL
-    if base_repo is None or head_repo is None:
-        BASE_PRIVADO_CORE_URL = PRIVADO_CORE_URL
-        HEAD_PRIVADO_CORE_URL = PRIVADO_CORE_URL
-        BASE_PRIVADO_CORE_OWNER = 'Privado-Inc'
-        HEAD_PRIVADO_CORE_OWNER = 'Privado-Inc'
-    else:
-        BASE_PRIVADO_CORE_URL = base_repo
-        HEAD_PRIVADO_CORE_URL = head_repo
-        BASE_PRIVADO_CORE_OWNER = get_repo_owner(base_repo)
-        HEAD_PRIVADO_CORE_OWNER = get_repo_owner(head_repo)
+    BASE_PRIVADO_CORE_URL = get_privado_core_url()
+    HEAD_PRIVADO_CORE_URL = get_privado_core_url()
+    BASE_PRIVADO_CORE_OWNER = 'Privado-Inc'
+    HEAD_PRIVADO_CORE_OWNER = 'Privado-Inc'
 
 
 def resolve_privado_rule_repo(base_repo, head_repo):

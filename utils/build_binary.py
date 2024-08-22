@@ -33,8 +33,8 @@ def build(skip_build = False, custom_joern = False, joern_base=None, joern_head=
     pwd = os.getcwd()
     temp_dir = f'{pwd}/temp'
 
-    base_core_repo_path = f'{temp_dir}/privado-core/{config.BASE_CORE_BRANCH_KEY}'
-    head_core_repo_path = f'{temp_dir}/privado-core/{config.HEAD_CORE_BRANCH_KEY}'
+    base_core_repo_path = f'{temp_dir}/privado-core-internal/{config.BASE_CORE_BRANCH_KEY}'
+    head_core_repo_path = f'{temp_dir}/privado-core-internal/{config.HEAD_CORE_BRANCH_KEY}'
     base_rule_repo_path = f'{temp_dir}/privado/{config.BASE_CORE_BRANCH_KEY}'
     head_rule_repo_path = f'{temp_dir}/privado/{config.HEAD_CORE_BRANCH_KEY}'
 
@@ -59,10 +59,10 @@ def build(skip_build = False, custom_joern = False, joern_base=None, joern_head=
     if not os.path.isdir(head_rule_repo_path):
         clone_privado_core_repo(config.HEAD_PRIVADO_RULE_URL, config.HEAD_RULE_BRANCH_NAME, head_rule_repo_path,
                                 f'{config.HEAD_PRIVADO_RULE_OWNER}-{config.HEAD_RULE_BRANCH_NAME}')
-    build_binary_and_move("privado-core", config.BASE_CORE_BRANCH_KEY)
-    move_log_rule_file(f'{pwd}/temp/privado-core/{config.BASE_CORE_BRANCH_KEY}/log4j2.xml', config.BASE_CORE_BRANCH_KEY)
-    build_binary_and_move("privado-core", config.HEAD_CORE_BRANCH_KEY)
-    move_log_rule_file(f'{pwd}/temp/privado-core/{config.HEAD_CORE_BRANCH_KEY}/log4j2.xml', config.HEAD_CORE_BRANCH_KEY)
+    build_binary_and_move("privado-core-internal", config.BASE_CORE_BRANCH_KEY)
+    move_log_rule_file(f'{pwd}/temp/privado-core-internal/{config.BASE_CORE_BRANCH_KEY}/log4j2.xml', config.BASE_CORE_BRANCH_KEY)
+    build_binary_and_move("privado-core-internal", config.HEAD_CORE_BRANCH_KEY)
+    move_log_rule_file(f'{pwd}/temp/privado-core-internal/{config.HEAD_CORE_BRANCH_KEY}/log4j2.xml', config.HEAD_CORE_BRANCH_KEY)
 
 
 def build_binary_and_move(repo_name, key):
