@@ -16,3 +16,4 @@ __pycache__/*
 /summary
 global_summary.txt
 venv/
+action_result.txt
