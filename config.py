@@ -29,7 +29,7 @@ OUTPUT_FILE_NAME = "output.xlsx"
 PRIVADO_RULE_URL = "https://github.com/Privado-Inc/privado"
 
 def get_privado_core_url(github_token):
-    return f"https://{os.getenv('PAT')}@github.com/Privado-Inc/privado-core-internal.git" 
+    return f"https://{os.getenv('PAT')}@github.com/Privado-Inc/privado-core-enterprise.git" 
 
 def init(args):
     global BASE_CORE_BRANCH_NAME, HEAD_CORE_BRANCH_NAME, BASE_RULE_BRANCH_NAME, HEAD_RULE_BRANCH_NAME
