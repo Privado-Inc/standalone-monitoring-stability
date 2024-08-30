@@ -63,7 +63,7 @@ def main(base_file, head_file, base_intermediate_file, head_intermediate_file, h
     except KeyError as key:
         write_to_action_result(f"{key} not found in either the base or head branch.")
     except Exception as ex:
-        print(ex)
+        write_to_action_result(f"${ex}")
 
 
 
