@@ -5,6 +5,8 @@ import functools
 from math import floor
 import builder
 import config
+from utils.helpers import print_timestamp
+
 
 def add_missing_emoji(missing_value):
     return ":rotating_light:" if missing_value > 0 else ""
@@ -238,7 +240,7 @@ def write_summary_data(workbook_location, report, data_elements, collections ,fl
                               number_hundred_missing_for_repo, collections[repo][config.BASE_CORE_BRANCH_KEY], collections[repo][config.HEAD_CORE_BRANCH_KEY], unique_collections_diff])
 
         except Exception as e:
-            print(f'{builder.get_current_time()} - Scan failed for repo {repo} : {str(e)}')
+            print_timestamp(f'Scan failed for repo {repo} : {str(e)}')
             worksheet.append([repo, language, scan_status, "--", "--", "--",
                               "--",
                               "--",
@@ -318,3 +320,13 @@ def highlight_summary_cell(worksheet):
 def write_slack_summary(statement):
     with open(f"{os.getcwd()}/slack_summary.txt", "a") as slack_summary:
         slack_summary.writelines(statement)
+
+
+def write_to_action_result(content):
+    file_path = f"{os.getcwd()}/action_result.txt"
+    if os.path.exists(file_path):
+        with open(file_path, "w") as action_result:
+            action_result.write(f"{content}\n")
+    else:
+        with open(file_path, "a") as action_result:
+            action_result.write(f"{content}\n")

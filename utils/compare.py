@@ -2,9 +2,13 @@ import csv
 import json
 import os
 import hashlib
+from os import write
+
 import builder
 import config
-from utils.write_to_file import write_source_sink_data, write_path_data, write_performance_data, write_scan_status_report_for_file
+from utils.helpers import print_timestamp
+from utils.write_to_file import write_source_sink_data, write_path_data, write_performance_data, \
+    write_scan_status_report_for_file, write_to_action_result
 from utils.scan_metadata import get_subscan_metadata
 from utils.scan import generate_scan_status_data_for_file
 
@@ -13,7 +17,7 @@ def main(base_file, head_file, base_intermediate_file, head_intermediate_file, h
     try:
         base_file.split('/')[-1].split('.')[0]
     except Exception as e:
-        print(f'{builder.get_current_time()} - Please enter a valid file: {e}')
+        print_timestamp(f'Please enter a valid file: {e}')
         return
 
     base_file = open(base_file)
@@ -27,44 +31,50 @@ def main(base_file, head_file, base_intermediate_file, head_intermediate_file, h
     head_branch_worksheet_name = config.HEAD_SHEET_BRANCH_NAME.replace('/', '-')
     base_branch_worksheet_name = config.BASE_SHEET_BRANCH_NAME.replace('/', '-')
 
-    process_source_sink_and_collection_data(f'{head_branch_worksheet_name}-{base_branch_worksheet_name}-source-&-sink-report',
-                                            base_data, head_data, repo_name,
-                                            header_flag, scan_status, language)
+    try:
+        process_source_sink_and_collection_data(f'{head_branch_worksheet_name}-{base_branch_worksheet_name}-source-&-sink-report',
+                                                base_data, head_data, repo_name,
+                                                header_flag, scan_status, language)
 
-    process_path_analysis(f'{head_branch_worksheet_name}-{base_branch_worksheet_name}-flow-report', base_data,
-                          head_data, repo_name, language, header_flag)
+        process_path_analysis(f'{head_branch_worksheet_name}-{base_branch_worksheet_name}-flow-report', base_data,
+                              head_data, repo_name, language, header_flag)
 
-    process_collection_sheet_data(f'{head_branch_worksheet_name}-{base_branch_worksheet_name}-collections-report',
-                                  base_data, head_data, repo_name, language, header_flag, True)
+        process_collection_sheet_data(f'{head_branch_worksheet_name}-{base_branch_worksheet_name}-collections-report',
+                                      base_data, head_data, repo_name, language, header_flag, True)
 
-    if os.path.isfile(base_intermediate_file) and os.path.isfile(head_intermediate_file):
-        base_intermediate_file = open(base_intermediate_file)
-        head_intermediate_file = open(head_intermediate_file)
+        if os.path.isfile(base_intermediate_file) and os.path.isfile(head_intermediate_file):
+            base_intermediate_file = open(base_intermediate_file)
+            head_intermediate_file = open(head_intermediate_file)
 
-        base_intermediate_data = json.load(base_intermediate_file)
-        head_intermediate_data = json.load(head_intermediate_file)
+            base_intermediate_data = json.load(base_intermediate_file)
+            head_intermediate_data = json.load(head_intermediate_file)
 
-        process_unique_path_analysis(f'{head_branch_worksheet_name}-{base_branch_worksheet_name}-unique-flow-report',
-                                     base_intermediate_data, head_intermediate_data, repo_name, header_flag, language)
+            process_unique_path_analysis(f'{head_branch_worksheet_name}-{base_branch_worksheet_name}-unique-flow-report',
+                                         base_intermediate_data, head_intermediate_data, repo_name, header_flag, language)
 
-        base_intermediate_file.close()
-        head_intermediate_file.close()
+            base_intermediate_file.close()
+            head_intermediate_file.close()
 
-    process_performance_data(f'{head_branch_worksheet_name}-{base_branch_worksheet_name}-performance-report', repo_name,
-                             language, header_flag)
+        process_performance_data(f'{head_branch_worksheet_name}-{base_branch_worksheet_name}-performance-report', repo_name,
+                                 language, header_flag)
 
-    base_file.close()
-    head_file.close()
+        base_file.close()
+        head_file.close()
+    except KeyError as key:
+        write_to_action_result(f"{key} not found in either the base or head branch.")
+    except Exception as ex:
+        print(ex)
+
 
 
 # when only need to compare the Privado.json file
 def compare_files(base_file_uri, head_file_uri):
     if not os.path.isfile(base_file_uri):
-        print(f'{builder.get_current_time()} - Please provide complete valid base file: {base_file_uri}')
+        print_timestamp(f'Please provide complete valid base file: {base_file_uri}')
         return
 
     if not os.path.isfile(head_file_uri):
-        print(f'{builder.get_current_time()} - Please provide complete valid head file: {head_file_uri}')
+        print_timestamp(f'Please provide complete valid head file: {head_file_uri}')
         return
 
     base_file = open(base_file_uri)
@@ -154,7 +164,7 @@ def create_csv(data):
         for i in data:
             report.writerow(i)
 
-    print(f'{builder.get_current_time()} - Report written and exported to: {cwd}/comparison_report.csv')
+    print_timestamp(f'Report written and exported to: {cwd}/comparison_report.csv')
 
 
 def process_source_sink_and_collection_data(worksheet_name, base_data, head_data, repo_name, header_flag, scan_status,
@@ -171,25 +181,32 @@ def process_source_sink_and_collection_data(worksheet_name, base_data, head_data
                        f'List of Node Missing in {config.HEAD_SHEET_BRANCH_NAME}',
                        f'Number of missing nodes in {config.HEAD_SHEET_BRANCH_NAME}'])
 
-    # Analysis for the Source
-    result.append(process_sources(base_data['sources'], head_data['sources'], repo_name, language))
-    # Analysis for the storages sink
-    result.append(process_sinks(base_data['dataFlow'], head_data['dataFlow'], repo_name, scan_status, language,
-                                key='storages'))
-    # Analysis for the third party sink
-    result.append(process_sinks(base_data['dataFlow'], head_data['dataFlow'], repo_name, scan_status, language,
-                                key='third_parties'))
-    # Analysis for the leakage sink
-    result.append(process_sinks(base_data['dataFlow'], head_data['dataFlow'], repo_name, scan_status, language,
-                                key='leakages'))
-    # Analysis for the collections
-    for row in top_level_collection_processor(base_data['collections'], head_data['collections'], repo_name, language):
-        result.append(row)
+    try:
+        # Analysis for the Source
+        result.append(process_sources(base_data['sources'], head_data['sources'], repo_name, language))
+        # Analysis for the storages sink
+        result.append(process_sinks(base_data['dataFlow'], head_data['dataFlow'], repo_name, scan_status, language,
+                                    key='storages'))
+        # Analysis for the third party sink
+        result.append(process_sinks(base_data['dataFlow'], head_data['dataFlow'], repo_name, scan_status, language,
+                                    key='third_parties'))
+        # Analysis for the leakage sink
+        result.append(process_sinks(base_data['dataFlow'], head_data['dataFlow'], repo_name, scan_status, language,
+                                    key='leakages'))
+        # Analysis for the collections
+        for row in top_level_collection_processor(base_data['collections'], head_data['collections'], repo_name, language):
+            result.append(row)
 
-    # Export the result in new sheet Excel sheet
-    write_source_sink_data(f'{os.getcwd()}/output.xlsx', worksheet_name, result)
+        # Export the result in new sheet Excel sheet
+        write_source_sink_data(f'{os.getcwd()}/output.xlsx', worksheet_name, result)
 
-    return result
+        return result
+    except KeyError as e:
+        write_to_action_result(f"Key {e} not found in either the base or head branch scans")
+    finally:
+        return result
+
+
 
 
 def process_collection_sheet_data(worksheet_name, base_collections, head_collections, repo_name, language, header_flag, write_report):
@@ -209,6 +226,9 @@ def process_collection_sheet_data(worksheet_name, base_collections, head_collect
     base_total_occ += value[1][1]
     total_additional_occ += value[1][2]
     total_missing_occ += value[1][3]
+
+    if total_missing_occ:
+        write_to_action_result(f"{total_missing_occ} collections missing in {repo_name}")
 
     if head_total_occ + total_missing_occ == 0:
         percent_delta = '0%'
@@ -353,6 +373,10 @@ def process_sources(source_base, source_head, repo_name, language):
 
     # Nodes present in base, but not in head
     missing_in_head = len(source_set_base.union(source_set_head).difference(source_set_head))
+
+    if missing_in_head:
+        write_to_action_result(f"{missing_in_head} sources missing for {repo_name}")
+
     return [repo_name, language ,'Source','--', head_sources_count, base_sources_count, source_name_head,
             source_name_base, '0 ', added, removed, missing_in_head]
 
@@ -389,6 +413,11 @@ def process_sinks(base_dataflows, head_dataflows, repo_name, scan_status, langua
 
     # Nodes present in base, but not in head
     missing_in_head = len(sink_set_base.union(sink_set_head).difference(sink_set_head))
+
+    # Write to action file so action fails irrespective of the comparison report completion
+    if missing_in_head:
+        write_to_action_result(f"{missing_in_head} sinks missing for {repo_name}")
+
     if scan_status is not None:
         if not scan_status[repo_name].__contains__('missing_sink'):
             scan_status[repo_name]['missing_sink'] = missing_in_head
@@ -418,6 +447,8 @@ def process_path_analysis(worksheet_name, base_source, head_source, repo_name, l
         total_additional_flow += value[1][2]
         total_missing_flow += value[1][3]
 
+    if total_missing_flow:
+        write_to_action_result(f"{total_missing_flow} flows missing in {repo_name}")
     if total_flow_head + total_missing_flow == 0:
         percent_delta = "0%"
     else:
