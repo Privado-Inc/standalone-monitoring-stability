@@ -183,7 +183,7 @@ def workflow():
                 except KeyError as key:
                     write_to_action_result(f"{key} key not found in either the source or head branch")
                 except Exception as ex:
-                    print(ex)
+                    write_to_action_result(ex)
 
 
             except Exception as e:
