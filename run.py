@@ -195,7 +195,10 @@ def workflow():
                 scan_status[repo_name][config.HEAD_CORE_BRANCH_KEY]['comparison_error_message'] = str(e)
             header_flag = False
 
-        write_scan_status_report(builder.OUTPUT_PATH, scan_status)
+        try:
+            write_scan_status_report(builder.OUTPUT_PATH, scan_status)
+        except Exception as ex:
+            print(ex)
         write_summary_data(builder.OUTPUT_PATH, scan_status, source_count, collection_count , flow_data)
 
         if args.upload or args.joern_update:

@@ -99,7 +99,7 @@ def write_scan_status_report(workbook_location, report):
                           repo_info[config.BASE_CORE_BRANCH_KEY]['comparison_status'],
                           repo_info[config.BASE_CORE_BRANCH_KEY]['comparison_error_message'],
                           repo_info[config.BASE_CORE_BRANCH_KEY]['unique_flows'],
-                          repo_info[config.BASE_CORE_BRANCH_KEY]['code_scan_time'],
+                          # repo_info[config.BASE_CORE_BRANCH_KEY]['code_scan_time'],
                           repo_info[config.BASE_CORE_BRANCH_KEY]['binary_file_size']])
 
         worksheet.append([repo, config.HEAD_CORE_BRANCH_KEY,
@@ -109,7 +109,7 @@ def write_scan_status_report(workbook_location, report):
                           repo_info[config.HEAD_CORE_BRANCH_KEY]['comparison_status'],
                           repo_info[config.HEAD_CORE_BRANCH_KEY]['comparison_error_message'],
                           repo_info[config.HEAD_CORE_BRANCH_KEY]['unique_flows'],
-                          repo_info[config.HEAD_CORE_BRANCH_KEY]['code_scan_time'],
+                          # repo_info[config.HEAD_CORE_BRANCH_KEY]['code_scan_time'],
                           repo_info[config.HEAD_CORE_BRANCH_KEY]['binary_file_size']])
 
     workbook.save(workbook_location)
