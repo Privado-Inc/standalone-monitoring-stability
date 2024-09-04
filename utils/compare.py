@@ -6,9 +6,10 @@ from os import write
 
 import builder
 import config
-from utils.helpers import print_timestamp
+from utils.DiffCache import update_count
+from utils.helpers import print_timestamp, add_to_diff_cache, get_missing_additional_from_row
 from utils.write_to_file import write_source_sink_data, write_path_data, write_performance_data, \
-    write_scan_status_report_for_file, write_to_action_result
+    write_scan_status_report_for_file, write_to_action_result, write_slack_summary
 from utils.scan_metadata import get_subscan_metadata
 from utils.scan import generate_scan_status_data_for_file
 
@@ -37,10 +38,10 @@ def main(base_file, head_file, base_intermediate_file, head_intermediate_file, h
                                                 header_flag, scan_status, language)
 
         process_path_analysis(f'{head_branch_worksheet_name}-{base_branch_worksheet_name}-flow-report', base_data,
-                              head_data, repo_name, language, header_flag)
+                              head_data, repo_name, language, header_flag, update_diff_cache=True)
 
         process_collection_sheet_data(f'{head_branch_worksheet_name}-{base_branch_worksheet_name}-collections-report',
-                                      base_data, head_data, repo_name, language, header_flag, True)
+                                      base_data, head_data, repo_name, language, header_flag, True, update_diff_cache=True)
 
         if os.path.isfile(base_intermediate_file) and os.path.isfile(head_intermediate_file):
             base_intermediate_file = open(base_intermediate_file)
@@ -144,8 +145,10 @@ def process_collection(collections_base, collections_head, collection_name, repo
     collection_set_base = set(collections_sources_base)
     collection_set_head = set(collections_sources_head)
 
-    latest = '\n'.join(list(collection_set_head.difference(collection_set_base)))
-    removed = '\n'.join(list(collection_set_base.difference(collection_set_head)))
+    additional_in_head = collection_set_head.difference(collection_set_base)
+    missing_in_head = collection_set_base.difference(collection_set_head)
+    latest = '\n'.join(list(additional_in_head))
+    removed = '\n'.join(list(missing_in_head))
 
     collections_sources_base = '\n'.join(collections_sources_base)
     collections_sources_head = '\n'.join(collections_sources_head)
@@ -183,16 +186,34 @@ def process_source_sink_and_collection_data(worksheet_name, base_data, head_data
 
     try:
         # Analysis for the Source
-        result.append(process_sources(base_data['sources'], head_data['sources'], repo_name, language))
+        result.append(process_sources(base_data['sources'], head_data['sources'], repo_name, language, update_diff_cache=True))
         # Analysis for the storages sink
-        result.append(process_sinks(base_data['dataFlow'], head_data['dataFlow'], repo_name, scan_status, language,
-                                    key='storages'))
+        storage_result = process_sinks(base_data['dataFlow'], head_data['dataFlow'], repo_name, scan_status, language,
+                                    key='storages')
+        third_party_result = process_sinks(base_data['dataFlow'], head_data['dataFlow'], repo_name, scan_status, language,
+                                    key='third_parties')
+        leakages_result = process_sinks(base_data['dataFlow'], head_data['dataFlow'], repo_name, scan_status, language,
+                                    key='leakages')
+
+        missing_storages, additional_storages = get_missing_additional_from_row(storage_result)
+        missing_third_party, additional_third_party = get_missing_additional_from_row(third_party_result)
+        missing_leakages, additional_leakages = get_missing_additional_from_row(leakages_result)
+
+        print(missing_storages, additional_storages)
+        print(missing_third_party, additional_third_party)
+        print(missing_leakages, additional_leakages)
+
+        add_to_diff_cache("sinks",
+                          additional_leakages + additional_storages + additional_third_party,
+                          missing_third_party + missing_leakages + missing_leakages)
+
+        result.append(storage_result)
         # Analysis for the third party sink
-        result.append(process_sinks(base_data['dataFlow'], head_data['dataFlow'], repo_name, scan_status, language,
-                                    key='third_parties'))
+        result.append(third_party_result)
         # Analysis for the leakage sink
-        result.append(process_sinks(base_data['dataFlow'], head_data['dataFlow'], repo_name, scan_status, language,
-                                    key='leakages'))
+        result.append(leakages_result)
+
+
         # Analysis for the collections
         for row in top_level_collection_processor(base_data['collections'], head_data['collections'], repo_name, language):
             result.append(row)
@@ -209,7 +230,8 @@ def process_source_sink_and_collection_data(worksheet_name, base_data, head_data
 
 
 
-def process_collection_sheet_data(worksheet_name, base_collections, head_collections, repo_name, language, header_flag, write_report):
+def process_collection_sheet_data(worksheet_name, base_collections, head_collections, repo_name, language, header_flag, write_report, update_diff_cache=False):
+    diff_cache_key = "collections"
     result = []
 
     head_total_occ = 0
@@ -229,6 +251,9 @@ def process_collection_sheet_data(worksheet_name, base_collections, head_collect
 
     if total_missing_occ:
         write_to_action_result(f"{total_missing_occ} collections missing in {repo_name}")
+
+    if update_diff_cache:
+        add_to_diff_cache(diff_cache_key, total_additional_occ, total_missing_occ)
 
     if head_total_occ + total_missing_occ == 0:
         percent_delta = '0%'
@@ -355,7 +380,8 @@ def sub_process_occurrences(base_collection_data, head_collection_data, repo_nam
     return [final_result_list, [head_total_occ, base_total_occ, total_additional_occ, total_missing_occ]]
 
 
-def process_sources(source_base, source_head, repo_name, language):
+def process_sources(source_base, source_head, repo_name, language, update_diff_cache=False):
+    diff_cache_key = "sources"
     base_sources_count = len(source_base)
     head_sources_count = len(source_head)
 
@@ -368,8 +394,10 @@ def process_sources(source_base, source_head, repo_name, language):
     source_name_head = '\n'.join(source_set_head)
     source_name_base = '\n'.join(source_set_base)
 
-    added = '\n'.join(list(source_set_head.difference(source_set_base)))
-    removed = '\n'.join(list(source_set_base.difference(source_set_head)))
+    additional_source_head = source_set_head.difference(source_set_base)
+    missing_source_head = source_set_base.difference(source_set_head)
+    added = '\n'.join(list(additional_source_head))
+    removed = '\n'.join(list(missing_source_head))
 
     # Nodes present in base, but not in head
     missing_in_head = len(source_set_base.union(source_set_head).difference(source_set_head))
@@ -377,11 +405,15 @@ def process_sources(source_base, source_head, repo_name, language):
     if missing_in_head:
         write_to_action_result(f"{missing_in_head} sources missing for {repo_name}")
 
+    if update_diff_cache:
+        add_to_diff_cache(diff_cache_key, len(additional_source_head), len(missing_source_head))
+
     return [repo_name, language ,'Source','--', head_sources_count, base_sources_count, source_name_head,
             source_name_base, '0 ', added, removed, missing_in_head]
 
 
-def process_sinks(base_dataflows, head_dataflows, repo_name, scan_status, language ,key='storages'):
+def process_sinks(base_dataflows, head_dataflows, repo_name, scan_status, language ,key='storages', update_diff_cache=False):
+    diff_cache_key = "sinks"
     base_sink = base_dataflows[key]
     head_sink = head_dataflows[key]
 
@@ -408,8 +440,10 @@ def process_sinks(base_dataflows, head_dataflows, repo_name, scan_status, langua
     # except Exception as e:
     #     percent_change = '0.00%'
 
-    added = '\n'.join(list(sink_set_head.difference(sink_set_base)))
-    removed = '\n'.join(list(sink_set_base.difference(sink_set_head)))
+    added_sinks_head = sink_set_head.difference(sink_set_base)
+    missing_sinks_head = sink_set_base.difference(sink_set_head)
+    added = '\n'.join(list(added_sinks_head))
+    removed = '\n'.join(list(missing_sinks_head))
 
     # Nodes present in base, but not in head
     missing_in_head = len(sink_set_base.union(sink_set_head).difference(sink_set_head))
@@ -417,6 +451,9 @@ def process_sinks(base_dataflows, head_dataflows, repo_name, scan_status, langua
     # Write to action file so action fails irrespective of the comparison report completion
     if missing_in_head:
         write_to_action_result(f"{missing_in_head} sinks missing for {repo_name}")
+
+    if update_diff_cache:
+        add_to_diff_cache(diff_cache_key, len(added_sinks_head), len(missing_sinks_head))
 
     if scan_status is not None:
         if not scan_status[repo_name].__contains__('missing_sink'):
@@ -428,7 +465,9 @@ def process_sinks(base_dataflows, head_dataflows, repo_name, scan_status, langua
             added, removed, missing_in_head]
 
 
-def process_path_analysis(worksheet_name, base_source, head_source, repo_name, language, header_flag, write_report=True):
+def process_path_analysis(worksheet_name, base_source, head_source, repo_name, language, header_flag, write_report=True, update_diff_cache=False):
+    diff_cache_key = "dataflows"
+
     result = []
 
     total_flow_head = 0
@@ -446,6 +485,9 @@ def process_path_analysis(worksheet_name, base_source, head_source, repo_name, l
         total_flow_base += value[1][1]
         total_additional_flow += value[1][2]
         total_missing_flow += value[1][3]
+
+    if update_diff_cache:
+        add_to_diff_cache(diff_cache_key, total_additional_flow, total_missing_flow)
 
     if total_missing_flow:
         write_to_action_result(f"{total_missing_flow} flows missing in {repo_name}")
