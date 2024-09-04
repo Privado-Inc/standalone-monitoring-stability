@@ -1,5 +1,7 @@
 #!/bin/bash
 
+
+echo "Slack upload start..."
 # Start the upload action by getting a file upload URL in the response
 response=$(curl -s -F files=@$FILE_PATH \
     -F filename=$FILE_PATH \
