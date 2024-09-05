@@ -7,11 +7,18 @@ response=$(curl -F files=@$FILE_PATH \
     -F length=$(stat --format=%s $FILE_PATH | tr -d '\n') \
        https://slack.com/api/files.getUploadURLExternal)
 
+echo $response
+
 upload_url=$(echo "$response" | jq -r '.upload_url')
 file_id=$(echo "$response" | jq -r '.file_id')
 
+echo $upload_url
+echo $file_id
+
 # Upload the file
-curl -s -F filename="@$FILE_PATH" -H "Authorization: Bearer $SLACK_TOKEN" POST $upload_url
+response2=$(curl -s -F filename="@$FILE_PATH" -H "Authorization: Bearer $SLACK_TOKEN" POST $upload_url)
+
+echo $response2
 
 escaped_message=$(echo "$PR_MESSAGE" | sed 's/"/\\"/g' | sed ':a;N;$!ba;s/\n/\\n/g')
 
@@ -26,6 +33,6 @@ response3=$(curl -g -X POST \
         "files": [{"id": "'"$file_id"'", "title":"'"$FILE_NAME"'"}],
         "channel_id": "'"$SLACK_CHANNEL_ID"'"
       }' \
-  https://slack.com/api/files.completeUploadExternal) > /dev/null
+  https://slack.com/api/files.completeUploadExternal)
 
 echo "$response3"
