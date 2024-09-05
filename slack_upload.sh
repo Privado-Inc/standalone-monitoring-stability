@@ -1,5 +1,7 @@
 #!/bin/bash
 
+echo $(stat --format=%s $FILE_PATH | tr -d '\n')
+
 # Start the upload action by getting a file upload URL in the response
 response=$(curl -F files=@$FILE_PATH \
     -F filename=$FILE_PATH \
