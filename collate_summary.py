@@ -169,7 +169,7 @@ class DataElementDifference(Difference):
         super().__init__()
 
     def calculate_start_end(self, offset):
-        self.start = 10 + offset
+        self.start = 0 + offset
         self.end = self.start + 4
         return self
     
@@ -195,7 +195,7 @@ class MissingSinksVal(Difference):
         super().__init__()
 
     def calculate_start_end(self, offset):
-        self.start = 14 + offset
+        self.start = 4 + offset
         self.end = self.start + 2       
         return self
 
@@ -220,7 +220,7 @@ class SourceToSinkFlowDifference(FlowCollectionDifference):
         super().__init__()
 
     def calculate_start_end(self, offset):
-        self.start = 16 + offset
+        self.start = 6 + offset
         self.end = self.start + 5
         return self
 
@@ -241,7 +241,7 @@ class CollectionDifference(FlowCollectionDifference):
         super().__init__()
     
     def calculate_start_end(self, offset):
-        self.start = 21 + offset
+        self.start = 11 + offset
         self.end = self.start + 4
         return self
     
@@ -343,11 +343,11 @@ def main():
         scantime_start = get_num_until_summary_start(language_summary)
         scanfail_report.calculate_start_end(scantime_start).get_result(language_summary)
         
-        scantime_result.calculate_start_end(scantime_start).get_result(language_summary)
+        # scantime_result.calculate_start_end(scantime_start).get_result(language_summary)
 
-        reachable_by_flow_time_result.calculate_start_end(scantime_start).get_result(language_summary)
+        # reachable_by_flow_time_result.calculate_start_end(scantime_start).get_result(language_summary)
 
-        reachable_by_flow_count_difference_result.calculate_start_end(scantime_start).get_result(language_summary)
+        # reachable_by_flow_count_difference_result.calculate_start_end(scantime_start).get_result(language_summary)
 
         source_to_sink_flow_difference_result.calculate_start_end(scantime_start).get_result(language_summary)
 
