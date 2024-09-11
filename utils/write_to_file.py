@@ -313,7 +313,7 @@ def write_slack_summary(statement):
 
 def write_to_action_result(content):
     file_path = f"{os.getcwd()}/action_result.txt"
-    if os.path.exists(file_path):
+    if not os.path.exists(file_path):
         with open(file_path, "w") as action_result:
             action_result.write(f"{content}\n")
     else:
