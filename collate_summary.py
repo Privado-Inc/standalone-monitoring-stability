@@ -169,7 +169,7 @@ class DataElementDifference(Difference):
         super().__init__()
 
     def calculate_start_end(self, offset):
-        self.start = 10 + offset
+        self.start = 0 + offset
         self.end = self.start + 4
         return self
     
@@ -183,7 +183,7 @@ class DataElementDifference(Difference):
 
     def get_summary(self):
         return f'''
-        E. Unique data elements difference.
+        B. Unique data elements difference.
         {self.matching} repositories have exactly matching elements.
         {self.less} repositories have missing data elements. {add_missing_emoji(self.less)}
         {self.more} repositories have additional elements.
@@ -195,7 +195,7 @@ class MissingSinksVal(Difference):
         super().__init__()
 
     def calculate_start_end(self, offset):
-        self.start = 14 + offset
+        self.start = 4 + offset
         self.end = self.start + 2       
         return self
 
@@ -203,16 +203,15 @@ class MissingSinksVal(Difference):
     def get_relevant_data(result):
         split_data = result.split(" ")
         number = int(split_data[0])
-        value = int(split_data[6])
-        return (number, value)
+        return (number, 0)
     
     def get_result(self, language_summary):
         return self.diff_pass(language_summary, self.start, self.end)
     
     def get_summary(self):
         return f'''
-        F. Missing sinks.
-        {self.less} repositories have on an average {self.less_value} missing sinks. {add_missing_emoji(self.less)}
+        C. Missing sinks.
+        {self.less} repositories have missing sinks. {add_missing_emoji(self.less)}
         '''
 
 class SourceToSinkFlowDifference(FlowCollectionDifference):
@@ -220,7 +219,7 @@ class SourceToSinkFlowDifference(FlowCollectionDifference):
         super().__init__()
 
     def calculate_start_end(self, offset):
-        self.start = 16 + offset
+        self.start = 6 + offset
         self.end = self.start + 5
         return self
 
@@ -229,7 +228,7 @@ class SourceToSinkFlowDifference(FlowCollectionDifference):
     
     def get_summary(self):
         return f'''
-        G. Source to Sink Flow data
+        D. Source to Sink Flow data
         {self.hundred_missing} repositories have hundred percent missing flows. {add_missing_emoji(self.hundred_missing)} {add_missing_emoji(self.hundred_missing)}
         {self.matching} repositories have exactly matching flows.
         {self.less} repositories have on an average {self.less_value} missing flows. {add_missing_emoji(self.less)}
@@ -241,7 +240,7 @@ class CollectionDifference(FlowCollectionDifference):
         super().__init__()
     
     def calculate_start_end(self, offset):
-        self.start = 21 + offset
+        self.start = 11 + offset
         self.end = self.start + 4
         return self
     
@@ -260,7 +259,7 @@ class CollectionDifference(FlowCollectionDifference):
     
     def get_summary(self):
         return f'''
-        H. Collection Summary
+        E. Collection Summary
         {self.matching} repositories have exactly matching collections.
         {self.less} repositories have missing collections. {add_missing_emoji(self.less)}
         {self.more} repositories have additional collections.
@@ -343,11 +342,11 @@ def main():
         scantime_start = get_num_until_summary_start(language_summary)
         scanfail_report.calculate_start_end(scantime_start).get_result(language_summary)
         
-        scantime_result.calculate_start_end(scantime_start).get_result(language_summary)
+        # scantime_result.calculate_start_end(scantime_start).get_result(language_summary)
 
-        reachable_by_flow_time_result.calculate_start_end(scantime_start).get_result(language_summary)
+        # reachable_by_flow_time_result.calculate_start_end(scantime_start).get_result(language_summary)
 
-        reachable_by_flow_count_difference_result.calculate_start_end(scantime_start).get_result(language_summary)
+        # reachable_by_flow_count_difference_result.calculate_start_end(scantime_start).get_result(language_summary)
 
         source_to_sink_flow_difference_result.calculate_start_end(scantime_start).get_result(language_summary)
 
@@ -358,9 +357,9 @@ def main():
         missing_sinks_value_result.calculate_start_end(scantime_start).get_result(language_summary)
 
     summary += scanfail_report.get_summary()
-    summary += scantime_result.get_summary()
-    summary += reachable_by_flow_time_result.get_summary()
-    summary += reachable_by_flow_count_difference_result.get_summary()
+    # summary += scantime_result.get_summary()
+    # summary += reachable_by_flow_time_result.get_summary()
+    # summary += reachable_by_flow_count_difference_result.get_summary()
     summary += data_element_difference_result.get_summary()
     summary += missing_sinks_value_result.get_summary()
     summary += source_to_sink_flow_difference_result.get_summary()

@@ -4,10 +4,11 @@ import builder
 import config
 from utils.clone_repo import clone_repo_with_name
 from utils.build_binary import build_binary_and_move_for_joern, move_log_rule_file
+from utils.helpers import print_timestamp
 from utils.write_to_file import write_slack_summary
 
 
-def check_update():
+def check_update(github_token):
     cwd = os.getcwd()
     temp_dir = f'{cwd}/temp'
 
@@ -15,10 +16,10 @@ def check_update():
         os.mkdir(temp_dir)
 
     # clone the first privado-core
-    clone_repo_with_name(config.get_privado_core_url(), builder.get_joern_privado_path("first"), "privado-core")
+    clone_repo_with_name(config.get_privado_core_url(github_token), builder.get_joern_privado_path("first"), "privado-core-enterprise")
 
     # clone second privado-core, used for updating the dependencies
-    clone_repo_with_name(config.get_privado_core_url(), builder.get_joern_privado_path("second"), "privado-core")
+    clone_repo_with_name(config.get_privado_core_url(github_token), builder.get_joern_privado_path("second"), "privado-core-enterprise")
 
     # change the permission
     os.system(f'chmod 777 {builder.get_joern_update_file_path("second")}')
@@ -63,18 +64,18 @@ def build_binary_for_joern(versions):
     # Build binary for current version
     write_slack_summary(f'Current version: {versions[0]} \n Updated Version: {versions[1]} \n')
     try:
-        build_binary_and_move_for_joern(f'{os.getcwd()}/temp/joern/first/privado-core-internal', config.BASE_CORE_BRANCH_KEY)
-        move_log_rule_file(f'{os.getcwd()}/temp/joern/first/privado-core-internal/log4j2.xml', config.BASE_CORE_BRANCH_KEY)
+        build_binary_and_move_for_joern(f'{os.getcwd()}/temp/joern/first/privado-core-enterprise', config.BASE_CORE_BRANCH_KEY)
+        move_log_rule_file(f'{os.getcwd()}/temp/joern/first/privado-core-enterprise/log4j2.xml', config.BASE_CORE_BRANCH_KEY)
     except Exception as e:
-        print(f'{builder.get_current_time()} - Binary generation failed for joern version {versions[0]}: ', e)
+        print_timestamp(f'Binary generation failed for joern version {versions[0]}: ', e)
         write_slack_summary(f'Binary generation failed for joern version {versions[0]} \n {str(e)}')
         return False 
 
     try:
-        build_binary_and_move_for_joern(f'{os.getcwd()}/temp/joern/second/privado-core-internal', config.HEAD_CORE_BRANCH_KEY)
-        move_log_rule_file(f'{os.getcwd()}/temp/joern/second/privado-core-internal/log4j2.xml', config.HEAD_CORE_BRANCH_KEY)
+        build_binary_and_move_for_joern(f'{os.getcwd()}/temp/joern/second/privado-core-enterprise', config.HEAD_CORE_BRANCH_KEY)
+        move_log_rule_file(f'{os.getcwd()}/temp/joern/second/privado-core-enterprise/log4j2.xml', config.HEAD_CORE_BRANCH_KEY)
     except Exception as e:
-        print(f'{builder.get_current_time()} - Binary generation failed for joern version {versions[1]}: ', e)
+        print_timestamp(f'Binary generation failed for joern version {versions[1]}: ', e)
         write_slack_summary(f'Binary generation failed for joern version {versions[1]} \n {str(e)}')
         return False
 

@@ -1,4 +1,4 @@
-import os 
+import os
 
 BASE_CORE_BRANCH_NAME = None
 HEAD_CORE_BRANCH_NAME = None
@@ -26,13 +26,12 @@ HEAD_PRIVADO_RULE_OWNER = None
 
 SLACK_SUMMARY_FILE_NAME = "slack_summary.txt"
 OUTPUT_FILE_NAME = "output.xlsx"
-PRIVADO_CORE_URL = "https://github.com/Privado-Inc/privado-core"
+PRIVADO_CORE_URL = "https://github.com/Privado-Inc/privado-core-enterprise"
 PRIVADO_RULE_URL = "https://github.com/Privado-Inc/privado"
 PRIVADO_JOERN_URL = "https://github.com/Privado-Inc/joern"
 
-
-def get_privado_core_url():
-    return f"https://{os.getenv('PAT')}@github.com/Privado-Inc/privado-core-internal.git" 
+def get_privado_core_url(github_token):
+    return f"https://{os.getenv('CORE_AT')}@github.com/Privado-Inc/privado-core-enterprise.git"
 
 def init(args):
     global BASE_CORE_BRANCH_NAME, HEAD_CORE_BRANCH_NAME, BASE_RULE_BRANCH_NAME, HEAD_RULE_BRANCH_NAME
@@ -52,7 +51,7 @@ def init(args):
     BASE_RULE_BRANCH_NAME = rule_branch_name[0]
     HEAD_RULE_BRANCH_NAME = rule_branch_name[1]
 
-    resolve_privado_core_repo(args.base_core_repo, args.head_core_repo)
+    resolve_privado_core_repo(args.token)
     resolve_privado_rule_repo(args.base_rule_repo, args.head_rule_repo)
 
     resolve_core_branch_key_name(BASE_CORE_BRANCH_NAME, HEAD_CORE_BRANCH_NAME, BASE_RULE_BRANCH_NAME,
@@ -105,10 +104,10 @@ def init_file():
     HEAD_CORE_BRANCH_NAME = HEAD_CORE_BRANCH_KEY = HEAD_SHEET_BRANCH_NAME = 'second'
 
 
-def resolve_privado_core_repo(base_repo, head_repo):
+def resolve_privado_core_repo(github_token):
     global BASE_PRIVADO_CORE_OWNER, HEAD_PRIVADO_CORE_OWNER, BASE_PRIVADO_CORE_URL, HEAD_PRIVADO_CORE_URL
-    BASE_PRIVADO_CORE_URL = get_privado_core_url()
-    HEAD_PRIVADO_CORE_URL = get_privado_core_url()
+    BASE_PRIVADO_CORE_URL = get_privado_core_url(github_token)
+    HEAD_PRIVADO_CORE_URL = get_privado_core_url(github_token)
     BASE_PRIVADO_CORE_OWNER = 'Privado-Inc'
     HEAD_PRIVADO_CORE_OWNER = 'Privado-Inc'
 
