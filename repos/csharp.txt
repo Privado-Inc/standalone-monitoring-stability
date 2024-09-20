@@ -1,0 +1,2 @@
+https://github.com/auth0-samples/auth0-WinFormsWPF-oidc-samples.git
+https://github.com/denlai-mshk/blobtriggertos3csharp.git
