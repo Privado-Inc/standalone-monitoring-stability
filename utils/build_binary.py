@@ -117,6 +117,13 @@ def clone_privado_core_repo(repo_url, branch_name, temp_dir, name, joern_build =
             remote.fetch()
         # fetch all branch info
         repo.remotes.origin.fetch()
+
+        print("-------- POPOP ----- ")
+        print(repo.remotes.origin.url)
+        remote_branches = [ref.name for ref in repo.refs if ref.name.startswith('origin/')]
+        print("list")
+        print(remote_branches)
+        print("noermal")
         print(branch_name)
         print(head_branch_run)
         print(joern_build)
