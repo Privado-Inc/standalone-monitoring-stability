@@ -129,9 +129,9 @@ def clone_privado_core_repo(repo_url, branch_name, temp_dir, name, joern_build =
         print(joern_build)
         print(repo.branches)
         print(joern_branch_name)
-        if (head_branch_run and joern_build and joern_branch_name in repo.branches):
+        if (head_branch_run and joern_build and f'origin/{joern_branch_name}' in repo.branches):
             print_timestamp(f"$Joern's {joern_branch_name} branch present in privado-core, using privado-core ${joern_branch_name} branch to build image.")
-            repo.git.checkout(joern_branch_name)
+            repo.git.checkout('-b', joern_branch_name, f'origin/{joern_branch_name}')
         else:
             repo.git.checkout(branch_name)
         print_timestamp(f'Privado branch changed to {branch_name}')
