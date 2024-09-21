@@ -130,3 +130,7 @@ def resolve_privado_rule_repo(base_repo, head_repo):
 def get_repo_owner(url):
     parts = url.split('/')
     return parts[-2]
+
+def update_privado_head_branch(head_branch_name):
+
+

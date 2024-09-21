@@ -27,7 +27,7 @@ def change_joern_in_build_file(repo_path, joern_branch):
 
 
 
-def build(skip_build = False, custom_joern = False, joern_base=None, joern_head=None):
+def build(args, skip_build = False, custom_joern = False, joern_base=None, joern_head=None):
     print(f"Building binary for privado-core with custom joern: {custom_joern}")
     if skip_build and os.path.exists(f"{os.getcwd()}/temp/binary"):
         return
@@ -40,7 +40,7 @@ def build(skip_build = False, custom_joern = False, joern_base=None, joern_head=
     head_rule_repo_path = f'{temp_dir}/privado/{config.HEAD_CORE_BRANCH_KEY}'
 
     if not os.path.isdir(base_core_repo_path):
-        clone_privado_core_repo(config.BASE_PRIVADO_CORE_URL, config.BASE_CORE_BRANCH_NAME, base_core_repo_path,
+        clone_privado_repo(config.BASE_PRIVADO_CORE_URL, config.BASE_CORE_BRANCH_NAME, base_core_repo_path,
                                 f'{config.BASE_PRIVADO_CORE_OWNER}-{config.BASE_CORE_BRANCH_NAME}')
 
         if (custom_joern):
@@ -48,17 +48,19 @@ def build(skip_build = False, custom_joern = False, joern_base=None, joern_head=
 
 
     if not os.path.isdir(head_core_repo_path):
-        clone_privado_core_repo(config.HEAD_PRIVADO_CORE_URL, config.HEAD_CORE_BRANCH_NAME,
-                                head_core_repo_path, f'{config.HEAD_PRIVADO_CORE_OWNER}-{config.HEAD_CORE_BRANCH_NAME}', True, True, joern_head)
+        clone_privado_repo(config.HEAD_PRIVADO_CORE_URL, config.HEAD_CORE_BRANCH_NAME,
+                           head_core_repo_path,
+                                f'{config.HEAD_PRIVADO_CORE_OWNER}-{config.HEAD_CORE_BRANCH_NAME}',
+                           True, True, joern_head, args)
         if custom_joern:
             change_joern_in_build_file(head_core_repo_path, joern_head)
 
     if not os.path.isdir(base_rule_repo_path):
-        clone_privado_core_repo(config.BASE_PRIVADO_RULE_URL, config.BASE_RULE_BRANCH_NAME, base_rule_repo_path,
+        clone_privado_repo(config.BASE_PRIVADO_RULE_URL, config.BASE_RULE_BRANCH_NAME, base_rule_repo_path,
                                 f'{config.BASE_PRIVADO_RULE_OWNER}-{config.BASE_RULE_BRANCH_NAME}')
 
     if not os.path.isdir(head_rule_repo_path):
-        clone_privado_core_repo(config.HEAD_PRIVADO_RULE_URL, config.HEAD_RULE_BRANCH_NAME, head_rule_repo_path,
+        clone_privado_repo(config.HEAD_PRIVADO_RULE_URL, config.HEAD_RULE_BRANCH_NAME, head_rule_repo_path,
                                 f'{config.HEAD_PRIVADO_RULE_OWNER}-{config.HEAD_RULE_BRANCH_NAME}')
 
     build_binary_and_move("privado-core-enterprise", config.BASE_CORE_BRANCH_KEY)
@@ -109,7 +111,7 @@ def move_log_rule_file(log_path, key):
     print_timestamp(f'privado-core log rule moved')
 
 
-def clone_privado_core_repo(repo_url, branch_name, temp_dir, name, joern_build = False, head_branch_run = False, joern_branch_name = None):
+def clone_privado_repo(repo_url, branch_name, temp_dir, name, joern_build = False, head_branch_run = False, joern_branch_name = None, args = None):
     repo = clone_repo_with_name(repo_url, f'{temp_dir}', name)
     try:
         # Used to check out release tags
@@ -118,20 +120,15 @@ def clone_privado_core_repo(repo_url, branch_name, temp_dir, name, joern_build =
         # fetch all branch info
         repo.remotes.origin.fetch()
 
-        print("-------- POPOP ----- ")
-        print(repo.remotes.origin.url)
         remote_branches = [ref.name for ref in repo.refs if ref.name.startswith('origin/')]
-        print("list")
-        print(remote_branches)
-        print("noermal")
-        print(branch_name)
-        print(head_branch_run)
-        print(joern_build)
-        print(repo.branches)
-        print(joern_branch_name)
+
         if (head_branch_run and joern_build and f'origin/{joern_branch_name}' in remote_branches):
             print_timestamp(f"$Joern's {joern_branch_name} branch present in privado-core, using privado-core ${joern_branch_name} branch to build image.")
             repo.git.checkout('-b', joern_branch_name, f'origin/{joern_branch_name}')
+            #update the head branch name
+            args.head = joern_branch_name
+            config.init(args)
+            print("updated name")
         else:
             repo.git.checkout(branch_name)
         print_timestamp(f'Privado branch changed to {branch_name}')

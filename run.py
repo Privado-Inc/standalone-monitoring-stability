@@ -113,7 +113,7 @@ def workflow():
 
     if not args.use_docker and not args.joern_update:
         # build the Privado binary for both branches
-        build(args.boost, args.custom_joern, args.custom_joern_base_branch, args.custom_joern_head_branch)
+        build(args, args.boost, args.custom_joern, args.custom_joern_base_branch, args.custom_joern_head_branch, args)
 
     try:
         for repo_link in utils.repo_link_generator.generate_repo_link(args.repos):
