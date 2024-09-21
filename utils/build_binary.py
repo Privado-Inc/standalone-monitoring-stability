@@ -49,7 +49,7 @@ def build(skip_build = False, custom_joern = False, joern_base=None, joern_head=
 
     if not os.path.isdir(head_core_repo_path):
         clone_privado_core_repo(config.HEAD_PRIVADO_CORE_URL, config.HEAD_CORE_BRANCH_NAME,
-                                head_core_repo_path, f'{config.HEAD_PRIVADO_CORE_OWNER}-{config.HEAD_CORE_BRANCH_NAME}')
+                                head_core_repo_path, f'{config.HEAD_PRIVADO_CORE_OWNER}-{config.HEAD_CORE_BRANCH_NAME}', True, True, joern_head)
         if custom_joern:
             change_joern_in_build_file(head_core_repo_path, joern_head)
 
@@ -109,13 +109,24 @@ def move_log_rule_file(log_path, key):
     print_timestamp(f'privado-core log rule moved')
 
 
-def clone_privado_core_repo(repo_url, branch_name, temp_dir, name):
+def clone_privado_core_repo(repo_url, branch_name, temp_dir, name, joern_build = False, head_branch_run = False, joern_branch_name = None):
     repo = clone_repo_with_name(repo_url, f'{temp_dir}', name)
     try:
         # Used to check out release tags
         for remote in repo.remotes:
             remote.fetch()
-        repo.git.checkout(branch_name)
+        # fetch all branch info
+        repo.remotes.origin.fetch()
+        print(branch_name)
+        print(head_branch_run)
+        print(joern_build)
+        print(repo.branches)
+        print(joern_branch_name)
+        if (head_branch_run and joern_build and joern_branch_name in repo.branches):
+            print_timestamp(f"$Joern's {joern_branch_name} branch present in privado-core, using privado-core ${joern_branch_name} branch to build image.")
+            repo.git.checkout(joern_branch_name)
+        else:
+            repo.git.checkout(branch_name)
         print_timestamp(f'Privado branch changed to {branch_name}')
     except Exception as e:
         print_timestamp(f'{branch_name} + " doesn\'t exist: {e}')
