@@ -54,8 +54,7 @@ def build(args, skip_build = False, custom_joern = False, joern_base=None, joern
     if not os.path.isdir(head_core_repo_path):
         clone_privado_repo(config.HEAD_PRIVADO_CORE_URL, config.HEAD_CORE_BRANCH_NAME,
                            head_core_repo_path,
-                                f'{config.HEAD_PRIVADO_CORE_OWNER}-{config.HEAD_CORE_BRANCH_NAME}',
-                           custom_joern, True, joern_head, args)
+                                f'{config.HEAD_PRIVADO_CORE_OWNER}-{config.HEAD_CORE_BRANCH_NAME}')
         if custom_joern:
             # fetch updated privado-core location
             head_core_repo_path = f'{temp_dir}/privado-core-enterprise/{config.HEAD_CORE_BRANCH_KEY}'
@@ -122,29 +121,13 @@ def move_log_rule_file(log_path, key):
     print_timestamp(f'privado-core log rule moved')
 
 
-def clone_privado_repo(repo_url, branch_name, temp_dir, name, joern_build = False, head_branch_run = False, joern_branch_name = None, args = None):
+def clone_privado_repo(repo_url, branch_name, temp_dir, name):
     repo = clone_repo_with_name(repo_url, f'{temp_dir}', name)
     try:
         # Used to check out release tags
         for remote in repo.remotes:
             remote.fetch()
-        # fetch all branch info
-        repo.remotes.origin.fetch()
-
-        remote_branches = [ref.name for ref in repo.refs if ref.name.startswith('origin/')]
-
-        if (head_branch_run and joern_build and f'origin/{joern_branch_name}' in remote_branches):
-            print_timestamp(f"$Joern's {joern_branch_name} branch present in privado-core, using privado-core ${joern_branch_name} branch to build image.")
-            repo.git.checkout('-b', joern_branch_name, f'origin/{joern_branch_name}')
-            # update the head branch name
-            args.head = joern_branch_name
-            config.init(args)
-            new_head_core_repo_path = f'{os.getcwd()}/temp/privado-core-enterprise/{config.HEAD_CORE_BRANCH_KEY}'
-            shutil.move(temp_dir, new_head_core_repo_path)
-            os.rmdir(temp_dir)
-            print("updated name")
-        else:
-            repo.git.checkout(branch_name)
+        repo.git.checkout(branch_name)
         print_timestamp(f'Privado branch changed to {branch_name}')
     except Exception as e:
         print_timestamp(f'{branch_name} + " doesn\'t exist: {e}')
