@@ -46,6 +46,10 @@ def build(args, skip_build = False, custom_joern = False, joern_base=None, joern
         if (custom_joern):
             change_joern_in_build_file(base_core_repo_path, joern_base)
 
+    print("()()() ----- -")
+    print(config.HEAD_CORE_BRANCH_KEY)
+    print(config.HEAD_CORE_BRANCH_NAME)
+
 
     if not os.path.isdir(head_core_repo_path):
         clone_privado_repo(config.HEAD_PRIVADO_CORE_URL, config.HEAD_CORE_BRANCH_NAME,
@@ -66,6 +70,11 @@ def build(args, skip_build = False, custom_joern = False, joern_base=None, joern
     build_binary_and_move("privado-core-enterprise", config.BASE_CORE_BRANCH_KEY)
     move_log_rule_file(f'{pwd}/temp/privado-core-enterprise/{config.BASE_CORE_BRANCH_KEY}/log4j2.xml', config.BASE_CORE_BRANCH_KEY)
     build_binary_and_move("privado-core-enterprise", config.HEAD_CORE_BRANCH_KEY)
+    print("config path -------> ")
+    print(config.HEAD_CORE_BRANCH_KEY)
+    print(config.HEAD_CORE_BRANCH_NAME)
+    print(config.HEAD_PRIVADO_CORE_URL)
+
     move_log_rule_file(f'{pwd}/temp/privado-core-enterprise/{config.HEAD_CORE_BRANCH_KEY}/log4j2.xml', config.HEAD_CORE_BRANCH_KEY)
 
 
@@ -125,14 +134,12 @@ def clone_privado_repo(repo_url, branch_name, temp_dir, name, joern_build = Fals
         if (head_branch_run and joern_build and f'origin/{joern_branch_name}' in remote_branches):
             print_timestamp(f"$Joern's {joern_branch_name} branch present in privado-core, using privado-core ${joern_branch_name} branch to build image.")
             repo.git.checkout('-b', joern_branch_name, f'origin/{joern_branch_name}')
+            # update the head branch name
             args.head = joern_branch_name
             config.init(args)
             new_head_core_repo_path = f'{temp_dir}/privado-core-enterprise/{config.HEAD_CORE_BRANCH_KEY}'
             shutil.move(temp_dir, new_head_core_repo_path)
             os.rmdir(temp_dir)
-            #update the head branch name
-            args.head = joern_branch_name
-            config.init(args)
             print("updated name")
         else:
             repo.git.checkout(branch_name)
