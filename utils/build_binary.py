@@ -125,6 +125,11 @@ def clone_privado_repo(repo_url, branch_name, temp_dir, name, joern_build = Fals
         if (head_branch_run and joern_build and f'origin/{joern_branch_name}' in remote_branches):
             print_timestamp(f"$Joern's {joern_branch_name} branch present in privado-core, using privado-core ${joern_branch_name} branch to build image.")
             repo.git.checkout('-b', joern_branch_name, f'origin/{joern_branch_name}')
+            args.head = joern_branch_name
+            config.init(args)
+            new_head_core_repo_path = f'{temp_dir}/privado-core-enterprise/{config.HEAD_CORE_BRANCH_KEY}'
+            shutil.move(temp_dir, new_head_core_repo_path)
+            os.rmdir(temp_dir)
             #update the head branch name
             args.head = joern_branch_name
             config.init(args)
