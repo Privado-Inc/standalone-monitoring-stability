@@ -36,9 +36,6 @@ def get_privado_core_url(github_token):
 def init(args):
     global BASE_CORE_BRANCH_NAME, HEAD_CORE_BRANCH_NAME, BASE_RULE_BRANCH_NAME, HEAD_RULE_BRANCH_NAME
 
-    print("args -----> ")
-    print(args.head)
-
     if args.use_rule_compare:
         core_branch_names = get_core_branch(args.base, args.head, args.rules_branch_base,
                                             args.rules_branch_head)

@@ -27,7 +27,7 @@ def change_joern_in_build_file(repo_path, joern_branch):
 
 
 
-def build(args, skip_build = False, custom_joern = False, joern_base=None, joern_head=None):
+def build(skip_build = False, custom_joern = False, joern_base=None, joern_head=None):
     print(f"Building binary for privado-core with custom joern: {custom_joern}")
     if skip_build and os.path.exists(f"{os.getcwd()}/temp/binary"):
         return
@@ -46,18 +46,11 @@ def build(args, skip_build = False, custom_joern = False, joern_base=None, joern
         if (custom_joern):
             change_joern_in_build_file(base_core_repo_path, joern_base)
 
-    print("()()() ----- -")
-    print(config.HEAD_CORE_BRANCH_KEY)
-    print(config.HEAD_CORE_BRANCH_NAME)
-
-
     if not os.path.isdir(head_core_repo_path):
         clone_privado_repo(config.HEAD_PRIVADO_CORE_URL, config.HEAD_CORE_BRANCH_NAME,
                            head_core_repo_path,
                                 f'{config.HEAD_PRIVADO_CORE_OWNER}-{config.HEAD_CORE_BRANCH_NAME}')
         if custom_joern:
-            # fetch updated privado-core location
-            head_core_repo_path = f'{temp_dir}/privado-core-enterprise/{config.HEAD_CORE_BRANCH_KEY}'
             change_joern_in_build_file(head_core_repo_path, joern_head)
 
     if not os.path.isdir(base_rule_repo_path):
@@ -71,11 +64,6 @@ def build(args, skip_build = False, custom_joern = False, joern_base=None, joern
     build_binary_and_move("privado-core-enterprise", config.BASE_CORE_BRANCH_KEY)
     move_log_rule_file(f'{pwd}/temp/privado-core-enterprise/{config.BASE_CORE_BRANCH_KEY}/log4j2.xml', config.BASE_CORE_BRANCH_KEY)
     build_binary_and_move("privado-core-enterprise", config.HEAD_CORE_BRANCH_KEY)
-    print("config path -------> ")
-    print(config.HEAD_CORE_BRANCH_KEY)
-    print(config.HEAD_CORE_BRANCH_NAME)
-    print(config.HEAD_PRIVADO_CORE_URL)
-
     move_log_rule_file(f'{pwd}/temp/privado-core-enterprise/{config.HEAD_CORE_BRANCH_KEY}/log4j2.xml', config.HEAD_CORE_BRANCH_KEY)
 
 

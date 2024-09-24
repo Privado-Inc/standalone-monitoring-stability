@@ -54,7 +54,7 @@ def checkIfBranchExist(args):
     joern_head_branch = args.custom_joern_head_branch
     print(" ------ " + joern_head_branch + " ------ ")
     temp_dir = f'{os.getcwd()}/privado-core-temp'
-    if os.path.isdir(temp_dir):
+    if not os.path.isdir(temp_dir):
         os.system(f'mkdir -r {temp_dir}')
     repo = clone_repo_with_name(f"https://{os.getenv('CORE_AT')}@github.com/Privado-Inc/privado-core-enterprise.git", f'{temp_dir}', "privado-core-enterprise")
     try:
