@@ -40,7 +40,7 @@ def build(skip_build = False, custom_joern = False, joern_base=None, joern_head=
     head_rule_repo_path = f'{temp_dir}/privado/{config.HEAD_CORE_BRANCH_KEY}'
 
     if not os.path.isdir(base_core_repo_path):
-        clone_privado_core_repo(config.BASE_PRIVADO_CORE_URL, config.BASE_CORE_BRANCH_NAME, base_core_repo_path,
+        clone_privado_repo(config.BASE_PRIVADO_CORE_URL, config.BASE_CORE_BRANCH_NAME, base_core_repo_path,
                                 f'{config.BASE_PRIVADO_CORE_OWNER}-{config.BASE_CORE_BRANCH_NAME}')
 
         if (custom_joern):
@@ -48,17 +48,17 @@ def build(skip_build = False, custom_joern = False, joern_base=None, joern_head=
 
 
     if not os.path.isdir(head_core_repo_path):
-        clone_privado_core_repo(config.HEAD_PRIVADO_CORE_URL, config.HEAD_CORE_BRANCH_NAME,
-                                head_core_repo_path, f'{config.HEAD_PRIVADO_CORE_OWNER}-{config.HEAD_CORE_BRANCH_NAME}')
+        clone_privado_repo(config.HEAD_PRIVADO_CORE_URL, config.HEAD_CORE_BRANCH_NAME,
+                           head_core_repo_path, f'{config.HEAD_PRIVADO_CORE_OWNER}-{config.HEAD_CORE_BRANCH_NAME}')
         if custom_joern:
             change_joern_in_build_file(head_core_repo_path, joern_head)
 
     if not os.path.isdir(base_rule_repo_path):
-        clone_privado_core_repo(config.BASE_PRIVADO_RULE_URL, config.BASE_RULE_BRANCH_NAME, base_rule_repo_path,
+        clone_privado_repo(config.BASE_PRIVADO_RULE_URL, config.BASE_RULE_BRANCH_NAME, base_rule_repo_path,
                                 f'{config.BASE_PRIVADO_RULE_OWNER}-{config.BASE_RULE_BRANCH_NAME}')
 
     if not os.path.isdir(head_rule_repo_path):
-        clone_privado_core_repo(config.HEAD_PRIVADO_RULE_URL, config.HEAD_RULE_BRANCH_NAME, head_rule_repo_path,
+        clone_privado_repo(config.HEAD_PRIVADO_RULE_URL, config.HEAD_RULE_BRANCH_NAME, head_rule_repo_path,
                                 f'{config.HEAD_PRIVADO_RULE_OWNER}-{config.HEAD_RULE_BRANCH_NAME}')
 
     build_binary_and_move("privado-core-enterprise", config.BASE_CORE_BRANCH_KEY)
@@ -109,7 +109,7 @@ def move_log_rule_file(log_path, key):
     print_timestamp(f'privado-core log rule moved')
 
 
-def clone_privado_core_repo(repo_url, branch_name, temp_dir, name):
+def clone_privado_repo(repo_url, branch_name, temp_dir, name):
     repo = clone_repo_with_name(repo_url, f'{temp_dir}', name)
     try:
         # Used to check out release tags
