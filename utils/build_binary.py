@@ -137,7 +137,7 @@ def clone_privado_repo(repo_url, branch_name, temp_dir, name, joern_build = Fals
             # update the head branch name
             args.head = joern_branch_name
             config.init(args)
-            new_head_core_repo_path = f'{temp_dir}/privado-core-enterprise/{config.HEAD_CORE_BRANCH_KEY}'
+            new_head_core_repo_path = f'{os.getcwd()}/temp/privado-core-enterprise/{config.HEAD_CORE_BRANCH_KEY}'
             shutil.move(temp_dir, new_head_core_repo_path)
             os.rmdir(temp_dir)
             print("updated name")
