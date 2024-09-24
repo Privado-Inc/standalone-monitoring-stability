@@ -55,8 +55,10 @@ def build(args, skip_build = False, custom_joern = False, joern_base=None, joern
         clone_privado_repo(config.HEAD_PRIVADO_CORE_URL, config.HEAD_CORE_BRANCH_NAME,
                            head_core_repo_path,
                                 f'{config.HEAD_PRIVADO_CORE_OWNER}-{config.HEAD_CORE_BRANCH_NAME}',
-                           True, True, joern_head, args)
+                           custom_joern, True, joern_head, args)
         if custom_joern:
+            # fetch updated privado-core location
+            head_core_repo_path = f'{temp_dir}/privado-core-enterprise/{config.HEAD_CORE_BRANCH_KEY}'
             change_joern_in_build_file(head_core_repo_path, joern_head)
 
     if not os.path.isdir(base_rule_repo_path):
