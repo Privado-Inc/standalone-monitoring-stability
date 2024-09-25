@@ -5,7 +5,7 @@ from utils.compare import main as compare_and_generate_report, compare_files, pr
 from utils.post_to_slack import post_report_to_slack
 from utils.build_binary import build
 from utils.delete import delete_action, clean_after_scan
-from utils.clone_repo import clone_repo_with_location, clone_joern_and_checkout
+from utils.clone_repo import clone_repo_with_location, clone_joern_and_checkout, checkIfBranchExist
 from utils.write_to_file import create_new_excel, write_scan_status_report, write_summary_data, write_to_action_result
 from utils.scan import get_detected_language
 from utils.version_flow import check_update, build_binary_for_joern
@@ -68,6 +68,9 @@ def workflow():
             post_report_to_slack(False)
         args.base = versions[0]
         args.head = versions[1]
+
+    if args.custom_joern:
+        checkIfBranchExist(args)
 
     if not args.m:
         config.init(args)

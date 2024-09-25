@@ -2,6 +2,7 @@ import shutil
 import datetime
 from git.repo.base import Repo
 import config
+import os
 
 import builder
 from utils.helpers import print_timestamp
@@ -48,3 +49,26 @@ def clone_joern_and_checkout(joern_branch, boost=False):
         print("Checked out branch")
     except Exception as e:
         print(f"Error while cloning joern: {e}")
+
+def checkIfBranchExist(args):
+    joern_head_branch = args.custom_joern_head_branch
+    temp_dir = f'{os.getcwd()}/privado-core-temp'
+    if not os.path.isdir(temp_dir):
+        os.system(f'mkdir -r {temp_dir}')
+    repo = clone_repo_with_name(f"https://{os.getenv('CORE_AT')}@github.com/Privado-Inc/privado-core-enterprise.git", f'{temp_dir}', "privado-core-enterprise")
+    try:
+        # Used to check out release tags
+        for remote in repo.remotes:
+            remote.fetch()
+        # fetch all branch info
+        repo.remotes.origin.fetch()
+
+        remote_branches = [ref.name for ref in repo.refs if ref.name.startswith('origin/')]
+
+        if (f'origin/{joern_head_branch}' in remote_branches):
+            print_timestamp(
+                f"$Joern's {joern_head_branch} branch present in privado-core, using privado-core ${joern_head_branch} branch to build image.")
+            args.head = joern_head_branch
+            os.system(f'rm -r {temp_dir}')
+    except Exception as e:
+        print_timestamp(f'Error while checking privado-core branch: {e}')
