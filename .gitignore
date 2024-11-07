@@ -15,4 +15,5 @@ report.zip
 __pycache__/*
 /summary
 global_summary.txt
-venv/
+/venv
+action_result.txt

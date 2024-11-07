@@ -3,7 +3,9 @@ import shutil
 import datetime
 
 import builder
-from utils.write_to_file import write_scan_status_report, create_new_excel, create_new_excel_for_file
+from utils.helpers import print_timestamp
+from utils.write_to_file import write_scan_status_report, create_new_excel, create_new_excel_for_file, \
+    write_to_action_result
 import re
 import config
 
@@ -47,7 +49,7 @@ def scan_repo_report(valid_repos, args):
                                           repo, args.generate_unique_flow, args.debug_mode,
                                           args.use_docker)
 
-            print(f"first commaond {first_command}")
+            print(f"first command {first_command}")
 
             # Execute the command to generate the binary file for first branch
             os.system(first_command)
@@ -75,13 +77,13 @@ def scan_repo_report(valid_repos, args):
                 report[config.BASE_CORE_BRANCH_KEY] = {'scan_status': 'done', 'scan_error_message': '--'}
             except Exception as e:
                 report[config.BASE_CORE_BRANCH_KEY] = {'scan_status': 'failed', 'scan_error_message': str(e)}
-                with open(f"{os.getcwd()}/action_result.txt", "a") as workflow_file:
-                    workflow_file.write(f"{repo} - scan failed\n")
+                write_to_action_result(f"{repo} - scan failed\n")
 
             # Scan the cloned repo with second branch and push output to a file with debug logs
             second_command = build_command(cwd, config.HEAD_CORE_BRANCH_NAME, config.HEAD_CORE_BRANCH_KEY, scan_dir,
                                            repo, args.generate_unique_flow, args.debug_mode, args.use_docker)
 
+            print(second_command)
             language = get_detected_language(repo, config.BASE_CORE_BRANCH_KEY)
             report["language"] = language
 
@@ -102,8 +104,7 @@ def scan_repo_report(valid_repos, args):
                 report[config.HEAD_CORE_BRANCH_KEY] = {'scan_status': 'done', 'scan_error_message': '--'}
             except Exception as e:
                 report[config.HEAD_CORE_BRANCH_KEY] = {'scan_status': 'failed', 'scan_error_message': str(e)}
-                with open(f"{os.getcwd()}/action_result.txt", "a") as workflow_file:
-                    workflow_file.write(f"{repo} - scan failed\n")
+                write_to_action_result(f"{repo} - scan failed\n")
             
             scan_report[repo] = report
 
@@ -147,56 +148,31 @@ def parse_flows_data(repo_name, branch_name, branch_key, scan_report):
 
     cwd = os.getcwd()
 
-    scan_metadata_regex = r".*(Code scanning|Binary file size|Deduplicating flows is done in).*"
     source_regex = r".*(no of source nodes).*"
-    reachable_by_flow_regex = r".*(Finding flows is done in).*"
+    final_flows_regex = r".*(Processed final flows).*"
     scan_metadata_values = []
     source_metadata_values = []
-    reachable_by_flow_values = []
 
     with open(f"{cwd}/temp/result/{branch_key}/{repo_name}-output.txt") as scan_time_output:
         for line in scan_time_output.readlines():
-            if re.search(scan_metadata_regex, line):
-                scan_metadata_values.append(line)
             if re.search(source_regex, line):
                 source_metadata_values.append(line)
-            if re.search(reachable_by_flow_regex, line):
-                reachable_by_flow_values.append(line)
+            if re.search(final_flows_regex, line):
+                scan_metadata_values.append(line)
 
     try:
         unique_flows = scan_metadata_values[0].split('-')[-1]
         scan_report[repo_name][branch_key]['unique_flows'] = unique_flows
     except Exception as e:
-        print(f'{builder.get_current_time()} - Error while parsing unique flow data: {e}')
+        print_timestamp(f'Error while parsing unique flow data: {e}')
         scan_report[repo_name][branch_key]['unique_flows'] = '--'
-
-    try:
-        code_scan_time = scan_metadata_values[1].split('-')[-2]
-        scan_report[repo_name][branch_key]['code_scan_time'] = code_scan_time
-    except Exception as e:
-        print(f'{builder.get_current_time()} - Error while parsing code  time data: {e}')
-        scan_report[repo_name][branch_key]['code_scan_time'] = '--'
-
-    try:
-        binary_file_size = scan_metadata_values[2].split('-')[-1]
-        scan_report[repo_name][branch_key]['binary_file_size'] = binary_file_size
-    except Exception as e:
-        print(f'{builder.get_current_time()} - Error while parsing binary file size data: {e}')
-        scan_report[repo_name][branch_key]['binary_file_size'] = '--'
 
     try:
         source_count = source_metadata_values[0].split()[-1]
         scan_report[repo_name][branch_key]['unique_source'] = source_count
     except Exception as e:
-        print(f'{builder.get_current_time()} - Error while parsing unique source data: {e}')
+        print_timestamp(f'Error while parsing unique source data: {e}')
         scan_report[repo_name][branch_key]['unique_source'] = '--'
-
-    try:
-        reachable_by_flow_time = reachable_by_flow_values[0].split('ms')[0].split('-')[-1]
-        scan_report[repo_name][branch_key]['reachable_flow_time'] = reachable_by_flow_time
-    except Exception as e:
-        print(f'{builder.get_current_time()} - Error while parsing reachable flow time data: {e}')
-        scan_report[repo_name][branch_key]['reachable_flow_time'] = '--'
 
 
 # Build the scan command
