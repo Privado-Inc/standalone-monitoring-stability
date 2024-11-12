@@ -1,6 +1,1 @@
 https://github.com/rhourani/E-Commerce-Resturant-Android-Java-Apps.git
-https://github.com/watson031/ISIDrone.git
-https://github.com/OSSpk/Library-Management-System-JAVA.git
-https://github.com/sadatrafsanjani/JavaFX-Point-of-Sales.git
-https://github.com/galibBd/OnlineSchoolManagementSystem.git
-https://github.com/Privado-Demo/privado-accounts-api

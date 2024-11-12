@@ -1,4 +1,1 @@
 https://github.com/PacoDw/introduction_to_GORM
-https://github.com/RELATO/poptest2
-https://github.com/Edmartt/go-authentication-api
-https://github.com/Privado-Demo/golang-ecommerce-store

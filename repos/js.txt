@@ -1,5 +1,1 @@
 https://github.com/Privado-Inc/njs_accounts.git
-https://github.com/dbMundada/tech-specter-client
-https://github.com/gothinkster/angular-realworld-example-app
-https://github.com/dbMundada/expressCart
-https://github.com/jstibenpb/nodejs-express-template

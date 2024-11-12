@@ -1,2 +1,1 @@
 https://github.com/anouarabdsslm/laravel-paypalpayment.git
-https://github.com/Rust-Sol-Dev/fanse-dating-laravel-backend.git

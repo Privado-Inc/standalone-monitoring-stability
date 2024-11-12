@@ -339,6 +339,11 @@ def main():
 
 
     for language_summary in get_file_contents(args.summary_dir):
+
+        print("language summary")
+        print(language_summary)
+        print("pppp")
+
         scantime_start = get_num_until_summary_start(language_summary)
         scanfail_report.calculate_start_end(scantime_start).get_result(language_summary)
         
@@ -358,8 +363,14 @@ def main():
 
     summary += scanfail_report.get_summary()
     summary += scantime_result.get_summary()
+    print("AAA")
+    print(summary)
     summary += reachable_by_flow_time_result.get_summary()
+    print("BVB")
+    print(summary)
     summary += reachable_by_flow_count_difference_result.get_summary()
+    print("llll")
+    print(summary)
     summary += data_element_difference_result.get_summary()
     summary += missing_sinks_value_result.get_summary()
     summary += source_to_sink_flow_difference_result.get_summary()
