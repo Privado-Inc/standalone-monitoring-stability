@@ -342,11 +342,11 @@ def main():
         scantime_start = get_num_until_summary_start(language_summary)
         scanfail_report.calculate_start_end(scantime_start).get_result(language_summary)
         
-        # scantime_result.calculate_start_end(scantime_start).get_result(language_summary)
+        scantime_result.calculate_start_end(scantime_start).get_result(language_summary)
 
-        # reachable_by_flow_time_result.calculate_start_end(scantime_start).get_result(language_summary)
+        reachable_by_flow_time_result.calculate_start_end(scantime_start).get_result(language_summary)
 
-        # reachable_by_flow_count_difference_result.calculate_start_end(scantime_start).get_result(language_summary)
+        reachable_by_flow_count_difference_result.calculate_start_end(scantime_start).get_result(language_summary)
 
         source_to_sink_flow_difference_result.calculate_start_end(scantime_start).get_result(language_summary)
 
@@ -357,9 +357,9 @@ def main():
         missing_sinks_value_result.calculate_start_end(scantime_start).get_result(language_summary)
 
     summary += scanfail_report.get_summary()
-    # summary += scantime_result.get_summary()
-    # summary += reachable_by_flow_time_result.get_summary()
-    # summary += reachable_by_flow_count_difference_result.get_summary()
+    summary += scantime_result.get_summary()
+    summary += reachable_by_flow_time_result.get_summary()
+    summary += reachable_by_flow_count_difference_result.get_summary()
     summary += data_element_difference_result.get_summary()
     summary += missing_sinks_value_result.get_summary()
     summary += source_to_sink_flow_difference_result.get_summary()
