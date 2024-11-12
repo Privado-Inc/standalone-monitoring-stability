@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 from slack_sdk import WebClient
 
 import builder
+from utils.helpers import print_timestamp
 
 
 def zip_result():
@@ -52,10 +53,10 @@ def post_report_to_slack(zip_require):
             )
 
         if response.status_code == 200:
-            print(f'{builder.get_current_time()} - Report sent to slack channel')
+            print_timestamp(f'Report sent to slack channel')
         else:
-            print(f'{builder.get_current_time()} - Report not sent: {response.data}')
+            print_timestamp(f'Report not sent: {response.data}')
 
     except Exception as e:
-        print(f'{builder.get_current_time()} - Error in sending the report to slack: {str(e)}')
+        print_timestamp(f'Error in sending the report to slack: {str(e)}')
 
