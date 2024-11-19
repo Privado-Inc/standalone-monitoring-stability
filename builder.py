@@ -26,12 +26,15 @@ def get_repo_path(repo):
 
 
 def get_joern_update_file_path(path):
-    return f'{pwd}/temp/joern/{path}/privado-core/updateDependencies.sh'
+    return f'{pwd}/temp/joern/{path}/privado-core-enterprise/updateDependencies.sh'
 
 
 def get_joern_privado_path(path):
-    return f'{pwd}/temp/joern/{path}/privado-core'
+    return f'{pwd}/temp/joern/{path}/privado-core-enterprise'
 
 
 def get_privado_path(version):
     return f'{pwd}/temp/privado/Privado-Inc-{version}#Privado-Inc-dev'
+
+def get_joern_path(branch_name):
+    return f"{pwd}/temp/joern_{branch_name}"
