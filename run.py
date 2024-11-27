@@ -75,7 +75,7 @@ def workflow():
     if not args.m:
         config.init(args)
     else:
-        config.init_file(args)
+        config.init_file()
 
     if args.joern_update:
         if not build_binary_for_joern(versions):
