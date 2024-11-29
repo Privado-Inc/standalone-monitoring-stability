@@ -12,7 +12,7 @@ def read_joern_version_from_file(filePath="./temp/m2Version.txt"):
         return f"{f.read().strip()}"
 
 def change_joern_in_build_file(repo_path, joern_branch):
-    version = read_joern_version_from_file(f"./temp/m2Version_{joern_branch}.txt").strip()
+    version = read_joern_version_from_file(f"./temp/m2Version_{joern_branch.replace('/', '-')}.txt").strip()
     joernVersionRegex = "val joernVersion([ ]*)= .*"
     print(f"Old version: {joernVersionRegex}")
     updatedJoernVersion  = f"val joernVersion = \"{version}\""
@@ -124,4 +124,4 @@ def clone_privado_repo(repo_url, branch_name, temp_dir, name):
 def publish_joern_and_get_version(branch_name):
     print(f"In publish for branch: {branch_name}")
     awk_split = "awk '{split($0,a,\"/\"); print a[9]}'"
-    os.system(f"cd {os.getcwd()}/temp/joern_{branch_name} && sbt publishM2 | grep published | {awk_split} | sort -u > ../m2Version_{branch_name}.txt")
+    os.system(f"cd {os.getcwd()}/temp/joern_{branch_name} && sbt publishM2 | grep published | {awk_split} | sort -u > ../m2Version_{branch_name.replace('/', '-')}.txt")
