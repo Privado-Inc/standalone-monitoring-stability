@@ -17,3 +17,4 @@ __pycache__/*
 global_summary.txt
 /venv
 action_result.txt
+/gen

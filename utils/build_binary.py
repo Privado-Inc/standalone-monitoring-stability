@@ -4,8 +4,12 @@ import shutil
 import builder
 from utils.clone_repo import clone_repo_with_name
 import config
+from utils.file_utils import check_file_exists
 from utils.helpers import print_timestamp
 import re
+
+from utils.write_to_file import write_to_action_result
+
 
 def read_joern_version_from_file(filePath="./temp/m2Version.txt"):
     with open(filePath, "r") as f:
@@ -77,6 +81,14 @@ def build_binary_and_move(repo_name, key):
     os.system("cd " + core_dir + " && sbt clean && sbt stage")
     os.system("mkdir -p " + final_dir)
     os.system("mv " + binary_dir + " " + final_dir)
+
+    # Fail the comparison report if the privado-core binary is not available due to any reason.
+    if not check_file_exists(f"{final_dir}/bin/privado-core"):
+        print_timestamp(f"Build failed for {key}.")
+        print_timestamp(f"Exiting the comparison report. Reason - Build failure for branch {key}.")
+        write_to_action_result(f"Build failed for {key}")
+        exit(1)
+
     print_timestamp(f'Build Completed')
 
 
@@ -93,6 +105,14 @@ def build_binary_and_move_for_joern(core_dir, key):
 
     os.system("mkdir -p " + final_dir)
     os.system("mv " + binary_dir + " " + final_dir)
+
+    # Fail the comparison report if the privado-core binary is not available due to any reason.
+    if not check_file_exists(f"{final_dir}/bin/privado-core"):
+        print_timestamp(f"Build failed for {key}.")
+        print_timestamp(f"Exiting the comparison report. Reason - Build failure for branch {key}.")
+        write_to_action_result(f"Build failed for {key}")
+        exit(1)
+
     print_timestamp(f'Build Completed')
     return True
 
