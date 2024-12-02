@@ -124,4 +124,7 @@ def clone_privado_repo(repo_url, branch_name, temp_dir, name):
 def publish_joern_and_get_version(branch_name):
     print(f"In publish for branch: {branch_name}")
     awk_split = "awk '{split($0,a,\"/\"); print a[9]}'"
-    os.system(f"cd {os.getcwd()}/temp/joern_{branch_name} && sbt publishM2 | grep published | {awk_split} | sort -u > ../m2Version_{branch_name.replace('/', '-')}.txt")
+    branch_name = branch_name.replace('/', '-')
+    print("branch_name", branch_name)
+    os.system(f"cd {os.getcwd()}/temp/joern_{branch_name} && sbt publishM2 | grep published | {awk_split} | sort -u > ../m2Version_{branch_name}.txt")
+    print("pppppp")
