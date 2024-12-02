@@ -4,15 +4,19 @@ import shutil
 import builder
 from utils.clone_repo import clone_repo_with_name
 import config
+from utils.file_utils import check_file_exists
 from utils.helpers import print_timestamp
 import re
+
+from utils.write_to_file import write_to_action_result
+
 
 def read_joern_version_from_file(filePath="./temp/m2Version.txt"):
     with open(filePath, "r") as f:
         return f"{f.read().strip()}"
 
 def change_joern_in_build_file(repo_path, joern_branch):
-    version = read_joern_version_from_file(f"./temp/m2Version_{joern_branch}.txt").strip()
+    version = read_joern_version_from_file(f"./temp/m2Version_{joern_branch.replace('/', '-')}.txt").strip()
     joernVersionRegex = "val joernVersion([ ]*)= .*"
     print(f"Old version: {joernVersionRegex}")
     updatedJoernVersion  = f"val joernVersion = \"{version}\""
@@ -77,6 +81,14 @@ def build_binary_and_move(repo_name, key):
     os.system("cd " + core_dir + " && sbt clean && sbt stage")
     os.system("mkdir -p " + final_dir)
     os.system("mv " + binary_dir + " " + final_dir)
+
+    # Fail the comparison report if the privado-core binary is not available due to any reason.
+    if not check_file_exists(f"{final_dir}/bin/privado-core"):
+        print_timestamp(f"Build failed for {key}.")
+        print_timestamp(f"Exiting the comparison report. Reason - Build failure for branch {key}.")
+        write_to_action_result(f"Build failed for {key}")
+        exit(1)
+
     print_timestamp(f'Build Completed')
 
 
@@ -93,6 +105,14 @@ def build_binary_and_move_for_joern(core_dir, key):
 
     os.system("mkdir -p " + final_dir)
     os.system("mv " + binary_dir + " " + final_dir)
+
+    # Fail the comparison report if the privado-core binary is not available due to any reason.
+    if not check_file_exists(f"{final_dir}/bin/privado-core"):
+        print_timestamp(f"Build failed for {key}.")
+        print_timestamp(f"Exiting the comparison report. Reason - Build failure for branch {key}.")
+        write_to_action_result(f"Build failed for {key}")
+        exit(1)
+
     print_timestamp(f'Build Completed')
     return True
 
@@ -124,4 +144,5 @@ def clone_privado_repo(repo_url, branch_name, temp_dir, name):
 def publish_joern_and_get_version(branch_name):
     print(f"In publish for branch: {branch_name}")
     awk_split = "awk '{split($0,a,\"/\"); print a[9]}'"
+    branch_name = branch_name.replace('/', '-')
     os.system(f"cd {os.getcwd()}/temp/joern_{branch_name} && sbt publishM2 | grep published | {awk_split} | sort -u > ../m2Version_{branch_name}.txt")
