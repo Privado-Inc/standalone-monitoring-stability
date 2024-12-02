@@ -1,1 +1,1 @@
-https://github.com/pay-rails/pay
+https://github.com/lhpdev/books-api
