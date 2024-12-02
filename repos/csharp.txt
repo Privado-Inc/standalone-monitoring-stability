@@ -1,2 +1,2 @@
-https://github.com/vinaybhide/Analytics.git
+https://github.com/vinaybhide/Analytics
 https://github.com/loic-sharma/BaGet
