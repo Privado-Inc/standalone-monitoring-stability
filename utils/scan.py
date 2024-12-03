@@ -4,6 +4,7 @@ import datetime
 
 import builder
 from utils.helpers import print_timestamp
+from utils.processor.stage_metadata import get_summary_extract, update_diff_cache
 from utils.write_to_file import write_scan_status_report, create_new_excel, create_new_excel_for_file, \
     write_to_action_result
 import re
@@ -63,12 +64,20 @@ def scan_repo_report(valid_repos, args):
             src_path_intermediate = f'{scan_dir}/.privado/intermediate.json'
             dest_path_intermediate = f'{cwd}/temp/result/{config.BASE_CORE_BRANCH_KEY}/{repo}-intermediate.json'
 
+            src_path_stage_metadata = f'{scan_dir}/.privado/stageMetadata.json'
+            dest_path_stage_metadata = f'{cwd}/temp/result/{config.BASE_CORE_BRANCH_KEY}/{repo}-stageMetadata.json'
+
+            base_stage_metadata = None
+            head_stage_metadata = None
             if os.path.isfile(src_path_semantic):
                 shutil.move(src_path_semantic, dest_path_semantic)
 
             if os.path.isfile(src_path_intermediate):
                 shutil.move(src_path_intermediate, dest_path_intermediate)
 
+            if os.path.isfile(src_path_stage_metadata):
+                shutil.move(src_path_stage_metadata, dest_path_stage_metadata)
+                base_stage_metadata = get_summary_extract(dest_path_stage_metadata)
             report = {}
 
             # Move the privado.json file to the result folder
@@ -93,12 +102,17 @@ def scan_repo_report(valid_repos, args):
             dest_path = f'{cwd}/temp/result/{config.HEAD_CORE_BRANCH_KEY}/{repo}.json'
             dest_path_intermediate = f'{cwd}/temp/result/{config.HEAD_CORE_BRANCH_KEY}/{repo}-intermediate.json'
             dest_path_semantic = f'{cwd}/temp/result/{config.HEAD_CORE_BRANCH_KEY}/{repo}-semantic.txt'
-
+            dest_path_stage_metadata = f'{cwd}/temp/result/{config.HEAD_CORE_BRANCH_KEY}/{repo}-stageMetadata.json'
 
             # move the intermediate result if exist
             if os.path.isfile(src_path_intermediate):
                 shutil.move(src_path_intermediate, dest_path_intermediate)
 
+            if os.path.isfile(src_path_stage_metadata):
+                shutil.move(src_path_stage_metadata, dest_path_stage_metadata)
+                head_stage_metadata = get_summary_extract(dest_path_stage_metadata)
+
+            update_diff_cache(base_stage_metadata, head_stage_metadata)
             try:
                 shutil.move(src_path, dest_path)
                 report[config.HEAD_CORE_BRANCH_KEY] = {'scan_status': 'done', 'scan_error_message': '--'}
