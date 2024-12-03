@@ -14,8 +14,8 @@ def get_summary_extract(file_path):
         time_keys = ["Finding flows", "Total time"]
         count_keys = ["Unique flows"]
 
-        result = dict({k: metadata_object[stage_metadata_time][k] for k in time_keys})
-        result.update({j: metadata_object[stage_metadata_count][j] for j in count_keys})
+        result = dict({k: metadata_object[stage_metadata_time].get(k, 0) for k in time_keys})
+        result.update({j: metadata_object[stage_metadata_count].get(j, 0) for j in count_keys})
 
         return result
 
