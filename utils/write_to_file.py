@@ -5,7 +5,7 @@ import functools
 from math import floor
 import builder
 import config
-from utils.DiffCache import DiffCache, TimeDiffCache
+from utils.DiffCache import DiffCache
 from utils.helpers import print_timestamp
 
 
@@ -254,11 +254,11 @@ def write_summary_data(workbook_location, report, data_elements, collections ,fl
                               "--"])
 
     # cannot divide by zero
-    scan_time_positive_average = TimeDiffCache["scan_time"]["more"][1] / TimeDiffCache["scan_time"]["more"][0] if TimeDiffCache["scan_time"]["more"][0] > 0 else 0 # Average of more time repos
-    scan_time_negative_average = TimeDiffCache["scan_time"]["less"][1] / TimeDiffCache["scan_time"]["less"][0] if TimeDiffCache["scan_time"]["less"][0] > 0 else 0 # Average of less time repos
+    scan_time_positive_average = scan_time_positive_average / scan_time_positive if scan_time_positive > 0 else 0 # Average of more time repos
+    scan_time_negative_average = (scan_time_negative_average / (len(report.keys()) - scan_time_positive)) if (len(report.keys()) - scan_time_positive) > 0 else 0 # Average of less time repos
     
-    reachable_by_flow_time_positive_average = TimeDiffCache["reachable_by_flow_time"]["more"][1] / TimeDiffCache["reachable_by_flow_time"]["more"][0] if TimeDiffCache["reachable_by_flow_time"]["more"][0] > 0 else 0 # Average of more time repos
-    reachable_by_flow_time_negative_average = TimeDiffCache["reachable_by_flow_time"]["less"][1] / TimeDiffCache["reachable_by_flow_time"]["less"][0] if TimeDiffCache["reachable_by_flow_time"]["less"][0] > 0 else 0 # Average of less time repos
+    reachable_by_flow_time_positive_average = reachable_by_flow_time_positive_average / reachable_by_flow_time_positive if reachable_by_flow_time_positive > 0 else 0 # Average of more time repos
+    reachable_by_flow_time_negative_average = reachable_by_flow_time_negative_average / (len(report.keys()) - reachable_by_flow_time_positive) if (len(report.keys()) - reachable_by_flow_time_positive) > 0 else 0 # Average of less time repos
 
     missing_sink_average = total_missing_sinks // missing_sink_repo_count if missing_sink_repo_count > 0 else 0
     
@@ -266,34 +266,22 @@ def write_summary_data(workbook_location, report, data_elements, collections ,fl
         A. Repository scan failure report
         Scan for {num_repos_failed} out of {len(list(report.keys()))} repositories failed. {":rotating_light:" if num_repos_failed > 0 else ""}
 {scan_failure if len(scan_failure) > 0 else ""} 
-        B. Scan time difference
-        {TimeDiffCache["scan_time"]["more"][0]} repositories took on an average {floor(scan_time_positive_average)} ms more. 
-        {TimeDiffCache["scan_time"]["less"][0]} repositories took on an average {floor(scan_time_negative_average)} ms less.
-        
-        C. Reachable by Flow time difference.
-        {TimeDiffCache["reachable_by_flow_time"]["more"][0]} repositories took on an average {floor(reachable_by_flow_time_positive_average)} ms more. 
-        {TimeDiffCache["reachable_by_flow_time"]["less"][0]} repositories took on an average {floor(reachable_by_flow_time_negative_average)} ms less.
-        
-        D. Reachable by Flow count difference.
-        {DiffCache["reachable_by_flow_count"]["matching"]} repositories have exactly matching flows.
-        {DiffCache["reachable_by_flow_count"]["missing"]} repositories have missing flows. {add_missing_emoji(DiffCache["reachable_by_flow_count"]["missing"])}
-        {DiffCache["reachable_by_flow_count"]["additional"]} repositories have additional flows.
-        
-        E. Unique data elements difference.
+
+        B. Unique data elements difference.
         {DiffCache["sources"]["matching"]} repositories have exactly matching elements.
         {DiffCache["sources"]["missing"]} repositories have missing data elements. {add_missing_emoji(less_sources)}
         {DiffCache["sources"]["additional"]} repositories have additional elements.
 
-        F. Missing sinks.
+        C. Missing sinks.
         {DiffCache["sinks"]["missing"]} repositories have missing sinks. {add_missing_emoji(DiffCache["sinks"]["missing"])}
 
-        G. Source to Sink Flow data
+        D. Source to Sink Flow data
         {hundred_percent_missing} repositories have hundred percent missing flows. {add_missing_emoji(hundred_percent_missing)} {add_missing_emoji(hundred_percent_missing)}
         {DiffCache["dataflows"]["matching"]} repositories have matching flows.
         {DiffCache["dataflows"]["additional"]} repositories have on an average {floor(additional_average)} additional flows.
         {DiffCache["dataflows"]["missing"]} repositories have on an average {floor(missing_average)} missing flows. {add_missing_emoji(missing_not_zero)}
         
-        H. Collection Summary
+        E. Collection Summary
         {DiffCache["collections"]["matching"]} repositories have exactly matching collections.
         {DiffCache["collections"]["missing"]} repositories have missing collections. {add_missing_emoji(DiffCache["collections"]["missing"])}
         {DiffCache["collections"]["additional"]} repositories have additional collections.

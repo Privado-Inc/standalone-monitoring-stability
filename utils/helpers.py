@@ -1,5 +1,5 @@
 import builder
-from utils.DiffCache import update_count, update_count_time_diffcache
+from utils.DiffCache import update_count
 
 
 def print_timestamp(message):
@@ -14,11 +14,6 @@ def add_to_diff_cache(diff_cache_key, additional, missing):
     if additional == 0 and missing == 0:
         update_count(diff_cache_key, "matching")
 
-def add_to_time_diff_cache(diff_cache_key, diff):
-    if diff >= 0:
-        update_count_time_diffcache(diff_cache_key, "more", abs(diff))
-    else:
-        update_count_time_diffcache(diff_cache_key, "less", abs(diff))
 
 def get_missing_additional_from_row(row: list):
     try:
@@ -26,4 +21,3 @@ def get_missing_additional_from_row(row: list):
     except IndexError as iex:
         print_timestamp("[Error]: The row supplied does not comply with the standard size.")
         print(iex)
-
