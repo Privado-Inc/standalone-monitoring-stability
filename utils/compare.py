@@ -469,10 +469,10 @@ def process_sinks(base_data, head_data, repo_name, scan_status, language, key='s
     sink_set_base = base_data[key]
     sink_set_head = head_data[key]
 
-    for sink in head_data:
+    for sink in sink_set_head:
         head_data.add(sink['name'])
 
-    for sink in base_data:
+    for sink in sink_set_base:
         base_data.add(sink['name'])
 
     base_sink_count = len(sink_set_base)
