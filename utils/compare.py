@@ -190,8 +190,8 @@ def process_source_sink_and_collection_data(worksheet_name, base_data, head_data
         # Analysis for the storages sink
         storage_result = process_individual_data(base_data['dataFlow'], head_data['dataFlow'], repo_name, scan_status, language,
                                     key='storages')
-        third_party_result = process_sinks(base_data['dataFlow'], head_data['dataFlow'], repo_name, scan_status, language,
-                                    key='third_parties')
+        third_party_result = process_sinks(base_data, head_data, repo_name, scan_status, language,
+                                    key='sinks')
         leakages_result = process_individual_data(base_data['dataFlow'], head_data['dataFlow'], repo_name, scan_status, language,
                                     key='leakages')
 
