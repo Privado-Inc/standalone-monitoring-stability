@@ -466,13 +466,16 @@ def process_individual_data(base_dataflows, head_dataflows, repo_name, scan_stat
 
 def process_sinks(base_data, head_data, repo_name, scan_status, language, key='sinks', update_diff_cache=False):
     diff_cache_key = "sinks"
-    sink_set_base = base_data[key]
-    sink_set_head = head_data[key]
+    base_sink = base_data[key]
+    head_sink = head_data[key]
 
-    for sink in sink_set_head:
+    sink_set_base = set()
+    sink_set_head = set()
+
+    for sink in head_sink:
         head_data.add(sink['name'])
 
-    for sink in sink_set_base:
+    for sink in base_sink:
         base_data.add(sink['name'])
 
     base_sink_count = len(sink_set_base)
