@@ -188,11 +188,11 @@ def process_source_sink_and_collection_data(worksheet_name, base_data, head_data
         # Analysis for the Source
         result.append(process_sources(base_data['sources'], head_data['sources'], repo_name, language, update_diff_cache=True))
         # Analysis for the storages sink
-        storage_result = process_sinks(base_data['dataFlow'], head_data['dataFlow'], repo_name, scan_status, language,
+        storage_result = process_individual_data(base_data['dataFlow'], head_data['dataFlow'], repo_name, scan_status, language,
                                     key='storages')
         third_party_result = process_sinks(base_data['dataFlow'], head_data['dataFlow'], repo_name, scan_status, language,
                                     key='third_parties')
-        leakages_result = process_sinks(base_data['dataFlow'], head_data['dataFlow'], repo_name, scan_status, language,
+        leakages_result = process_individual_data(base_data['dataFlow'], head_data['dataFlow'], repo_name, scan_status, language,
                                     key='leakages')
 
         missing_storages, additional_storages = get_missing_additional_from_row(storage_result)
@@ -412,7 +412,7 @@ def process_sources(source_base, source_head, repo_name, language, update_diff_c
             source_name_base, '0 ', added, removed, missing_in_head]
 
 
-def process_sinks(base_dataflows, head_dataflows, repo_name, scan_status, language ,key='storages', update_diff_cache=False):
+def process_individual_data(base_dataflows, head_dataflows, repo_name, scan_status, language ,key='storages', update_diff_cache=False):
     diff_cache_key = "sinks"
     base_sink = base_dataflows[key]
     head_sink = head_dataflows[key]
@@ -464,6 +464,52 @@ def process_sinks(base_dataflows, head_dataflows, repo_name, scan_status, langua
     return [repo_name, language ,'Sink', key, head_sink_count, base_sink_count, sink_names_head, sink_names_base, '0',
             added, removed, missing_in_head]
 
+def process_sinks(base_data, head_data, repo_name, scan_status, language, key='sinks', update_diff_cache=False)
+    diff_cache_key = "sinks"
+    sink_set_base = base_data[key]
+    sink_set_head = head_data[key]
+
+    for sink in head_data:
+        head_data.add(sink['name'])
+
+    for sink in base_data:
+        base_data.add(sink['name'])
+
+    base_sink_count = len(sink_set_base)
+    head_sink_count = len(sink_set_head)
+
+    sink_names_base = '\n'.join(sink_set_base)
+    sink_names_head = '\n'.join(sink_set_head)
+
+    # percent change in the latest sources wrt stable release
+    # try:
+    #     percent_change = f'{round((((head_sink_count - base_sink_count) / base_sink_count) * 100), 2)}%'
+    # except Exception as e:
+    #     percent_change = '0.00%'
+
+    added_sinks_head = sink_set_head.difference(sink_set_base)
+    missing_sinks_head = sink_set_base.difference(sink_set_head)
+    added = '\n'.join(list(added_sinks_head))
+    removed = '\n'.join(list(missing_sinks_head))
+
+    # Nodes present in base, but not in head
+    missing_in_head = len(sink_set_base.union(sink_set_head).difference(sink_set_head))
+
+    # Write to action file so action fails irrespective of the comparison report completion
+    if missing_in_head:
+        write_to_action_result(f"{missing_in_head} sinks missing for {repo_name}")
+
+    if update_diff_cache:
+        add_to_diff_cache(diff_cache_key, len(added_sinks_head), len(missing_sinks_head))
+
+    if scan_status is not None:
+        if not scan_status[repo_name].__contains__('missing_sink'):
+            scan_status[repo_name]['missing_sink'] = missing_in_head
+        else:
+            scan_status[repo_name]['missing_sink'] += missing_in_head
+
+    return [repo_name, language ,'Sink', key, head_sink_count, base_sink_count, sink_names_head, sink_names_base, '0',
+            added, removed, missing_in_head]
 
 def process_path_analysis(worksheet_name, base_source, head_source, repo_name, language, header_flag, write_report=True, update_diff_cache=False):
     diff_cache_key = "dataflows"
