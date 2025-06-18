@@ -1,1 +1,2 @@
 https://github.com/PHPMailer/PHPMailer.git
+https://github.com/HiteshMah-Jan/laravel-ecommerce.git
