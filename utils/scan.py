@@ -29,6 +29,41 @@ def get_docker_commands(tag, repo_path):
         return f'PRIVADO_DEV=1 PRIVADO_TAG={tag} privado  {repo_path}'
 
 
+def copy_results(repo, scan_dir, cwd, branch):
+    src_path = f'{scan_dir}/.privado/privado.json'
+    dest_path = f'{cwd}/temp/result/{branch}/{repo}.json'
+
+    src_path_semantic = f'{scan_dir}/.privado/semantic.txt'
+    dest_path_semantic = f'{cwd}/temp/result/{branch}/{repo}-semantic.txt'
+
+    src_path_intermediate = f'{scan_dir}/.privado/intermediate.json'
+    dest_path_intermediate = f'{cwd}/temp/result/{branch}/{repo}-intermediate.json'
+
+    src_path_stage_metadata = f'{scan_dir}/.privado/stageMetadata.json'
+    dest_path_stage_metadata = f'{cwd}/temp/result/{branch}/{repo}-stageMetadata.json'
+
+    metadata = None
+    if os.path.isfile(src_path_semantic):
+        shutil.move(src_path_semantic, dest_path_semantic)
+
+    if os.path.isfile(src_path_intermediate):
+        shutil.move(src_path_intermediate, dest_path_intermediate)
+
+    if os.path.isfile(src_path_stage_metadata):
+        shutil.move(src_path_stage_metadata, dest_path_stage_metadata)
+        metadata = get_summary_extract(dest_path_stage_metadata)
+
+    scan_status = None
+    # Move the privado.json file to the result folder
+    try:
+        shutil.move(src_path, dest_path)
+        scan_status = {'scan_status': 'done', 'scan_error_message': '--'}
+    except Exception as e:
+        scan_status = {'scan_status': 'failed', 'scan_error_message': str(e)}
+        write_to_action_result(f"{repo} - scan failed\n")
+    return metadata, scan_status
+
+
 def scan_repo_report(valid_repos, args):
     cwd = os.getcwd()
 
@@ -54,39 +89,9 @@ def scan_repo_report(valid_repos, args):
 
             # Execute the command to generate the binary file for first branch
             os.system(first_command)
-
-            src_path = f'{scan_dir}/.privado/privado.json'
-            dest_path = f'{cwd}/temp/result/{config.BASE_CORE_BRANCH_KEY}/{repo}.json'
-
-            src_path_semantic = f'{scan_dir}/.privado/semantic.txt'
-            dest_path_semantic = f'{cwd}/temp/result/{config.BASE_CORE_BRANCH_KEY}/{repo}-semantic.txt'
-
-            src_path_intermediate = f'{scan_dir}/.privado/intermediate.json'
-            dest_path_intermediate = f'{cwd}/temp/result/{config.BASE_CORE_BRANCH_KEY}/{repo}-intermediate.json'
-
-            src_path_stage_metadata = f'{scan_dir}/.privado/stageMetadata.json'
-            dest_path_stage_metadata = f'{cwd}/temp/result/{config.BASE_CORE_BRANCH_KEY}/{repo}-stageMetadata.json'
-
-            base_stage_metadata = None
-            head_stage_metadata = None
-            if os.path.isfile(src_path_semantic):
-                shutil.move(src_path_semantic, dest_path_semantic)
-
-            if os.path.isfile(src_path_intermediate):
-                shutil.move(src_path_intermediate, dest_path_intermediate)
-
-            if os.path.isfile(src_path_stage_metadata):
-                shutil.move(src_path_stage_metadata, dest_path_stage_metadata)
-                base_stage_metadata = get_summary_extract(dest_path_stage_metadata)
             report = {}
-
-            # Move the privado.json file to the result folder
-            try:
-                shutil.move(src_path, dest_path)
-                report[config.BASE_CORE_BRANCH_KEY] = {'scan_status': 'done', 'scan_error_message': '--'}
-            except Exception as e:
-                report[config.BASE_CORE_BRANCH_KEY] = {'scan_status': 'failed', 'scan_error_message': str(e)}
-                write_to_action_result(f"{repo} - scan failed\n")
+            base_stage_metadata, base_stage_status = copy_results(repo, scan_dir, cwd, config.BASE_CORE_BRANCH_NAME)
+            report[config.BASE_CORE_BRANCH_NAME] = base_stage_status
 
             # Scan the cloned repo with second branch and push output to a file with debug logs
             second_command = build_command(cwd, config.HEAD_CORE_BRANCH_NAME, config.HEAD_CORE_BRANCH_KEY, scan_dir,
@@ -99,27 +104,10 @@ def scan_repo_report(valid_repos, args):
             # Execute the command to generate the binary file for second branch
             os.system(second_command)
 
-            dest_path = f'{cwd}/temp/result/{config.HEAD_CORE_BRANCH_KEY}/{repo}.json'
-            dest_path_intermediate = f'{cwd}/temp/result/{config.HEAD_CORE_BRANCH_KEY}/{repo}-intermediate.json'
-            dest_path_semantic = f'{cwd}/temp/result/{config.HEAD_CORE_BRANCH_KEY}/{repo}-semantic.txt'
-            dest_path_stage_metadata = f'{cwd}/temp/result/{config.HEAD_CORE_BRANCH_KEY}/{repo}-stageMetadata.json'
-
-            # move the intermediate result if exist
-            if os.path.isfile(src_path_intermediate):
-                shutil.move(src_path_intermediate, dest_path_intermediate)
-
-            if os.path.isfile(src_path_stage_metadata):
-                shutil.move(src_path_stage_metadata, dest_path_stage_metadata)
-                head_stage_metadata = get_summary_extract(dest_path_stage_metadata)
+            head_stage_metadata, head_stage_status = copy_results(repo, scan_dir, cwd, config.HEAD_CORE_BRANCH_KEY)
+            report[config.HEAD_CORE_BRANCH_KEY] = head_stage_status
 
             update_diff_cache(base_stage_metadata, head_stage_metadata)
-            try:
-                shutil.move(src_path, dest_path)
-                report[config.HEAD_CORE_BRANCH_KEY] = {'scan_status': 'done', 'scan_error_message': '--'}
-            except Exception as e:
-                report[config.HEAD_CORE_BRANCH_KEY] = {'scan_status': 'failed', 'scan_error_message': str(e)}
-                write_to_action_result(f"{repo} - scan failed\n")
-            
             scan_report[repo] = report
 
         finally:
