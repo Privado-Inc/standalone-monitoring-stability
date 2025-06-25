@@ -90,8 +90,8 @@ def scan_repo_report(valid_repos, args):
             # Execute the command to generate the binary file for first branch
             os.system(first_command)
             report = {}
-            base_stage_metadata, base_stage_status = copy_results(repo, scan_dir, cwd, config.BASE_CORE_BRANCH_NAME)
-            report[config.BASE_CORE_BRANCH_NAME] = base_stage_status
+            base_stage_metadata, base_stage_status = copy_results(repo, scan_dir, cwd, config.BASE_CORE_BRANCH_KEY)
+            report[config.BASE_CORE_BRANCH_KEY] = base_stage_status
 
             # Scan the cloned repo with second branch and push output to a file with debug logs
             second_command = build_command(cwd, config.HEAD_CORE_BRANCH_NAME, config.HEAD_CORE_BRANCH_KEY, scan_dir,
