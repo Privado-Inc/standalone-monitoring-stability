@@ -20,13 +20,11 @@ def get_detected_language(repo, branch):
                 return detected_language
 
 
-def get_docker_commands(tag, repo_path):
+def get_docker_tag(tag):
     if tag == 'main':
-        return f'privado  {repo_path}'
-    elif tag == 'dev':
-        return f'PRIVADO_DEV=1 privado  {repo_path}'
+        return f'638117407428.dkr.ecr.eu-west-1.amazonaws.com/privado-core-private:latest'
     else:
-        return f'PRIVADO_DEV=1 PRIVADO_TAG={tag} privado  {repo_path}'
+        return f'638117407428.dkr.ecr.ap-south-1.amazonaws.com/privado-core-private:{tag}'
 
 
 def copy_results(repo, scan_dir, cwd, branch):
@@ -180,7 +178,7 @@ def parse_flows_data(repo_name, branch_name, branch_key, scan_report):
 # Build the scan command
 def build_command(cwd, branch_name, key, scan_dir, repo, unique_flow, debug_mode, use_docker):
     if use_docker:
-        return f'{get_docker_commands(branch_name, scan_dir)} | tee {cwd}/temp/result/{key}/{repo}-output.txt'
+        return f'docker run -v {scan_dir}:/app/code {get_docker_tag(branch_name)} -ic /app/rules /app/code | tee {cwd}/temp/result/{key}/{repo}-output.txt'
 
     command = [f'export _JAVA_OPTIONS="-Xmx14G" && cd {cwd}/temp/binary/{key}/bin && ./privado-core scan', scan_dir,
                f'-ic {cwd}/temp/privado/{key} --skip-upload']
