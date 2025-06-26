@@ -178,9 +178,9 @@ def parse_flows_data(repo_name, branch_name, branch_key, scan_report):
 # Build the scan command
 def build_command(cwd, branch_name, key, scan_dir, repo, unique_flow, debug_mode, use_docker):
     if use_docker:
-        return f'docker run -e JAVA_OPTIONS="-Xmx14G" -v {scan_dir}:/app/code {get_docker_tag(branch_name)} -ic /app/rules /app/code | tee {cwd}/temp/result/{key}/{repo}-output.txt'
+        return f'docker run -e JAVA_OPTS="-Xmx14G" -v {scan_dir}:/app/code {get_docker_tag(branch_name)} -ic /app/rules /app/code | tee {cwd}/temp/result/{key}/{repo}-output.txt'
 
-    command = [f'export _JAVA_OPTIONS="-Xmx14G" && cd {cwd}/temp/binary/{key}/bin && ./privado-core scan', scan_dir,
+    command = [f'export JAVA_OPTS="-Xmx14G" && cd {cwd}/temp/binary/{key}/bin && ./privado-core scan', scan_dir,
                f'-ic {cwd}/temp/privado/{key} --skip-upload']
 
     if unique_flow:
