@@ -19,14 +19,6 @@ def get_detected_language(repo, branch):
                 detected_language = line.split(' ')[-1].replace("'", "")
                 return detected_language
 
-
-def get_docker_tag(tag):
-    if tag == 'main':
-        return f'638117407428.dkr.ecr.eu-west-1.amazonaws.com/privado-core-private:latest'
-    else:
-        return f'638117407428.dkr.ecr.ap-south-1.amazonaws.com/privado-core-private:{tag}'
-
-
 def copy_results(repo, scan_dir, cwd, branch):
     src_path = f'{scan_dir}/.privado/privado.json'
     dest_path = f'{cwd}/temp/result/{branch}/{repo}.json'
@@ -79,9 +71,9 @@ def scan_repo_report(valid_repos, args):
         scan_dir = cwd + '/temp/repos/' + repo
         try:
             # Scan the cloned repo with first branch and push output to a file
-            first_command = build_command(cwd, config.BASE_CORE_BRANCH_NAME, config.BASE_CORE_BRANCH_KEY, scan_dir,
+            first_command = build_command(cwd, config.BASE_CORE_BRANCH_KEY, scan_dir,
                                           repo, args.generate_unique_flow, args.debug_mode,
-                                          args.use_docker)
+                                          args.use_docker, args.docker_base_tag)
 
             print(f"first command {first_command}")
 
@@ -92,8 +84,8 @@ def scan_repo_report(valid_repos, args):
             report[config.BASE_CORE_BRANCH_KEY] = base_stage_status
 
             # Scan the cloned repo with second branch and push output to a file with debug logs
-            second_command = build_command(cwd, config.HEAD_CORE_BRANCH_NAME, config.HEAD_CORE_BRANCH_KEY, scan_dir,
-                                           repo, args.generate_unique_flow, args.debug_mode, args.use_docker)
+            second_command = build_command(cwd, config.HEAD_CORE_BRANCH_KEY, scan_dir,
+                                           repo, args.generate_unique_flow, args.debug_mode, args.use_docker, args.docker_head_tag)
 
             print(second_command)
             language = get_detected_language(repo, config.BASE_CORE_BRANCH_KEY)
@@ -176,9 +168,9 @@ def parse_flows_data(repo_name, branch_name, branch_key, scan_report):
 
 
 # Build the scan command
-def build_command(cwd, branch_name, key, scan_dir, repo, unique_flow, debug_mode, use_docker):
+def build_command(cwd, key, scan_dir, repo, unique_flow, debug_mode, use_docker, docker_tag):
     if use_docker:
-        return f'docker run --user $(id -u):$(id -g) -e JAVA_OPTS="-Xmx14G" -v {scan_dir}:/app/code {get_docker_tag(branch_name)} -ic /app/rules /app/code | tee {cwd}/temp/result/{key}/{repo}-output.txt'
+        return f'docker run --user $(id -u):$(id -g) -e JAVA_OPTS="-Xmx14G" -v {scan_dir}:/app/code {docker_tag} -ic /app/rules /app/code | tee {cwd}/temp/result/{key}/{repo}-output.txt'
 
     command = [f'export JAVA_OPTS="-Xmx14G" && cd {cwd}/temp/binary/{key}/bin && ./privado-core scan', scan_dir,
                f'-ic {cwd}/temp/privado/{key} --skip-upload']
