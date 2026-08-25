@@ -414,8 +414,10 @@ def process_sources(source_base, source_head, repo_name, language, update_diff_c
 
 def process_sinks(base_dataflows, head_dataflows, repo_name, scan_status, language ,key='storages', update_diff_cache=False):
     diff_cache_key = "sinks"
-    base_sink = base_dataflows[key]
-    head_sink = head_dataflows[key]
+    # A sink category is optional. It is absent when the scan runs with that category disabled,
+    # for example logger sinks behind --disable-logger-sinks.
+    base_sink = base_dataflows.get(key, [])
+    head_sink = head_dataflows.get(key, [])
 
     sink_set_base = set()
     sink_set_head = set()
@@ -476,7 +478,8 @@ def process_path_analysis(worksheet_name, base_source, head_source, repo_name, l
     total_missing_flow = 0
 
     for i in ['storages', 'leakages', 'third_parties']:
-        value = sub_process_path(base_source['dataFlow'][i], head_source['dataFlow'][i], i, repo_name, language)
+        value = sub_process_path(base_source['dataFlow'].get(i, []), head_source['dataFlow'].get(i, []), i, repo_name,
+                                 language)
         for j in value[0]:
             result.append(j)
 
